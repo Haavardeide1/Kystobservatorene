@@ -56,8 +56,9 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    const rows = (data ?? []) as SubmissionRow[];
     const results = await Promise.all(
-      (data || []).map(async (row) => {
+      rows.map(async (row) => {
         const { data: signed, error: signedError } = await supabaseAdmin.storage
           .from(MEDIA_BUCKET)
           .createSignedUrl(row.media_path_original, SIGNED_URL_TTL_SECONDS);

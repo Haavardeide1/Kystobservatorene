@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const MEDIA_BUCKET = 'media';
-const SIGNED_UPLOAD_TTL_SECONDS = 60 * 10;
-
 export async function POST(req: Request) {
   try {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -20,7 +18,7 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabaseAdmin.storage
       .from(MEDIA_BUCKET)
-      .createSignedUploadUrl(path, SIGNED_UPLOAD_TTL_SECONDS);
+      .createSignedUploadUrl(path, { upsert: false });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });

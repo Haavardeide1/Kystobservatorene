@@ -55,7 +55,7 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    const rows = (data ?? []) as SubmissionRow[];
+    const rows = (data ?? []) as unknown as SubmissionRow[];
     const results = await Promise.all(
       rows.map(async (row) => {
         const { data: signed, error: signedError } = await supabaseAdmin.storage

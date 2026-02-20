@@ -4,6 +4,23 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 const MEDIA_BUCKET = 'media';
 const SIGNED_URL_TTL_SECONDS = 60 * 60;
 
+type SubmissionRow = {
+  id: string;
+  level: number;
+  media_type: 'photo' | 'video';
+  media_path_original: string;
+  created_at: string;
+  lat_public: number | null;
+  lng_public: number | null;
+  display_name: string | null;
+  comment: string | null;
+  valg: string | null;
+  wind_dir: string | null;
+  wave_dir: string | null;
+  video_duration: number | null;
+  video_analysis: Record<string, unknown> | null;
+};
+
 export async function GET() {
   try {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -30,6 +47,7 @@ export async function GET() {
           'video_analysis',
         ].join(',')
       )
+      .returns<SubmissionRow[]>()
       .eq('is_public', true)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });

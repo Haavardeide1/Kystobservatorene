@@ -26,8 +26,12 @@ export default function LoginPage() {
         if (error) throw error;
         setMessage("Du er logget inn.");
       }
-    } catch (err: any) {
-      setMessage(err?.message ?? "Noe gikk galt.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setMessage(err.message);
+      } else {
+        setMessage("Noe gikk galt.");
+      }
     } finally {
       setLoading(false);
     }

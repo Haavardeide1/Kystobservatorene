@@ -47,7 +47,6 @@ export async function GET() {
           'video_analysis',
         ].join(',')
       )
-      .returns<SubmissionRow[]>()
       .eq('is_public', true)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });

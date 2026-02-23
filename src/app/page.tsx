@@ -49,7 +49,7 @@ export default function Home() {
             <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 shadow-2xl md:h-72">
               {/* Background video */}
               <video
-                src="/hero-ocean.mp4"
+                src="https://uerpagaucgqoytcgwgdg.supabase.co/storage/v1/object/public/assets/hero-ocean.mp4"
                 autoPlay
                 muted
                 loop

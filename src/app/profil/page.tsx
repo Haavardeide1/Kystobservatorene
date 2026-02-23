@@ -5,9 +5,13 @@ import SiteHeader from "@/components/site/SiteHeader";
 import { supabase } from "@/lib/supabase";
 
 type Badge = {
+  key: string;
   title: string;
-  progress: string;
-  accent: string;
+  description: string;
+  progress: number;
+  threshold: number;
+  tier: "bronze" | "silver" | "gold" | "platinum";
+  category: "innsendinger" | "geografi" | "streaks" | "forhold";
   status: "locked" | "active" | "earned";
 };
 
@@ -34,28 +38,214 @@ type BadgeApiResponse = {
   data: BadgeApiItem[];
 };
 
-const BADGES: Badge[] = [
-  { title: "Registrert", progress: "1/1", accent: "#2bb673", status: "earned" },
-  { title: "Første bølge", progress: "0/1", accent: "#6ba8ff", status: "active" },
-  { title: "Fotograf", progress: "0/5", accent: "#f6b24d", status: "active" },
-  { title: "Videograf", progress: "0/5", accent: "#7b6cff", status: "locked" },
-  { title: "Heat streak", progress: "0/3 dager", accent: "#ff6b6b", status: "locked" },
-  { title: "Utforsker", progress: "0/5 steder", accent: "#36c9c6", status: "locked" },
-  { title: "Stormjeger", progress: "0/1", accent: "#9aa4b2", status: "locked" },
-  { title: "Stigende stjerne", progress: "0/10", accent: "#f2c94c", status: "locked" },
-  { title: "Legende", progress: "0/50", accent: "#d9b56d", status: "locked" },
+const BADGE_CATALOG: Badge[] = [
+  {
+    key: "first_wave",
+    title: "Første bølge",
+    description: "Send inn din første observasjon.",
+    progress: 0,
+    threshold: 1,
+    tier: "bronze",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "active_observer",
+    title: "Aktiv observatør",
+    description: "Send inn 5 observasjoner.",
+    progress: 0,
+    threshold: 5,
+    tier: "bronze",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "dedicated_observer",
+    title: "Dedikert observatør",
+    description: "Send inn 10 observasjoner.",
+    progress: 0,
+    threshold: 10,
+    tier: "silver",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "experienced_observer",
+    title: "Erfaren observatør",
+    description: "Send inn 25 observasjoner.",
+    progress: 0,
+    threshold: 25,
+    tier: "gold",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "master_observer",
+    title: "Mester observatør",
+    description: "Send inn 50 observasjoner.",
+    progress: 0,
+    threshold: 50,
+    tier: "gold",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "elite_observer",
+    title: "Elite observatør",
+    description: "Send inn 100 observasjoner.",
+    progress: 0,
+    threshold: 100,
+    tier: "platinum",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "legendary_observer",
+    title: "Legendarisk observatør",
+    description: "Send inn 250 observasjoner.",
+    progress: 0,
+    threshold: 250,
+    tier: "platinum",
+    category: "innsendinger",
+    status: "locked",
+  },
+  {
+    key: "local_hero",
+    title: "Lokal helt",
+    description: "10 innsendinger innen 10 km radius.",
+    progress: 0,
+    threshold: 10,
+    tier: "bronze",
+    category: "geografi",
+    status: "locked",
+  },
+  {
+    key: "regional_explorer",
+    title: "Regional utforsker",
+    description: "Innsendinger fra 3 ulike fylker.",
+    progress: 0,
+    threshold: 3,
+    tier: "silver",
+    category: "geografi",
+    status: "locked",
+  },
+  {
+    key: "national_observer",
+    title: "Nasjonal observatør",
+    description: "Innsendinger fra 5+ fylker.",
+    progress: 0,
+    threshold: 5,
+    tier: "gold",
+    category: "geografi",
+    status: "locked",
+  },
+  {
+    key: "coast_master",
+    title: "Kystlinje mester",
+    description: "100 unike GPS‑punkter.",
+    progress: 0,
+    threshold: 100,
+    tier: "platinum",
+    category: "geografi",
+    status: "locked",
+  },
+  {
+    key: "week_streak",
+    title: "Uke‑streak",
+    description: "Send inn hver dag i 7 dager.",
+    progress: 0,
+    threshold: 7,
+    tier: "bronze",
+    category: "streaks",
+    status: "locked",
+  },
+  {
+    key: "month_streak",
+    title: "Måned‑streak",
+    description: "Send inn hver dag i 30 dager.",
+    progress: 0,
+    threshold: 30,
+    tier: "gold",
+    category: "streaks",
+    status: "locked",
+  },
+  {
+    key: "winter_observer",
+    title: "Vinter observatør",
+    description: "10 innsendinger i desember–februar.",
+    progress: 0,
+    threshold: 10,
+    tier: "silver",
+    category: "streaks",
+    status: "locked",
+  },
+  {
+    key: "summer_observer",
+    title: "Sommer observatør",
+    description: "10 innsendinger i juni–august.",
+    progress: 0,
+    threshold: 10,
+    tier: "silver",
+    category: "streaks",
+    status: "locked",
+  },
+  {
+    key: "year_round",
+    title: "Hele året",
+    description: "Innsendinger i alle 12 måneder.",
+    progress: 0,
+    threshold: 12,
+    tier: "platinum",
+    category: "streaks",
+    status: "locked",
+  },
+  {
+    key: "storm_hunter",
+    title: "Stormjeger",
+    description: "5 innsendinger med større bølger.",
+    progress: 0,
+    threshold: 5,
+    tier: "gold",
+    category: "forhold",
+    status: "locked",
+  },
+  {
+    key: "calm_guardian",
+    title: "Rolig sjø‑vokter",
+    description: "10 innsendinger med rolig havflate.",
+    progress: 0,
+    threshold: 10,
+    tier: "bronze",
+    category: "forhold",
+    status: "locked",
+  },
+  {
+    key: "wind_meter",
+    title: "Vindmåler",
+    description: "20 innsendinger med vindretning.",
+    progress: 0,
+    threshold: 20,
+    tier: "silver",
+    category: "forhold",
+    status: "locked",
+  },
+  {
+    key: "wave_expert",
+    title: "Bølge‑ekspert",
+    description: "20 innsendinger med bølgeretning.",
+    progress: 0,
+    threshold: 20,
+    tier: "silver",
+    category: "forhold",
+    status: "locked",
+  },
 ];
 
-const BADGE_ACCENTS: Record<string, string> = {
-  registered: "#2bb673",
-  first_wave: "#6ba8ff",
-  photo: "#f6b24d",
-  video: "#7b6cff",
-  heat_streak: "#ff6b6b",
-  explorer: "#36c9c6",
-  storm_hunter: "#9aa4b2",
-  rising_star: "#f2c94c",
-  legend: "#d9b56d",
+const TIER_STYLE: Record<Badge["tier"], { label: string; accent: string; glow: string }> = {
+  bronze: { label: "Bronse", accent: "#d38b5d", glow: "from-[#fce7d6]" },
+  silver: { label: "Sølv", accent: "#9aa4b2", glow: "from-[#e5e7eb]" },
+  gold: { label: "Gull", accent: "#f2c94c", glow: "from-[#fff4d6]" },
+  platinum: { label: "Platina", accent: "#7dd3fc", glow: "from-[#e0f2fe]" },
 };
 
 export default function ProfilPage() {
@@ -98,16 +288,17 @@ export default function ProfilPage() {
         if (badgeRes.ok) {
           const json = (await badgeRes.json()) as BadgeApiResponse;
           const mapped = (json.data ?? []).map((item) => {
-            const accent =
-              BADGE_ACCENTS[item.key as keyof typeof BADGE_ACCENTS] ??
-              "#9aa4b2";
-            const progress = `${item.progress ?? 0}/${item.threshold ?? 0}`;
+            const base = BADGE_CATALOG.find((badge) => badge.key === item.key);
             return {
-              title: item.title ?? "Ukjent",
-              progress,
-              accent,
+              key: item.key,
+              title: item.title ?? base?.title ?? "Ukjent",
+              description: item.description ?? base?.description ?? "",
+              progress: item.progress ?? 0,
+              threshold: item.threshold ?? base?.threshold ?? 0,
+              tier: base?.tier ?? "bronze",
+              category: base?.category ?? "innsendinger",
               status: item.status,
-            };
+            } as Badge;
           });
           if (isMounted) setBadges(mapped);
         }
@@ -277,8 +468,105 @@ export default function ProfilPage() {
             </span>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {(badges ?? BADGES).map((badge) => (
+          <div className="mt-6 space-y-8">
+            {[
+              { key: "innsendinger", label: "Antall innsendinger", icon: "🌊" },
+              { key: "geografi", label: "Geografisk spredning", icon: "🗺️" },
+              { key: "streaks", label: "Aktivitets‑streaks", icon: "🔥" },
+              { key: "forhold", label: "Spesielle forhold", icon: "🌪️" },
+            ].map((group) => {
+              const groupBadges = (badges ?? BADGE_CATALOG).filter(
+                (badge) => badge.category === group.key
+              );
+              return (
+                <div key={group.key}>
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{group.icon}</span>
+                      <h4 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+                        {group.label}
+                      </h4>
+                    </div>
+                    <span className="text-xs text-slate-400">
+                      Oppdateres automatisk
+                    </span>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {groupBadges.map((badge) => {
+                      const tier = TIER_STYLE[badge.tier];
+                      const progressPct =
+                        badge.threshold > 0
+                          ? Math.min(100, (badge.progress / badge.threshold) * 100)
+                          : 0;
+                      const statusLabel =
+                        badge.status === "earned"
+                          ? "Oppnådd"
+                          : badge.status === "active"
+                          ? "I gang"
+                          : "Låst";
+                      return (
+                        <div
+                          key={badge.key}
+                          className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition ${
+                            badge.status === "earned"
+                              ? "ring-2 ring-emerald-200"
+                              : badge.status === "active"
+                              ? "ring-1 ring-blue-100"
+                              : ""
+                          }`}
+                        >
+                          <div
+                            className={`absolute inset-0 bg-gradient-to-br ${tier.glow} to-white opacity-60`}
+                          />
+                          <div className="relative flex items-start gap-4">
+                            <div
+                              className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg"
+                              style={{ backgroundColor: `${tier.accent}22` }}
+                            >
+                              {badge.status === "earned" ? "✅" : "🏅"}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <p className="text-sm font-semibold text-slate-800">
+                                  {badge.title}
+                                </p>
+                                <span
+                                  className="rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.2em]"
+                                  style={{
+                                    backgroundColor: `${tier.accent}22`,
+                                    color: tier.accent,
+                                  }}
+                                >
+                                  {tier.label}
+                                </span>
+                              </div>
+                              <p className="mt-1 text-xs text-slate-500">
+                                {badge.description}
+                              </p>
+                              <div className="mt-3 h-2 w-full rounded-full bg-slate-100">
+                                <div
+                                  className="h-2 rounded-full"
+                                  style={{
+                                    width: `${progressPct}%`,
+                                    backgroundColor: tier.accent,
+                                  }}
+                                />
+                              </div>
+                              <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                                <span>
+                                  {badge.progress}/{badge.threshold}
+                                </span>
+                                <span>{statusLabel}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
               <div
                 key={badge.title}
                 className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm"

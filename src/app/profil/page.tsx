@@ -20,6 +20,20 @@ type ProfileStats = {
   streak: number;
 };
 
+type BadgeApiItem = {
+  key: string;
+  title: string;
+  description: string | null;
+  progress: number;
+  threshold: number | null;
+  earnedAt: string | null;
+  status: Badge["status"];
+};
+
+type BadgeApiResponse = {
+  data: BadgeApiItem[];
+};
+
 const BADGES: Badge[] = [
   { title: "Registrert", progress: "1/1", accent: "#2bb673", status: "earned" },
   { title: "Første bølge", progress: "0/1", accent: "#6ba8ff", status: "active" },
@@ -82,8 +96,8 @@ export default function ProfilPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (badgeRes.ok) {
-          const json = await badgeRes.json();
-          const mapped = (json.data ?? []).map((item: any) => {
+          const json = (await badgeRes.json()) as BadgeApiResponse;
+          const mapped = (json.data ?? []).map((item) => {
             const accent =
               BADGE_ACCENTS[item.key as keyof typeof BADGE_ACCENTS] ??
               "#9aa4b2";
@@ -92,7 +106,7 @@ export default function ProfilPage() {
               title: item.title ?? "Ukjent",
               progress,
               accent,
-              status: item.status as Badge["status"],
+              status: item.status,
             };
           });
           if (isMounted) setBadges(mapped);

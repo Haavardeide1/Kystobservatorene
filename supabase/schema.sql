@@ -140,6 +140,12 @@ create table if not exists public.user_badges (
 create unique index if not exists user_badges_unique_idx
   on public.user_badges (user_id, badge_id);
 
+-- Seed badges
+insert into public.badges (key, title, description, threshold)
+values
+  ('first_wave', 'Første bølge', 'Første innsending registrert.', 1)
+on conflict (key) do nothing;
+
 -- RLS
 alter table public.submissions enable row level security;
 alter table public.profiles enable row level security;

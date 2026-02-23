@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const MEDIA_BUCKET = 'media';
+const FIRST_WAVE_KEY = 'first_wave';
 
 function roundCoord(value: number, decimals = 4) {
   const factor = Math.pow(10, decimals);
@@ -15,6 +16,60 @@ async function getUserIdFromAuthHeader(authHeader: string | null) {
   const { data, error } = await supabaseAdmin.auth.getUser(token);
   if (error || !data?.user) return null;
   return data.user.id;
+}
+
+async function getOrCreateBadgeId() {
+  const { data: existing, error: findError } = await supabaseAdmin
+    .from('badges')
+    .select('id')
+    .eq('key', FIRST_WAVE_KEY)
+    .maybeSingle();
+
+  if (findError) {
+    return null;
+  }
+
+  if (existing?.id) return existing.id;
+
+  const { data: created, error: createError } = await supabaseAdmin
+    .from('badges')
+    .insert({
+      key: FIRST_WAVE_KEY,
+      title: 'Første bølge',
+      description: 'Første innsending registrert.',
+      threshold: 1,
+    })
+    .select('id')
+    .single();
+
+  if (createError) {
+    return null;
+  }
+
+  return created.id;
+}
+
+async function awardFirstWaveBadge(userId: string) {
+  const { count } = await supabaseAdmin
+    .from('submissions')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .is('deleted_at', null);
+
+  if (!count || count < 1) return;
+
+  const badgeId = await getOrCreateBadgeId();
+  if (!badgeId) return;
+
+  await supabaseAdmin.from('user_badges').upsert(
+    {
+      user_id: userId,
+      badge_id: badgeId,
+      progress: 1,
+      earned_at: new Date().toISOString(),
+    },
+    { onConflict: 'user_id,badge_id' }
+  );
 }
 
 export async function POST(req: Request) {
@@ -68,7 +123,7 @@ export async function POST(req: Request) {
       media_path_preview: body.media_path_preview || null,
       media_content_type: body.media_content_type || null,
       media_size_bytes: body.media_size_bytes || null,
-      is_public: !!userId,
+      is_public: true,
       deleted_at: null,
     };
 
@@ -80,6 +135,10 @@ export async function POST(req: Request) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    if (userId) {
+      await awardFirstWaveBadge(userId);
     }
 
     return NextResponse.json({ id: data.id, bucket: MEDIA_BUCKET });

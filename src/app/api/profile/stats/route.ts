@@ -42,12 +42,18 @@ export async function GET(req: Request) {
         .map((row) => `${row.lat_public},${row.lng_public}`)
     ).size;
 
+    const { count: badgeCount } = await supabaseAdmin
+      .from("user_badges")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .not("earned_at", "is", null);
+
     return NextResponse.json({
       total,
       photos,
       videos,
       locations,
-      badges: 1,
+      badges: badgeCount ?? 0,
       streak: 0,
     });
   } catch (err: unknown) {

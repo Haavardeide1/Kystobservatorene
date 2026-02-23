@@ -1,11 +1,13 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 type AuthMode = "signin" | "signup";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +26,7 @@ export default function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        setMessage("Du er logget inn.");
+        router.push("/");
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -112,6 +114,12 @@ export default function LoginPage() {
               {message}
             </p>
           )}
+
+          <div className="mt-6 text-center">
+            <a href="/" className="text-sm text-white/60 hover:text-white">
+              Tilbake til forsiden
+            </a>
+          </div>
         </div>
       </div>
     </div>

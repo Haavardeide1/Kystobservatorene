@@ -11,6 +11,7 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
+  { label: "Kart", href: "/kart" },
   { label: "Send inn", href: "/observasjoner" },
   { label: "Profil", href: "/profil" },
   { label: "Om prosjektet", href: "/#om" },
@@ -81,6 +82,9 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           Kystobservatørene
         </a>
         <nav className="relative flex items-center gap-4 text-sm">
+          <a className={`transition ${classes.link}`} href="/kart">
+            Kart
+          </a>
           <a className={`transition ${classes.link}`} href="/#om">
             Om prosjektet
           </a>

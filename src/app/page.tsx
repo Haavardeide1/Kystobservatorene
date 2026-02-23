@@ -1,4 +1,12 @@
-﻿import SiteHeader from "@/components/site/SiteHeader";
+﻿import dynamic from "next/dynamic";
+import SiteHeader from "@/components/site/SiteHeader";
+
+const HomeMiniMap = dynamic(() => import("@/components/HomeMiniMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="mt-8 h-80 animate-pulse rounded-3xl bg-slate-100" />
+  ),
+});
 
 export default function Home() {
   return (
@@ -26,7 +34,7 @@ export default function Home() {
                 Bidra med observasjon
               </a>
               <a
-                href="#kart"
+                href="/kart"
                 className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Se kartet
@@ -106,69 +114,7 @@ export default function Home() {
 
       <section id="kart" className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                Kystobservasjoner
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold text-[#1d5fa7]">
-                Kart og statistikk
-              </h3>
-            </div>
-            <div className="flex gap-3">
-              {[
-                { label: "Totalt", value: "11" },
-                { label: "Bilder", value: "7" },
-                { label: "Videoer", value: "4" },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl bg-[#2c7dc6] px-6 py-4 text-center text-white shadow-sm"
-                >
-                  <div className="text-xl font-semibold">{stat.value}</div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-white/80">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_260px]">
-            <div className="relative h-80 overflow-hidden rounded-3xl border border-slate-200 bg-[radial-gradient(circle_at_20%_20%,rgba(37,99,235,0.08),transparent_40%),linear-gradient(135deg,#e2e8f0,#f8fafc)] shadow-inner">
-              <div className="absolute left-4 top-4 flex flex-col gap-2">
-                <button className="h-9 w-9 rounded-lg bg-white text-lg font-semibold text-slate-600 shadow">
-                  +
-                </button>
-                <button className="h-9 w-9 rounded-lg bg-white text-lg font-semibold text-slate-600 shadow">
-                  −
-                </button>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-full bg-[#1d5fa7] px-5 py-2 text-sm font-semibold text-white shadow">
-                  6
-                </div>
-              </div>
-              <p className="absolute bottom-4 left-6 text-xs uppercase tracking-[0.2em] text-slate-500">
-                Kartområde (placeholder)
-              </p>
-            </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Forklaring
-              </p>
-              <div className="mt-4 space-y-4 text-sm">
-                <div className="flex items-center gap-3">
-                  <span className="h-10 w-10 rounded-full bg-[#1d5fa7]" />
-                  <span>Bilde</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="h-10 w-10 rounded-full bg-emerald-500" />
-                  <span>Video</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HomeMiniMap />
         </div>
       </section>
 

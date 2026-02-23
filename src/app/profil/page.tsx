@@ -11,6 +11,15 @@ type Badge = {
   status: "locked" | "active" | "earned";
 };
 
+type ProfileStats = {
+  total: number;
+  photos: number;
+  videos: number;
+  locations: number;
+  badges: number;
+  streak: number;
+};
+
 const BADGES: Badge[] = [
   { title: "Registrert", progress: "1/1", accent: "#2bb673", status: "earned" },
   { title: "Første bølge", progress: "0/1", accent: "#6ba8ff", status: "active" },
@@ -29,6 +38,7 @@ export default function ProfilPage() {
   const [inputValue, setInputValue] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [stats, setStats] = useState<ProfileStats | null>(null);
   const isLoggedIn = Boolean(email);
 
   useEffect(() => {
@@ -42,6 +52,21 @@ export default function ProfilPage() {
       const stored = (user?.user_metadata?.username as string | undefined) ?? null;
       setUsername(stored);
       setInputValue(stored ?? "");
+
+      if (user) {
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        if (!token) return;
+        const res = await fetch("/api/profile/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const json = (await res.json()) as ProfileStats;
+          if (isMounted) setStats(json);
+        }
+      } else {
+        setStats(null);
+      }
     }
 
     loadUser();
@@ -165,10 +190,10 @@ export default function ProfilPage() {
               </p>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {[
-                  { label: "Observasjoner", value: "0" },
-                  { label: "Merker opptjent", value: "1" },
-                  { label: "Steder", value: "0" },
-                  { label: "Streak", value: "0 dager" },
+                  { label: "Observasjoner", value: stats?.total ?? 0 },
+                  { label: "Merker opptjent", value: stats?.badges ?? 0 },
+                  { label: "Steder", value: stats?.locations ?? 0 },
+                  { label: "Streak", value: `${stats?.streak ?? 0} dager` },
                 ].map((stat) => (
                   <div
                     key={stat.label}

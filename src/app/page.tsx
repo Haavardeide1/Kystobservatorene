@@ -181,7 +181,7 @@ export default function Home() {
       </section>
 
       {/* ── Kart (mini-map) ───────────────────────────────────────────────── */}
-      <section id="kart" className="bg-white">
+      <section id="kart" className="bg-[#070b2f]">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <HomeMiniMap />
         </div>

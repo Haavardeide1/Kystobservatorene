@@ -17,7 +17,7 @@ function makeMarkerIcon(LLib: typeof L, type: "photo" | "video") {
   const emoji = type === "photo" ? "📸" : "🎥";
   return LLib.divIcon({
     className: "",
-    html: `<div style="width:34px;height:34px;border-radius:50%;background:${bg};border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;">${emoji}</div>`,
+    html: `<div style="width:34px;height:34px;border-radius:50%;background:${bg};border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">${emoji}</div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
   });
@@ -33,7 +33,7 @@ function makeClusterIcon(LLib: typeof L, cluster: any) {
       width:${size}px;height:${size}px;border-radius:50%;
       background:#1d5fa7;color:#fff;font-weight:700;font-size:13px;
       display:flex;align-items:center;justify-content:center;
-      border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.2);
+      border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.35);
       font-family:system-ui;
     ">${count}</div>`,
     iconSize: [size, size],
@@ -53,7 +53,7 @@ export default function HomeMiniMap() {
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
 
-  // Fetch
+  // Fetch submissions
   useEffect(() => {
     fetch("/api/submissions/list")
       .then((r) => r.json())
@@ -95,13 +95,55 @@ export default function HomeMiniMap() {
         zoomControl: true,
         scrollWheelZoom: false,
         attributionControl: false,
-      }).setView([63.5, 10.5], 5);
+        maxBounds: [[55, 1], [72, 34]],
+        maxBoundsViscosity: 0.8,
+      }).setView([65, 15], 4);
 
+      // Satellite base layer
       LLib.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        { subdomains: "abcd", maxZoom: 19 }
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        { maxZoom: 19 }
       ).addTo(map);
 
+      // Subtle label overlay on top of satellite
+      LLib.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+        { subdomains: "abcd", maxZoom: 19, opacity: 0.7 }
+      ).addTo(map);
+
+      // Norway border — glowing blue outline
+      try {
+        const res = await fetch(
+          "https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NOR.geo.json"
+        );
+        const norwayData = await res.json();
+
+        // Subtle fill
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (LLib as any).geoJSON(norwayData, {
+          style: {
+            fillColor: "#3b82f6",
+            fillOpacity: 0.07,
+            color: "transparent",
+            weight: 0,
+          },
+        }).addTo(map);
+
+        // Glowing border
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (LLib as any).geoJSON(norwayData, {
+          style: {
+            fillOpacity: 0,
+            color: "#60a5fa",
+            weight: 2,
+            opacity: 0.85,
+          },
+        }).addTo(map);
+      } catch {
+        // silently fail — map still works without border
+      }
+
+      // Marker cluster group
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const clusterGroup = (LLib as any).markerClusterGroup({
         maxClusterRadius: 60,
@@ -154,10 +196,10 @@ export default function HomeMiniMap() {
       {/* Stats row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
             Kystobservasjoner
           </p>
-          <h3 className="mt-2 text-2xl font-semibold text-[#1d5fa7]">
+          <h3 className="mt-2 text-2xl font-semibold text-white">
             Kart og statistikk
           </h3>
         </div>
@@ -169,10 +211,10 @@ export default function HomeMiniMap() {
           ].map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl bg-[#2c7dc6] px-6 py-4 text-center text-white shadow-sm"
+              className="rounded-2xl border border-white/10 bg-white/10 px-6 py-4 text-center text-white backdrop-blur-sm"
             >
               <div className="text-xl font-semibold">{s.value}</div>
-              <div className="text-xs uppercase tracking-[0.2em] text-white/80">
+              <div className="text-xs uppercase tracking-[0.2em] text-white/60">
                 {s.label}
               </div>
             </div>
@@ -180,32 +222,34 @@ export default function HomeMiniMap() {
         </div>
       </div>
 
-      {/* Map + CTA */}
-      <div className="relative mt-8 h-[480px] overflow-hidden rounded-3xl border border-slate-200 shadow-inner">
-        {/* Map */}
+      {/* Map */}
+      <div
+        className="relative mt-8 h-[500px] overflow-hidden rounded-3xl border border-white/10"
+        style={{ boxShadow: "0 0 60px rgba(59,130,246,0.18), 0 4px 40px rgba(0,0,0,0.5)" }}
+      >
         <div ref={containerRef} className="h-full w-full" />
 
         {/* Loading overlay */}
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-            <p className="text-sm text-slate-400">Laster kart…</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-[#070b2f]">
+            <p className="text-sm text-white/40">Laster kart…</p>
           </div>
         )}
 
-        {/* Reset view button — below the Leaflet zoom control */}
+        {/* Reset view button */}
         <button
           type="button"
           onClick={() =>
-            mapRef.current?.setView([63.5, 10.5], 5, { animate: true })
+            mapRef.current?.setView([65, 15], 4, { animate: true })
           }
-          className="absolute left-[10px] top-[80px] z-[1000] flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-md transition hover:bg-slate-50"
+          className="absolute left-[10px] top-[80px] z-[1000] flex items-center gap-1.5 rounded-lg border border-white/20 bg-[#0b1438]/90 px-3 py-1.5 text-xs font-semibold text-white/80 shadow-md backdrop-blur-sm transition hover:bg-white/10"
           title="Zoom ut til oversikt"
         >
           ↩ Hele Norge
         </button>
 
-        {/* Gradient + CTA at bottom */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent" />
+        {/* Bottom gradient + CTA */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#070b2f]/80 to-transparent" />
         <div className="absolute inset-x-0 bottom-4 flex justify-center">
           <a
             href="/kart"
@@ -216,23 +260,23 @@ export default function HomeMiniMap() {
           </a>
         </div>
 
-        {/* FORKLARING legend top-right */}
-        <div className="absolute right-4 top-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-slate-700">
+        {/* FORKLARING legend */}
+        <div className="absolute right-4 top-4 rounded-xl border border-white/15 bg-[#0b1438]/80 px-4 py-3 shadow-lg backdrop-blur-sm">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-white/60">
             Forklaring
           </p>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#3b82f6", border: "2px solid #fff", boxShadow: "0 1px 5px rgba(0,0,0,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#3b82f6", border: "2px solid rgba(255,255,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
                 📸
               </div>
-              <span className="text-sm text-slate-700">Bilde</span>
+              <span className="text-sm text-white/80">Bilde</span>
             </div>
             <div className="flex items-center gap-2">
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#10b981", border: "2px solid #fff", boxShadow: "0 1px 5px rgba(0,0,0,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#10b981", border: "2px solid rgba(255,255,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
                 🎥
               </div>
-              <span className="text-sm text-slate-700">Video</span>
+              <span className="text-sm text-white/80">Video</span>
             </div>
           </div>
         </div>

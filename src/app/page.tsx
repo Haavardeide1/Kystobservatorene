@@ -268,7 +268,7 @@ export default function Home() {
               <img
                 src="/fremje-logo.png"
                 alt="Fremje"
-                className="h-10 object-contain opacity-80"
+                className="h-16 object-contain opacity-80"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>

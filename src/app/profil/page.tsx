@@ -287,20 +287,22 @@ export default function ProfilPage() {
         });
         if (badgeRes.ok) {
           const json = (await badgeRes.json()) as BadgeApiResponse;
-          const mapped = (json.data ?? []).map((item) => {
-            const base = BADGE_CATALOG.find((badge) => badge.key === item.key);
+          const apiMap = new Map(
+            (json.data ?? []).map((item) => [item.key, item])
+          );
+          const merged = BADGE_CATALOG.map((badge) => {
+            const apiBadge = apiMap.get(badge.key);
+            if (!apiBadge) return badge;
             return {
-              key: item.key,
-              title: item.title ?? base?.title ?? "Ukjent",
-              description: item.description ?? base?.description ?? "",
-              progress: item.progress ?? 0,
-              threshold: item.threshold ?? base?.threshold ?? 0,
-              tier: base?.tier ?? "bronze",
-              category: base?.category ?? "innsendinger",
-              status: item.status,
+              ...badge,
+              title: apiBadge.title ?? badge.title,
+              description: apiBadge.description ?? badge.description,
+              progress: apiBadge.progress ?? badge.progress,
+              threshold: apiBadge.threshold ?? badge.threshold,
+              status: apiBadge.status ?? badge.status,
             } as Badge;
           });
-          if (isMounted) setBadges(mapped);
+          if (isMounted) setBadges(merged);
         }
       } else {
         setStats(null);

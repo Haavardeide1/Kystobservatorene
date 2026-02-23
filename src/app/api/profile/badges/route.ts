@@ -39,25 +39,28 @@ export async function GET(req: Request) {
 
     const { data: badges, error } = await supabaseAdmin
       .from("badges")
-      .select(
-        [
-          "id",
-          "key",
-          "title",
-          "description",
-          "threshold",
-          "user_badges!left(progress, earned_at, user_id)",
-        ].join(",")
-      )
-      .eq("user_badges.user_id", userId)
+      .select(["id", "key", "title", "description", "threshold"].join(","))
       .order("created_at", { ascending: true });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    const { data: userBadges, error: userBadgesError } = await supabaseAdmin
+      .from("user_badges")
+      .select("badge_id, progress, earned_at")
+      .eq("user_id", userId);
+
+    if (userBadgesError) {
+      return NextResponse.json({ error: userBadgesError.message }, { status: 400 });
+    }
+
+    const userBadgeMap = new Map(
+      (userBadges ?? []).map((row) => [row.badge_id, row])
+    );
+
     const rows = ((badges ?? []) as unknown as BadgeRow[]).map((badge) => {
-      const ub = Array.isArray(badge.user_badges) ? badge.user_badges[0] : null;
+      const ub = userBadgeMap.get(badge.id) ?? null;
       const progress = ub?.progress ?? 0;
       const threshold = badge.threshold ?? 0;
       const earnedAt = ub?.earned_at ?? null;

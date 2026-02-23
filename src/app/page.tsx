@@ -1,27 +1,9 @@
-﻿export default function Home() {
+﻿import SiteHeader from "@/components/site/SiteHeader";
+
+export default function Home() {
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#070b2f]/95 text-white backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <div className="text-sm font-semibold uppercase tracking-[0.2em]">
-            Kystobservatørene
-          </div>
-          <nav className="flex items-center gap-6 text-sm">
-            <a className="text-white/80 transition hover:text-white" href="#om">
-              Om prosjektet
-            </a>
-            <a className="text-white/80 transition hover:text-white" href="#bidra">
-              Navigering
-            </a>
-            <a
-              className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
-              href="/login"
-            >
-              Logg inn
-            </a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader variant="dark" />
 
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16 pt-20 md:flex-row md:items-end">
@@ -273,3 +255,4 @@
     </div>
   );
 }
+

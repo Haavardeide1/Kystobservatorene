@@ -22,6 +22,21 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    type UserBadgeRow = {
+      progress: number | null;
+      earned_at: string | null;
+      user_id: string | null;
+    };
+
+    type BadgeRow = {
+      id: string;
+      key: string;
+      title: string;
+      description: string | null;
+      threshold: number | null;
+      user_badges?: UserBadgeRow[] | null;
+    };
+
     const { data: badges, error } = await supabaseAdmin
       .from("badges")
       .select(
@@ -41,7 +56,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    const rows = (badges ?? []).map((badge) => {
+    const rows = ((badges ?? []) as BadgeRow[]).map((badge) => {
       const ub = Array.isArray(badge.user_badges) ? badge.user_badges[0] : null;
       const progress = ub?.progress ?? 0;
       const threshold = badge.threshold ?? 0;

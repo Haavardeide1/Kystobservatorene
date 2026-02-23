@@ -567,39 +567,6 @@ export default function ProfilPage() {
                 </div>
               );
             })}
-              <div
-                key={badge.title}
-                className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm"
-              >
-                <div
-                  className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg"
-                  style={{ backgroundColor: `${badge.accent}1f` }}
-                >
-                  {badge.status === "earned" ? "✅" : "🏅"}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-slate-800">
-                    {badge.title}
-                  </p>
-                  <p className="text-xs text-slate-400">{badge.progress}</p>
-                </div>
-                <span
-                  className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.2em] ${
-                    badge.status === "earned"
-                      ? "bg-emerald-50 text-emerald-600"
-                      : badge.status === "active"
-                      ? "bg-blue-50 text-blue-600"
-                      : "bg-slate-100 text-slate-400"
-                  }`}
-                >
-                  {badge.status === "earned"
-                    ? "Oppnådd"
-                    : badge.status === "active"
-                    ? "I gang"
-                    : "Låst"}
-                </span>
-              </div>
-            ))}
           </div>
         </section>
       </main>

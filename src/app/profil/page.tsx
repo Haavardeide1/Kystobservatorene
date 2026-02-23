@@ -32,6 +32,18 @@ const BADGES: Badge[] = [
   { title: "Legende", progress: "0/50", accent: "#d9b56d", status: "locked" },
 ];
 
+const BADGE_ACCENTS: Record<string, string> = {
+  registered: "#2bb673",
+  first_wave: "#6ba8ff",
+  photo: "#f6b24d",
+  video: "#7b6cff",
+  heat_streak: "#ff6b6b",
+  explorer: "#36c9c6",
+  storm_hunter: "#9aa4b2",
+  rising_star: "#f2c94c",
+  legend: "#d9b56d",
+};
+
 export default function ProfilPage() {
   const [email, setEmail] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
@@ -39,6 +51,7 @@ export default function ProfilPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [stats, setStats] = useState<ProfileStats | null>(null);
+  const [badges, setBadges] = useState<Badge[] | null>(null);
   const isLoggedIn = Boolean(email);
 
   useEffect(() => {
@@ -64,8 +77,29 @@ export default function ProfilPage() {
           const json = (await res.json()) as ProfileStats;
           if (isMounted) setStats(json);
         }
+
+        const badgeRes = await fetch("/api/profile/badges", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (badgeRes.ok) {
+          const json = await badgeRes.json();
+          const mapped = (json.data ?? []).map((item: any) => {
+            const accent =
+              BADGE_ACCENTS[item.key as keyof typeof BADGE_ACCENTS] ??
+              "#9aa4b2";
+            const progress = `${item.progress ?? 0}/${item.threshold ?? 0}`;
+            return {
+              title: item.title ?? "Ukjent",
+              progress,
+              accent,
+              status: item.status as Badge["status"],
+            };
+          });
+          if (isMounted) setBadges(mapped);
+        }
       } else {
         setStats(null);
+        setBadges(null);
       }
     }
 
@@ -228,7 +262,7 @@ export default function ProfilPage() {
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {BADGES.map((badge) => (
+            {(badges ?? BADGES).map((badge) => (
               <div
                 key={badge.title}
                 className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm"

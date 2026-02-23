@@ -1,48 +1,272 @@
-export default function Home() {
+﻿export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-6 py-12">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
-              Kystobservatorene
-            </p>
-            <p className="mt-2 text-sm text-white/60">
-              Borgervitenskap for kysten
-            </p>
+    <div className="min-h-screen bg-white text-slate-900">
+      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#070b2f]/95 text-white backdrop-blur">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+          <div className="text-sm font-semibold uppercase tracking-[0.2em]">
+            Kystobservatørene
           </div>
-          <a
-            href="/login"
-            className="rounded-full border border-white/20 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
-          >
-            Logg inn
-          </a>
-        </header>
-
-        <div className="flex flex-1 flex-col justify-center gap-10 py-10">
-          <div>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-              Ny plattform under bygging
-            </h1>
-            <p className="mt-4 max-w-2xl text-base text-white/70 md:text-lg">
-              Vi bygger en åpen plattform for innsendelser, kart og
-              forskningsinnsikt. Du kan allerede utforske siden uten innlogging.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-4">
-            <a
-              href="/login"
-              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90"
-            >
-              Logg inn / Opprett konto
+          <nav className="flex items-center gap-6 text-sm">
+            <a className="text-white/80 transition hover:text-white" href="#om">
+              Om prosjektet
             </a>
-            <span className="rounded-full border border-white/20 px-6 py-3 text-sm text-white/70">
-              Backend: Supabase (EU)
-            </span>
+            <a className="text-white/80 transition hover:text-white" href="#bidra">
+              Navigering
+            </a>
+            <a
+              className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
+              href="/login"
+            >
+              Logg inn
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <section className="relative overflow-hidden bg-[#070b2f] text-white">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16 pt-20 md:flex-row md:items-end">
+          <div className="flex-1">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
+              Kystobservatørene
+            </p>
+            <h1 className="mt-4 text-4xl font-black uppercase tracking-tight md:text-6xl">
+              Kystobservatørene
+            </h1>
+            <p className="mt-4 max-w-xl text-base text-white/70 md:text-lg">
+              Borgervitenskap for kysten. Vi samler observasjoner av havoverflaten
+              for å forstå strømmer, varsle bedre og skape tryggere kystliv.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href="#bidra"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90"
+              >
+                Bidra med observasjon
+              </a>
+              <a
+                href="#kart"
+                className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Se kartet
+              </a>
+            </div>
+          </div>
+          <div className="relative flex-1">
+            <div className="absolute -right-10 -top-8 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
+            <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 shadow-2xl md:h-72">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.25),_transparent_60%)]" />
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a1a3a] to-transparent" />
+              <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.35em] text-white/60">
+                Havet i bevegelse
+              </p>
+            </div>
           </div>
         </div>
-      </main>
+        <div className="relative h-24 bg-[#070b2f]">
+          <svg
+            className="absolute bottom-0 h-24 w-full"
+            viewBox="0 0 1440 120"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,96L120,90.7C240,85,480,75,720,80C960,85,1200,107,1320,117.3L1440,128L1440,120L1320,120C1200,120,960,120,720,120C480,120,240,120,120,120L0,120Z"
+              fill="#ffffff"
+            />
+          </svg>
+        </div>
+      </section>
+
+      <section id="bidra" className="bg-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl font-black uppercase tracking-tight text-[#1d5fa7] md:text-4xl">
+              Bidra med observasjoner
+            </h2>
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              Ta et bilde eller en kort video av havflaten og bidra til ny kunnskap
+              om havstrømmer langs kysten.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1.3fr]">
+            <div className="relative h-56 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-100 to-white shadow-lg md:h-64">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(148,163,184,0.5),transparent_55%)]" />
+              <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.3em] text-slate-500">
+                Foto fra kysten
+              </p>
+            </div>
+            <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl bg-[linear-gradient(130deg,#0f172a,#0b2a4a,#07162c)] shadow-lg md:h-64">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.3),_transparent_60%)]" />
+              <button className="relative rounded-full border-2 border-white bg-white/95 px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#0b2a4a] shadow-xl transition hover:bg-white">
+                Send inn her
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#1d6fb8] text-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-12 text-center">
+          <p className="text-sm uppercase tracking-[0.3em] text-white/70">
+            Om prosjektet
+          </p>
+          <p className="mt-4 text-base text-white/90 md:text-lg">
+            Kystobservatørene er et forskningsprosjekt for å engasjere folk langs kysten
+            i forskning på havstrømmer. Vi inviterer publikum til å bidra med bilder
+            eller korte videoer av havflaten som kan brukes til verifisering og
+            forbedring av varslingsmodeller.
+          </p>
+        </div>
+      </section>
+
+      <section id="kart" className="bg-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+                Kystobservasjoner
+              </p>
+              <h3 className="mt-2 text-2xl font-semibold text-[#1d5fa7]">
+                Kart og statistikk
+              </h3>
+            </div>
+            <div className="flex gap-3">
+              {[
+                { label: "Totalt", value: "11" },
+                { label: "Bilder", value: "7" },
+                { label: "Videoer", value: "4" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl bg-[#2c7dc6] px-6 py-4 text-center text-white shadow-sm"
+                >
+                  <div className="text-xl font-semibold">{stat.value}</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-white/80">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_260px]">
+            <div className="relative h-80 overflow-hidden rounded-3xl border border-slate-200 bg-[radial-gradient(circle_at_20%_20%,rgba(37,99,235,0.08),transparent_40%),linear-gradient(135deg,#e2e8f0,#f8fafc)] shadow-inner">
+              <div className="absolute left-4 top-4 flex flex-col gap-2">
+                <button className="h-9 w-9 rounded-lg bg-white text-lg font-semibold text-slate-600 shadow">
+                  +
+                </button>
+                <button className="h-9 w-9 rounded-lg bg-white text-lg font-semibold text-slate-600 shadow">
+                  −
+                </button>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="rounded-full bg-[#1d5fa7] px-5 py-2 text-sm font-semibold text-white shadow">
+                  6
+                </div>
+              </div>
+              <p className="absolute bottom-4 left-6 text-xs uppercase tracking-[0.2em] text-slate-500">
+                Kartområde (placeholder)
+              </p>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Forklaring
+              </p>
+              <div className="mt-4 space-y-4 text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="h-10 w-10 rounded-full bg-[#1d5fa7]" />
+                  <span>Bilde</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="h-10 w-10 rounded-full bg-emerald-500" />
+                  <span>Video</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#eaf2fb]">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <h3 className="text-3xl font-black uppercase tracking-tight text-[#8bb0d9]">
+            Ukens topp 5
+          </h3>
+          <div className="mt-10 rounded-3xl bg-white px-6 py-12 text-center shadow-lg">
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#1d5fa7]" />
+            <p className="text-base font-semibold">Ingen bidrag denne uken ennå</p>
+            <p className="mt-2 text-sm text-slate-500">
+              Vær den første til å sende inn en observasjon!
+            </p>
+            <div className="mt-8 border-t border-slate-100 pt-4 text-xs uppercase tracking-[0.2em] text-slate-400">
+              Uke 9 · 23. feb. – 1. mars
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="om" className="bg-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <div className="grid gap-10 md:grid-cols-[1.1fr_1fr]">
+            <div>
+              <h3 className="text-4xl font-black uppercase tracking-tight text-[#8bb0d9]">
+                Omtrent 80 %
+              </h3>
+              <p className="mt-4 text-base text-slate-600 md:text-lg">
+                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær
+                og bølger til hva som driver hvor. Mer kunnskap om strøm gir en
+                bedre forståelse av kysten og tryggere beslutninger.
+              </p>
+            </div>
+            <div className="grid gap-4">
+              <div className="h-32 rounded-2xl bg-[linear-gradient(135deg,#bfd7ef,#e5effa)]" />
+              <div className="h-32 rounded-2xl bg-[linear-gradient(135deg,#6b8fb6,#2b4f74)]" />
+            </div>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: "Oppdrag",
+                body:
+                  "Gjøre havet mer forståelig ved å koble observasjoner med prediksjonsmodeller. Bidragene styrker datagrunnlaget for forskning og varsling.",
+              },
+              {
+                title: "Visjon",
+                body:
+                  "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og strømmer blir litt mindre farlige.",
+              },
+              {
+                title: "Mål",
+                body:
+                  "Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className="rounded-2xl bg-[#6b9cc8] px-6 py-8 text-white shadow"
+              >
+                <h4 className="text-lg font-semibold uppercase tracking-[0.15em]">
+                  {card.title}
+                </h4>
+                <p className="mt-4 text-sm text-white/90">{card.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-[#070b2f] text-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10">
+          <div className="flex flex-col items-center justify-center gap-6 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-10 text-sm uppercase tracking-[0.2em] text-white/70">
+              <span>Insert NORCE Logo</span>
+              <span>Insert Fremje Logo</span>
+            </div>
+            <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

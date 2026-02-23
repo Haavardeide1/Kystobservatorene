@@ -1,10 +1,10 @@
-﻿import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
 
 const HomeMiniMap = dynamic(() => import("@/components/HomeMiniMap"), {
   ssr: false,
   loading: () => (
-    <div className="mt-8 h-80 animate-pulse rounded-3xl bg-slate-100" />
+    <div className="mt-8 h-[480px] animate-pulse rounded-3xl bg-slate-100" />
   ),
 });
 
@@ -13,6 +13,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-slate-900">
       <SiteHeader variant="dark" />
 
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16 pt-20 md:flex-row md:items-end">
           <div className="flex-1">
@@ -41,23 +42,35 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          {/* Hero visual card */}
           <div className="relative flex-1">
             <div className="absolute -right-10 -top-8 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
             <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 shadow-2xl md:h-72">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.25),_transparent_60%)]" />
+              {/* Subtle grid lines for a "data" feel */}
+              <div className="absolute inset-0 opacity-10"
+                style={{ backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a1a3a] to-transparent" />
+              {/* Live indicator */}
+              <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/80">Live data</span>
+              </div>
+              {/* Fake coordinate readout */}
+              <div className="absolute right-5 top-5 font-mono text-xs text-white/40">
+                63.4°N · 10.4°E
+              </div>
               <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.35em] text-white/60">
                 Havet i bevegelse
               </p>
             </div>
           </div>
         </div>
+
+        {/* Wave divider */}
         <div className="relative h-24 bg-[#070b2f]">
-          <svg
-            className="absolute bottom-0 h-24 w-full"
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-          >
+          <svg className="absolute bottom-0 h-24 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none">
             <path
               d="M0,96L120,90.7C240,85,480,75,720,80C960,85,1200,107,1320,117.3L1440,128L1440,120L1320,120C1200,120,960,120,720,120C480,120,240,120,120,120L0,120Z"
               fill="#ffffff"
@@ -66,10 +79,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Bidra ─────────────────────────────────────────────────────────── */}
       <section id="bidra" className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <div className="max-w-3xl">
-            <h2 className="text-3xl font-black uppercase tracking-tight text-[#1d5fa7] md:text-4xl">
+            <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-4xl">
               Bidra med observasjoner
             </h2>
             <p className="mt-4 text-base text-slate-600 md:text-lg">
@@ -79,12 +93,19 @@ export default function Home() {
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1.3fr]">
-            <div className="relative h-56 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-200 via-slate-100 to-white shadow-lg md:h-64">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(148,163,184,0.5),transparent_55%)]" />
+            {/* Stacked photo cards placeholder */}
+            <div className="relative h-56 overflow-hidden rounded-3xl md:h-64">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-slate-200 via-slate-100 to-white shadow-lg" />
+              <div className="absolute left-6 top-6 h-36 w-36 rotate-[-6deg] rounded-2xl bg-[linear-gradient(135deg,#6b8fb6,#2b4f74)] shadow-md" />
+              <div className="absolute left-12 top-8 h-36 w-36 rotate-[3deg] rounded-2xl bg-[linear-gradient(135deg,#bfd7ef,#7aaedb)] shadow-md" />
+              <div className="absolute left-20 top-6 flex h-36 w-36 rotate-[-1deg] items-center justify-center rounded-2xl bg-white shadow-xl">
+                <span className="text-4xl">📸</span>
+              </div>
               <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.3em] text-slate-500">
                 Foto fra kysten
               </p>
             </div>
+
             <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl bg-[linear-gradient(130deg,#0f172a,#0b2a4a,#07162c)] shadow-lg md:h-64">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.3),_transparent_60%)]" />
               <a
@@ -98,7 +119,46 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[#1d6fb8] text-white">
+      {/* ── Slik gjør du det ──────────────────────────────────────────────── */}
+      <section className="border-t border-slate-100 bg-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+            Slik gjør du det
+          </p>
+          <div className="mt-8 grid gap-10 md:grid-cols-3">
+            {[
+              {
+                step: "01",
+                title: "Ta et bilde eller video",
+                body: "Noen sekunder av havoverflaten er nok. Bruk telefonen der du er — ved kaien, på båten, eller fra stranden.",
+              },
+              {
+                step: "02",
+                title: "Merk posisjonen",
+                body: "GPS finner deg automatisk, eller du klikker på kartet. Det tar fem sekunder og gir observasjonen verdi.",
+              },
+              {
+                step: "03",
+                title: "Send inn",
+                body: "Trykk send. Observasjonen havner rett i databasen og vises på kartet for alle.",
+              },
+            ].map((item) => (
+              <div key={item.step} className="flex gap-5">
+                <span className="mt-0.5 select-none text-5xl font-black leading-none text-slate-100">
+                  {item.step}
+                </span>
+                <div>
+                  <h4 className="font-semibold text-slate-900">{item.title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Om prosjektet banner ───────────────────────────────────────────── */}
+      <section className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-12 text-center">
           <p className="text-sm uppercase tracking-[0.3em] text-white/70">
             Om prosjektet
@@ -109,22 +169,30 @@ export default function Home() {
             eller korte videoer av havflaten som kan brukes til verifisering og
             forbedring av varslingsmodeller.
           </p>
+          <a
+            href="/#om"
+            className="mt-6 inline-block text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition hover:text-white/80"
+          >
+            Les mer ↓
+          </a>
         </div>
       </section>
 
+      {/* ── Kart (mini-map) ───────────────────────────────────────────────── */}
       <section id="kart" className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <HomeMiniMap />
         </div>
       </section>
 
+      {/* ── Ukens topp 5 ─────────────────────────────────────────────────── */}
       <section className="bg-[#eaf2fb]">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <h3 className="text-3xl font-black uppercase tracking-tight text-[#8bb0d9]">
             Ukens topp 5
           </h3>
           <div className="mt-10 rounded-3xl bg-white px-6 py-12 text-center shadow-lg">
-            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#1d5fa7]" />
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#070b2f]" />
             <p className="text-base font-semibold">Ingen bidrag denne uken ennå</p>
             <p className="mt-2 text-sm text-slate-500">
               Vær den første til å sende inn en observasjon!
@@ -136,6 +204,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <div className="grid gap-10 md:grid-cols-[1.1fr_1fr]">
@@ -159,34 +228,32 @@ export default function Home() {
             {[
               {
                 title: "Oppdrag",
-                body:
-                  "Gjøre havet mer forståelig ved å koble observasjoner med prediksjonsmodeller. Bidragene styrker datagrunnlaget for forskning og varsling.",
+                body: "Gjøre havet mer forståelig ved å koble observasjoner med prediksjonsmodeller. Bidragene styrker datagrunnlaget for forskning og varsling.",
               },
               {
                 title: "Visjon",
-                body:
-                  "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og strømmer blir litt mindre farlige.",
+                body: "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og strømmer blir litt mindre farlige.",
               },
               {
                 title: "Mål",
-                body:
-                  "Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
+                body: "Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
               },
             ].map((card) => (
               <div
                 key={card.title}
-                className="rounded-2xl bg-[#6b9cc8] px-6 py-8 text-white shadow"
+                className="rounded-2xl bg-[#070b2f] px-6 py-8 text-white shadow"
               >
                 <h4 className="text-lg font-semibold uppercase tracking-[0.15em]">
                   {card.title}
                 </h4>
-                <p className="mt-4 text-sm text-white/90">{card.body}</p>
+                <p className="mt-4 text-sm text-white/80">{card.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
@@ -201,4 +268,3 @@ export default function Home() {
     </div>
   );
 }
-

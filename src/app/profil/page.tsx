@@ -199,38 +199,40 @@ export default function ProfilPage() {
           </div>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-                Brukernavn
-              </p>
-              <h3 className="mt-3 text-lg font-semibold text-slate-800">
-                {username ? "Endre brukernavn" : "Velg brukernavn"}
-              </h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Dette vises på offentlige bidrag og i kartet. Kun første gang du
-                logger inn må du sette et brukernavn.
-              </p>
+            {!username && (
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                  Brukernavn
+                </p>
+                <h3 className="mt-3 text-lg font-semibold text-slate-800">
+                  Velg brukernavn
+                </h3>
+                <p className="mt-2 text-sm text-slate-500">
+                  Dette vises på offentlige bidrag og i kartet. Kun første gang du
+                  logger inn må du sette et brukernavn.
+                </p>
 
-              <form onSubmit={handleSave} className="mt-4 flex flex-col gap-3">
-                <input
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  disabled={!isLoggedIn}
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1d5fa7]"
-                  placeholder="Skriv inn ønsket brukernavn"
-                />
-                <button
-                  type="submit"
-                  disabled={saving || !isLoggedIn}
-                  className="rounded-xl bg-[#0b1b36] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
-                >
-                  {saving ? "Lagrer..." : "Lagre brukernavn"}
-                </button>
-              </form>
-              {message && (
-                <p className="mt-3 text-sm text-slate-600">{message}</p>
-              )}
-            </div>
+                <form onSubmit={handleSave} className="mt-4 flex flex-col gap-3">
+                  <input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    disabled={!isLoggedIn}
+                    className="rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#1d5fa7]"
+                    placeholder="Skriv inn ønsket brukernavn"
+                  />
+                  <button
+                    type="submit"
+                    disabled={saving || !isLoggedIn}
+                    className="rounded-xl bg-[#0b1b36] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
+                  >
+                    {saving ? "Lagrer..." : "Lagre brukernavn"}
+                  </button>
+                </form>
+                {message && (
+                  <p className="mt-3 text-sm text-slate-600">{message}</p>
+                )}
+              </div>
+            )}
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">

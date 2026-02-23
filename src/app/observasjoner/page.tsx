@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SiteHeader from "@/components/site/SiteHeader";
 import { supabase } from "@/lib/supabase";
 
@@ -25,12 +25,33 @@ export default function ObservasjonerPage() {
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<Message | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const title = useMemo(() => {
     if (mode === "photo") return "Last opp bilde og velg posisjon";
     if (mode === "video") return "Last opp video og velg posisjon";
     return "Velg type observasjon";
   }, [mode]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadUserName() {
+      const { data } = await supabase.auth.getUser();
+      const meta = data.user?.user_metadata?.username as string | undefined;
+      if (isMounted) setUserName(meta ?? null);
+    }
+
+    loadUserName();
+    const { data: subscription } = supabase.auth.onAuthStateChange(() => {
+      loadUserName();
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.subscription.unsubscribe();
+    };
+  }, []);
 
   function resetForm() {
     setDisplayName("");
@@ -127,7 +148,7 @@ export default function ObservasjonerPage() {
         level: mode === "photo" ? 1 : 2,
         media_type: mode,
         media_path_original: path,
-        display_name: displayName || null,
+        display_name: userName || displayName || null,
         comment: comment || null,
         valg: seaState || null,
         wind_dir: windDir || null,
@@ -246,18 +267,20 @@ export default function ObservasjonerPage() {
 
             {mode ? (
               <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    Navn (valgfritt)
-                  </label>
-                  <input
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="F.eks. Ola Nordmann"
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1d5fa7]"
-                  />
-                </div>
+                {!userName && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">
+                      Navn (valgfritt)
+                    </label>
+                    <input
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="F.eks. Ola Nordmann"
+                      className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1d5fa7]"
+                    />
+                  </div>
+                )}
 
                 {mode === "video" && (
                   <div className="space-y-2">

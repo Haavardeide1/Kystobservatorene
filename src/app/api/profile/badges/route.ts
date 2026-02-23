@@ -56,7 +56,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    const rows = ((badges ?? []) as BadgeRow[]).map((badge) => {
+    const rows = ((badges ?? []) as unknown as BadgeRow[]).map((badge) => {
       const ub = Array.isArray(badge.user_badges) ? badge.user_badges[0] : null;
       const progress = ub?.progress ?? 0;
       const threshold = badge.threshold ?? 0;

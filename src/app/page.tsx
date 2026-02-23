@@ -265,7 +265,12 @@ export default function Home() {
                 alt="NORCE"
                 className="h-8 object-contain opacity-80"
               />
-              <span className="text-sm uppercase tracking-[0.2em] text-white/70">Insert Fremje Logo</span>
+              <img
+                src="/fremje-logo.png"
+                alt="Fremje"
+                className="h-10 object-contain opacity-80"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>
           </div>

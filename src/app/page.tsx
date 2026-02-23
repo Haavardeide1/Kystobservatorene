@@ -43,21 +43,28 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Hero visual card */}
+          {/* Hero visual card — video background */}
           <div className="relative flex-1">
             <div className="absolute -right-10 -top-8 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
-            <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 shadow-2xl md:h-72">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.25),_transparent_60%)]" />
-              {/* Subtle grid lines for a "data" feel */}
-              <div className="absolute inset-0 opacity-10"
-                style={{ backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+            <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 shadow-2xl md:h-72">
+              {/* Background video */}
+              <video
+                src="/hero-ocean.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              {/* Dark overlay so text stays readable */}
+              <div className="absolute inset-0 bg-[#070b2f]/50" />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a1a3a] to-transparent" />
               {/* Live indicator */}
               <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
                 <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/80">Live data</span>
               </div>
-              {/* Fake coordinate readout */}
+              {/* Coordinate readout */}
               <div className="absolute right-5 top-5 font-mono text-xs text-white/40">
                 63.4°N · 10.4°E
               </div>
@@ -93,18 +100,13 @@ export default function Home() {
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1.3fr]">
-            {/* Stacked photo cards placeholder */}
-            <div className="relative h-56 overflow-hidden rounded-3xl md:h-64">
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-slate-200 via-slate-100 to-white shadow-lg" />
-              <div className="absolute left-6 top-6 h-36 w-36 rotate-[-6deg] rounded-2xl bg-[linear-gradient(135deg,#6b8fb6,#2b4f74)] shadow-md" />
-              <div className="absolute left-12 top-8 h-36 w-36 rotate-[3deg] rounded-2xl bg-[linear-gradient(135deg,#bfd7ef,#7aaedb)] shadow-md" />
-              <div className="absolute left-20 top-6 flex h-36 w-36 rotate-[-1deg] items-center justify-center rounded-2xl bg-white shadow-xl">
-                <span className="text-4xl">📸</span>
-              </div>
-              <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.3em] text-slate-500">
-                Foto fra kysten
-              </p>
-            </div>
+            {/* Real coastal photo */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/bildemobil.jpg"
+              alt="Foto fra kysten"
+              className="h-56 w-full rounded-3xl object-cover shadow-lg md:h-64"
+            />
 
             <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl bg-[linear-gradient(130deg,#0f172a,#0b2a4a,#07162c)] shadow-lg md:h-64">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.3),_transparent_60%)]" />
@@ -257,9 +259,13 @@ export default function Home() {
       <footer className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-10 text-sm uppercase tracking-[0.2em] text-white/70">
-              <span>Insert NORCE Logo</span>
-              <span>Insert Fremje Logo</span>
+            <div className="flex flex-wrap items-center justify-center gap-10">
+              <img
+                src="/norce-logo.png"
+                alt="NORCE"
+                className="h-8 object-contain opacity-80"
+              />
+              <span className="text-sm uppercase tracking-[0.2em] text-white/70">Insert Fremje Logo</span>
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>
           </div>

@@ -15,7 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Send inn", href: "/observasjoner" },
   { label: "Profil", href: "/profil" },
   { label: "Om prosjektet", href: "/om" },
-  { label: "Galleri (kommer)", href: "/galleri" },
+  { label: "Galleri", href: "/galleri" },
 ];
 
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {

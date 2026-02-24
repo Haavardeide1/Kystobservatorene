@@ -64,13 +64,13 @@ function buildLeaderboard(submissions: Submission[]): LeaderboardEntry[] {
 
 // Card style per rank
 const CARD_STYLE = [
-  // 1st — dark navy with gold ring
-  "bg-[#070b2f] border border-amber-400/30 shadow-lg",
-  // 2nd — dark navy, silver tone
-  "bg-[#0f1f3d] border border-white/10 shadow-md",
-  // 3rd — dark navy, bronze tone
-  "bg-[#0f1f3d] border border-orange-400/20 shadow-md",
-  // 4th & 5th — white
+  // 1st — white with gold accent border
+  "bg-white border border-amber-300 shadow-md",
+  // 2nd — white with silver border
+  "bg-white border border-slate-200 shadow-sm",
+  // 3rd — white with bronze border
+  "bg-white border border-orange-200 shadow-sm",
+  // 4th & 5th — plain white
   "bg-white border border-slate-100 shadow-sm",
   "bg-white border border-slate-100 shadow-sm",
 ];
@@ -154,7 +154,7 @@ export default function TopFive() {
                 {isDark ? (
                   <div className="flex flex-col items-center gap-0.5">
                     <span className="text-xl leading-none">{medal.emoji}</span>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
                       {medal.label}
                     </span>
                   </div>
@@ -166,30 +166,16 @@ export default function TopFive() {
               </div>
 
               {/* Avatar initial */}
-              <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                  isDark
-                    ? "bg-white/10 text-white"
-                    : "bg-[#070b2f] text-white"
-                }`}
-              >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#070b2f] text-sm font-bold text-white">
                 {entry.display_name[0].toUpperCase()}
               </div>
 
               {/* Name + sub-label */}
               <div className="flex-1 truncate">
-                <p
-                  className={`truncate font-semibold ${
-                    isDark ? "text-white" : "text-slate-800"
-                  }`}
-                >
+                <p className="truncate font-semibold text-slate-800">
                   {entry.display_name}
                 </p>
-                <p
-                  className={`text-xs ${
-                    isDark ? "text-white/40" : "text-slate-400"
-                  }`}
-                >
+                <p className="text-xs text-slate-400">
                   {entry.count === 1
                     ? "1 observasjon"
                     : `${entry.count} observasjoner`}

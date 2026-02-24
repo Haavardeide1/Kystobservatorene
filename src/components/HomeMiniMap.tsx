@@ -14,14 +14,36 @@ type Submission = {
 };
 
 function makeMarkerIcon(LLib: typeof L, type: "photo" | "video") {
-  const bg = type === "photo" ? "#3b82f6" : "#10b981";
-  const emoji = type === "photo" ? "📸" : "🎥";
+  const color = type === "photo" ? "#3b82f6" : "#10b981";
   return LLib.divIcon({
     className: "",
-    html: `<div style="width:34px;height:34px;border-radius:50%;background:${bg};border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">${emoji}</div>`,
-    iconSize: [34, 34],
-    iconAnchor: [17, 17],
+    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10],
   });
+}
+
+function buildPopupHtml(sub: Submission): string {
+  const date = new Date(sub.created_at).toLocaleDateString("nb-NO", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+  const name = sub.display_name || "Anonym";
+  const typeLabel = sub.media_type === "photo" ? "Bilde" : "Video";
+
+  const mediaHtml = sub.media_url
+    ? sub.media_type === "photo"
+      ? `<img src="${sub.media_url}" style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;">`
+      : `<video src="${sub.media_url}" controls preload="metadata" playsinline style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;background:#000;"></video>`
+    : `<div style="width:100%;height:80px;border-radius:10px;background:#f1f5f9;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:28px;">${sub.media_type === "photo" ? "📸" : "🎥"}</div>`;
+
+  return `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-width:220px;max-width:260px;">
+      ${mediaHtml}
+      <div style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:2px;">${name}</div>
+      <div style="font-size:12px;color:#94a3b8;">${date} · ${typeLabel}</div>
+    </div>
+  `;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,53 +118,13 @@ export default function HomeMiniMap() {
         zoomControl: true,
         scrollWheelZoom: false,
         attributionControl: false,
-        maxBounds: [[55, 1], [72, 34]],
-        maxBoundsViscosity: 0.8,
       }).setView([65, 15], 4);
 
-      // Satellite base layer
+      // Same tile layer as kart-siden (CartoDB Voyager)
       LLib.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        { maxZoom: 19 }
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        { subdomains: "abcd", maxZoom: 19 }
       ).addTo(map);
-
-      // Subtle label overlay on top of satellite
-      LLib.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
-        { subdomains: "abcd", maxZoom: 19, opacity: 0.7 }
-      ).addTo(map);
-
-      // Norway border — glowing blue outline
-      try {
-        const res = await fetch(
-          "https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NOR.geo.json"
-        );
-        const norwayData = await res.json();
-
-        // Subtle fill
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (LLib as any).geoJSON(norwayData, {
-          style: {
-            fillColor: "#3b82f6",
-            fillOpacity: 0.07,
-            color: "transparent",
-            weight: 0,
-          },
-        }).addTo(map);
-
-        // Glowing border
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (LLib as any).geoJSON(norwayData, {
-          style: {
-            fillOpacity: 0,
-            color: "#60a5fa",
-            weight: 2,
-            opacity: 0.85,
-          },
-        }).addTo(map);
-      } catch {
-        // silently fail — map still works without border
-      }
 
       // Marker cluster group
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,22 +165,7 @@ export default function HomeMiniMap() {
 
       const icon = makeMarkerIcon(LLib, sub.media_type);
       const marker = LLib.marker([sub.lat_public, sub.lng_public], { icon });
-
-      const date = new Date(sub.created_at).toLocaleDateString("nb-NO", {
-        day: "numeric", month: "short", year: "numeric",
-      });
-      const name = sub.display_name || "Anonym";
-      const mediaHtml = sub.media_url && sub.media_type === "photo"
-        ? `<img src="${sub.media_url}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;" />`
-        : sub.media_url && sub.media_type === "video"
-        ? `<video src="${sub.media_url}" controls playsinline preload="metadata" style="width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;"></video>`
-        : `<div style="width:100%;height:80px;background:#1a2a4a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;">${sub.media_type === "video" ? "🎥" : "📸"}</div>`;
-
-      marker.bindPopup(
-        `<div style="width:210px;font-family:system-ui;">${mediaHtml}<p style="margin:0 0 2px;font-weight:600;font-size:13px;color:#0f172a;">${name}</p><p style="margin:0;font-size:11px;color:#64748b;">${date}</p></div>`,
-        { maxWidth: 230 }
-      );
-
+      marker.bindPopup(buildPopupHtml(sub), { maxWidth: 280 });
       clusterGroup.addLayer(marker);
       markersRef.current.set(sub.id, marker);
     });
@@ -259,14 +226,13 @@ export default function HomeMiniMap() {
           onClick={() =>
             mapRef.current?.setView([65, 15], 4, { animate: true })
           }
-          className="absolute left-[10px] top-[80px] z-[1000] flex items-center gap-1.5 rounded-lg border border-white/20 bg-[#0b1438]/90 px-3 py-1.5 text-xs font-semibold text-white/80 shadow-md backdrop-blur-sm transition hover:bg-white/10"
+          className="absolute left-[10px] top-[80px] z-[1000] flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-md backdrop-blur-sm transition hover:bg-slate-50"
           title="Zoom ut til oversikt"
         >
           ↩ Hele Norge
         </button>
 
-        {/* Bottom gradient + CTA */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#070b2f]/80 to-transparent" />
+        {/* Bottom CTA */}
         <div className="absolute inset-x-0 bottom-4 flex justify-center">
           <a
             href="/kart"
@@ -277,23 +243,19 @@ export default function HomeMiniMap() {
           </a>
         </div>
 
-        {/* FORKLARING legend */}
-        <div className="absolute right-4 top-4 rounded-xl border border-white/15 bg-[#0b1438]/80 px-4 py-3 shadow-lg backdrop-blur-sm">
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-white/60">
+        {/* Legend */}
+        <div className="absolute right-4 top-4 rounded-xl border border-slate-200 bg-white/90 px-4 py-3 shadow-md backdrop-blur-sm">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-slate-400">
             Forklaring
           </p>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#3b82f6", border: "2px solid rgba(255,255,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
-                📸
-              </div>
-              <span className="text-sm text-white/80">Bilde</span>
+              <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#3b82f6", border: "2px solid #fff", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
+              <span className="text-xs text-slate-600">Bilde</span>
             </div>
             <div className="flex items-center gap-2">
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#10b981", border: "2px solid rgba(255,255,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
-                🎥
-              </div>
-              <span className="text-sm text-white/80">Video</span>
+              <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#10b981", border: "2px solid #fff", boxShadow: "0 1px 4px rgba(0,0,0,0.2)" }} />
+              <span className="text-xs text-slate-600">Video</span>
             </div>
           </div>
         </div>

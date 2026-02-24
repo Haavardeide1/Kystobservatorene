@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
+import TopFive from "@/components/TopFive";
 
 const HomeMiniMap = dynamic(() => import("@/components/HomeMiniMap"), {
   ssr: false,
@@ -190,18 +191,24 @@ export default function Home() {
       {/* ── Ukens topp 5 ─────────────────────────────────────────────────── */}
       <section className="bg-[#eaf2fb]">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <h3 className="text-3xl font-black uppercase tracking-tight text-[#8bb0d9]">
-            Ukens topp 5
-          </h3>
-          <div className="mt-10 rounded-3xl bg-white px-6 py-12 text-center shadow-lg">
-            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#070b2f]" />
-            <p className="text-base font-semibold">Ingen bidrag denne uken ennå</p>
-            <p className="mt-2 text-sm text-slate-500">
-              Vær den første til å sende inn en observasjon!
-            </p>
-            <div className="mt-8 border-t border-slate-100 pt-4 text-xs uppercase tracking-[0.2em] text-slate-400">
-              Uke 9 · 23. feb. – 1. mars
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#8bb0d9]">
+                Denne uken
+              </p>
+              <h3 className="mt-1 text-3xl font-black uppercase tracking-tight text-[#070b2f]">
+                Ukens observasjoner
+              </h3>
             </div>
+            <a
+              href="/kart"
+              className="rounded-full border border-[#070b2f]/20 bg-white px-5 py-2.5 text-xs font-semibold text-[#070b2f] shadow-sm transition hover:bg-[#070b2f] hover:text-white"
+            >
+              Se alle på kartet →
+            </a>
+          </div>
+          <div className="mt-8">
+            <TopFive />
           </div>
         </div>
       </section>

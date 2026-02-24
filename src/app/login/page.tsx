@@ -1,18 +1,33 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 type AuthMode = "signin" | "signup";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
+
   const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  // If already logged in, redirect immediately
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        router.replace(redirectTo);
+      } else {
+        setCheckingSession(false);
+      }
+    });
+  }, [redirectTo, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -26,7 +41,7 @@ export default function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        router.push("/");
+        router.push(redirectTo);
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -37,6 +52,14 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+      </div>
+    );
   }
 
   return (

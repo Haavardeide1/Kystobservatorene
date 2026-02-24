@@ -624,7 +624,7 @@ export default function ObservasjonerPage() {
                 Registrer deg for å spore bidrag og tjene badges
               </span>
               <a
-                href="/login"
+                href="/login?redirect=/observasjoner"
                 className="font-semibold text-blue-400 transition hover:text-blue-300"
               >
                 Logg inn →

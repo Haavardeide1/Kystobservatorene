@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 type HeaderVariant = "dark" | "light";
@@ -22,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [initial, setInitial] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     let isMounted = true;
@@ -127,7 +129,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           ) : (
             <a
               className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
-              href="/login"
+              href={`/login?redirect=${encodeURIComponent(pathname)}`}
             >
               Logg inn
             </a>

@@ -7,7 +7,7 @@ export default function OmPage() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
-        <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-20">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-12 pt-12 md:pb-20 md:pt-20">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/50">
             Kystobservatørene
           </p>

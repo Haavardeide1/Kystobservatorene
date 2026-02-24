@@ -203,7 +203,7 @@ export default function HomeMiniMap() {
             Kart og statistikk
           </h3>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 md:gap-3">
           {[
             { label: "Totalt", value: loading ? "…" : total },
             { label: "Bilder", value: loading ? "…" : photos },
@@ -211,10 +211,10 @@ export default function HomeMiniMap() {
           ].map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-white/10 bg-white/10 px-6 py-4 text-center text-white backdrop-blur-sm"
+              className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3 text-center text-white backdrop-blur-sm md:px-6 md:py-4"
             >
-              <div className="text-xl font-semibold">{s.value}</div>
-              <div className="text-xs uppercase tracking-[0.2em] text-white/60">
+              <div className="text-lg font-semibold md:text-xl">{s.value}</div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-white/60 md:text-xs md:tracking-[0.2em]">
                 {s.label}
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function HomeMiniMap() {
 
       {/* Map */}
       <div
-        className="relative mt-8 h-[500px] overflow-hidden rounded-3xl border border-white/10"
+        className="relative mt-6 h-[320px] overflow-hidden rounded-3xl border border-white/10 md:mt-8 md:h-[500px]"
         style={{ boxShadow: "0 0 60px rgba(59,130,246,0.18), 0 4px 40px rgba(0,0,0,0.5)" }}
       >
         <div ref={containerRef} className="h-full w-full" />

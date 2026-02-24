@@ -147,7 +147,7 @@ export default function TopFive() {
           return (
             <div
               key={entry.user_id}
-              className={`flex items-center gap-4 rounded-2xl px-5 py-4 transition ${CARD_STYLE[i] ?? CARD_STYLE[4]}`}
+              className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition md:gap-4 md:px-5 md:py-4 ${CARD_STYLE[i] ?? CARD_STYLE[4]}`}
             >
               {/* Medal or rank */}
               <div className="w-10 shrink-0 text-center">
@@ -188,7 +188,7 @@ export default function TopFive() {
 
               {/* Count */}
               <div
-                className={`shrink-0 text-3xl font-black ${
+                className={`shrink-0 text-2xl font-black md:text-3xl ${
                   isDark ? medal.countColor : "text-slate-200"
                 }`}
               >

@@ -82,10 +82,10 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           Kystobservatørene
         </a>
         <nav className="relative flex items-center gap-4 text-sm">
-          <a className={`transition ${classes.link}`} href="/kart">
+          <a className={`hidden md:block transition ${classes.link}`} href="/kart">
             Kart
           </a>
-          <a className={`transition ${classes.link}`} href="/om">
+          <a className={`hidden md:block transition ${classes.link}`} href="/om">
             Om prosjektet
           </a>
           <div className="relative">

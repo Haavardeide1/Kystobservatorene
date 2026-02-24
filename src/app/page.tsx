@@ -16,7 +16,7 @@ export default function Home() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16 pt-20 md:flex-row md:items-end">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-10 pt-12 md:flex-row md:items-end md:gap-10 md:pb-16 md:pt-20">
           <div className="flex-1">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
               Kystobservatørene

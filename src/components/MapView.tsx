@@ -326,6 +326,14 @@ export default function MapView() {
           {waveLoading ? "Laster…" : "Bølgevarsel"}
         </button>
 
+        {/* Mobile-only floating CTA — sidebar is hidden on small screens */}
+        <a
+          href="/observasjoner"
+          className="absolute bottom-5 right-4 z-[1000] flex items-center gap-2 rounded-full bg-[#0b1b36] px-5 py-2.5 text-xs font-semibold text-white shadow-lg transition hover:bg-[#0f2744] lg:hidden"
+        >
+          + Send inn
+        </a>
+
         {liveCount > 0 && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-600 shadow-md">
             <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500" />

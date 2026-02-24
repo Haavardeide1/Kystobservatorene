@@ -6,6 +6,7 @@ const SIGNED_URL_TTL_SECONDS = 60 * 60;
 
 type SubmissionRow = {
   id: string;
+  user_id: string | null;
   level: number;
   media_type: "photo" | "video";
   media_path_original: string;
@@ -32,6 +33,7 @@ export async function GET() {
       .select(
         [
           "id",
+          "user_id",
           "level",
           "media_type",
           "media_path_original",

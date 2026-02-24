@@ -189,7 +189,7 @@ export default function Home() {
       </section>
 
       {/* ── Ukens topp 5 ─────────────────────────────────────────────────── */}
-      <section className="bg-[#eaf2fb]">
+      <section className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>

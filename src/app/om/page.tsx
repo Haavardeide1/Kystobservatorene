@@ -102,38 +102,6 @@ export default function OmPage() {
         </div>
       </section>
 
-      {/* ── Omtrent 80 % + bilder ─────────────────────────────────────────── */}
-      <section className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
-            <div>
-              <h2 className="text-4xl font-black uppercase tracking-tight text-[#8bb0d9] md:text-5xl">
-                Omtrent 80 %
-              </h2>
-              <p className="mt-6 text-base leading-relaxed text-slate-600 md:text-lg">
-                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra
-                vær og bølger til hva som driver hvor. Mer kunnskap om strøm
-                gir en bedre forståelse av kysten og tryggere beslutninger.
-              </p>
-            </div>
-            <div className="grid gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bildebat.jpg"
-                alt="Fiskebåt ved kysten"
-                className="h-40 w-full rounded-2xl object-cover shadow-md"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/oppdrett.jpg"
-                alt="Oppdrettsanlegg"
-                className="h-40 w-full rounded-2xl object-cover shadow-md"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Oppdrag / Visjon / Mål ────────────────────────────────────────── */}
       <section className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 pb-20">

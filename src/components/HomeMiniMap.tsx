@@ -6,6 +6,7 @@ import type L from "leaflet";
 type Submission = {
   id: string;
   media_type: "photo" | "video";
+  media_url: string | null;
   lat_public: number | null;
   lng_public: number | null;
   display_name: string | null;
@@ -182,6 +183,22 @@ export default function HomeMiniMap() {
 
       const icon = makeMarkerIcon(LLib, sub.media_type);
       const marker = LLib.marker([sub.lat_public, sub.lng_public], { icon });
+
+      const date = new Date(sub.created_at).toLocaleDateString("nb-NO", {
+        day: "numeric", month: "short", year: "numeric",
+      });
+      const name = sub.display_name || "Anonym";
+      const mediaHtml = sub.media_url && sub.media_type === "photo"
+        ? `<img src="${sub.media_url}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;" />`
+        : sub.media_url && sub.media_type === "video"
+        ? `<video src="${sub.media_url}" controls playsinline preload="metadata" style="width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;"></video>`
+        : `<div style="width:100%;height:80px;background:#1a2a4a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;">${sub.media_type === "video" ? "🎥" : "📸"}</div>`;
+
+      marker.bindPopup(
+        `<div style="width:210px;font-family:system-ui;">${mediaHtml}<p style="margin:0 0 2px;font-weight:600;font-size:13px;color:#0f172a;">${name}</p><p style="margin:0;font-size:11px;color:#64748b;">${date}</p></div>`,
+        { maxWidth: 230 }
+      );
+
       clusterGroup.addLayer(marker);
       markersRef.current.set(sub.id, marker);
     });

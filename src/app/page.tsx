@@ -60,11 +60,6 @@ export default function Home() {
               {/* Dark overlay so text stays readable */}
               <div className="absolute inset-0 bg-[#070b2f]/50" />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a1a3a] to-transparent" />
-              {/* Live indicator */}
-              <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-                <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/80">Live data</span>
-              </div>
               {/* Coordinate readout */}
               <div className="absolute right-5 top-5 font-mono text-xs text-white/40">
                 63.4°N · 10.4°E

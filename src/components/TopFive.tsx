@@ -15,18 +15,6 @@ type LeaderboardEntry = {
   count: number;
 };
 
-const MEDALS = ["🥇", "🥈", "🥉"];
-const MEDAL_BG = [
-  "bg-amber-50 border-amber-200",
-  "bg-slate-50 border-slate-200",
-  "bg-orange-50 border-orange-200",
-];
-const MEDAL_COUNT_COLOR = [
-  "text-amber-500",
-  "text-slate-400",
-  "text-orange-400",
-];
-
 function getWeekStart(): Date {
   const now = new Date();
   const day = now.getDay();
@@ -44,10 +32,7 @@ function getWeekLabel(): string {
   end.setDate(start.getDate() + 6);
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const weekNum = Math.ceil(
-    ((now.getTime() - startOfYear.getTime()) / 86400000 +
-      startOfYear.getDay() +
-      1) /
-      7
+    ((now.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7
   );
   const fmt = (d: Date) =>
     d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
@@ -56,13 +41,9 @@ function getWeekLabel(): string {
 
 function buildLeaderboard(submissions: Submission[]): LeaderboardEntry[] {
   const weekStart = getWeekStart();
-
-  // Only this week, only logged-in users
   const thisWeek = submissions.filter(
     (s) => s.user_id && new Date(s.created_at) >= weekStart
   );
-
-  // Group by user_id, count submissions
   const map = new Map<string, LeaderboardEntry>();
   for (const s of thisWeek) {
     const uid = s.user_id!;
@@ -76,11 +57,29 @@ function buildLeaderboard(submissions: Submission[]): LeaderboardEntry[] {
       });
     }
   }
-
   return Array.from(map.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 }
+
+// Card style per rank
+const CARD_STYLE = [
+  // 1st — dark navy with gold ring
+  "bg-[#070b2f] border border-amber-400/30 shadow-lg",
+  // 2nd — dark navy, silver tone
+  "bg-[#0f1f3d] border border-white/10 shadow-md",
+  // 3rd — dark navy, bronze tone
+  "bg-[#0f1f3d] border border-orange-400/20 shadow-md",
+  // 4th & 5th — white
+  "bg-white border border-slate-100 shadow-sm",
+  "bg-white border border-slate-100 shadow-sm",
+];
+
+const MEDAL_LABEL = [
+  { emoji: "🥇", label: "Gull", countColor: "text-amber-400" },
+  { emoji: "🥈", label: "Sølv", countColor: "text-slate-300" },
+  { emoji: "🥉", label: "Bronse", countColor: "text-orange-300" },
+];
 
 export default function TopFive() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -109,29 +108,29 @@ export default function TopFive() {
 
   if (leaderboard.length === 0) {
     return (
-      <div className="rounded-3xl bg-white px-8 py-12 text-center shadow-sm">
+      <div className="rounded-3xl bg-[#070b2f] px-8 py-12 text-center text-white shadow-lg">
         <div className="mx-auto mb-4 text-4xl">🏆</div>
-        <p className="text-base font-semibold text-slate-800">
+        <p className="text-base font-semibold">
           Ingen konkurranseregistreringer denne uken ennå
         </p>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-white/60">
           Logg inn og send inn observasjoner for å komme på listen!
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <a
             href="/login"
-            className="rounded-full border border-[#070b2f] px-6 py-2.5 text-sm font-semibold text-[#070b2f] transition hover:bg-[#070b2f] hover:text-white"
+            className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
           >
             Logg inn
           </a>
           <a
             href="/observasjoner"
-            className="rounded-full bg-[#070b2f] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f2744]"
+            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#070b2f] transition hover:bg-white/90"
           >
             Send inn →
           </a>
         </div>
-        <div className="mt-8 border-t border-slate-100 pt-4 text-xs uppercase tracking-[0.2em] text-slate-400">
+        <div className="mt-8 border-t border-white/10 pt-4 text-xs uppercase tracking-[0.2em] text-white/30">
           {weekLabel}
         </div>
       </div>
@@ -142,18 +141,23 @@ export default function TopFive() {
     <div>
       <div className="space-y-3">
         {leaderboard.map((entry, i) => {
-          const isMedal = i < 3;
+          const isDark = i < 3;
+          const medal = MEDAL_LABEL[i];
+
           return (
             <div
               key={entry.user_id}
-              className={`flex items-center gap-4 rounded-2xl border px-5 py-4 ${
-                isMedal ? MEDAL_BG[i] : "border-slate-100 bg-white"
-              }`}
+              className={`flex items-center gap-4 rounded-2xl px-5 py-4 transition ${CARD_STYLE[i] ?? CARD_STYLE[4]}`}
             >
-              {/* Medal / rank */}
+              {/* Medal or rank */}
               <div className="w-10 shrink-0 text-center">
-                {isMedal ? (
-                  <span className="text-2xl">{MEDALS[i]}</span>
+                {isDark ? (
+                  <div className="flex flex-col items-center gap-0.5">
+                    <span className="text-xl leading-none">{medal.emoji}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">
+                      {medal.label}
+                    </span>
+                  </div>
                 ) : (
                   <span className="text-lg font-black text-slate-200">
                     {String(i + 1).padStart(2, "0")}
@@ -162,26 +166,40 @@ export default function TopFive() {
               </div>
 
               {/* Avatar initial */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#070b2f] text-sm font-bold text-white">
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                  isDark
+                    ? "bg-white/10 text-white"
+                    : "bg-[#070b2f] text-white"
+                }`}
+              >
                 {entry.display_name[0].toUpperCase()}
               </div>
 
-              {/* Name */}
+              {/* Name + sub-label */}
               <div className="flex-1 truncate">
-                <p className="truncate font-semibold text-slate-800">
+                <p
+                  className={`truncate font-semibold ${
+                    isDark ? "text-white" : "text-slate-800"
+                  }`}
+                >
                   {entry.display_name}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p
+                  className={`text-xs ${
+                    isDark ? "text-white/40" : "text-slate-400"
+                  }`}
+                >
                   {entry.count === 1
                     ? "1 observasjon"
                     : `${entry.count} observasjoner`}
                 </p>
               </div>
 
-              {/* Count badge */}
+              {/* Count */}
               <div
-                className={`shrink-0 text-2xl font-black ${
-                  isMedal ? MEDAL_COUNT_COLOR[i] : "text-slate-200"
+                className={`shrink-0 text-3xl font-black ${
+                  isDark ? medal.countColor : "text-slate-200"
                 }`}
               >
                 {entry.count}
@@ -198,7 +216,7 @@ export default function TopFive() {
         </p>
         <a
           href="/observasjoner"
-          className="rounded-full border border-[#070b2f] px-5 py-2 text-xs font-semibold text-[#070b2f] transition hover:bg-[#070b2f] hover:text-white"
+          className="rounded-full bg-[#070b2f] px-5 py-2 text-xs font-semibold text-white transition hover:bg-[#0f2744]"
         >
           + Send inn og konkurrer
         </a>

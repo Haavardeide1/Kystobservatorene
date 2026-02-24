@@ -221,8 +221,18 @@ export default function Home() {
               </p>
             </div>
             <div className="grid gap-4">
-              <div className="h-32 rounded-2xl bg-[linear-gradient(135deg,#bfd7ef,#e5effa)]" />
-              <div className="h-32 rounded-2xl bg-[linear-gradient(135deg,#6b8fb6,#2b4f74)]" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/bildebat.jpg"
+                alt="Fiskebåt ved kysten"
+                className="h-36 w-full rounded-2xl object-cover shadow-md"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/oppdrett.jpg"
+                alt="Oppdrettsanlegg"
+                className="h-36 w-full rounded-2xl object-cover shadow-md"
+              />
             </div>
           </div>
 

@@ -30,7 +30,7 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
-                href="#bidra"
+                href="/observasjoner"
                 className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90"
               >
                 Bidra med observasjon
@@ -173,17 +173,17 @@ export default function Home() {
             forbedring av varslingsmodeller.
           </p>
           <a
-            href="/#om"
+            href="/om"
             className="mt-6 inline-block text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition hover:text-white/80"
           >
-            Les mer ↓
+            Les mer →
           </a>
         </div>
       </section>
 
       {/* ── Kart (mini-map) ───────────────────────────────────────────────── */}
       <section id="kart" className="bg-[#070b2f]">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-16 pt-8">
           <HomeMiniMap />
         </div>
       </section>

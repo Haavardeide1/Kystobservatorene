@@ -94,6 +94,7 @@ export default function ObservasjonerPage() {
   // Mode
   const [mode, setMode] = useState<Mode>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null = loading
 
   // Photo
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -148,8 +149,13 @@ export default function ObservasjonerPage() {
     let mounted = true;
     const load = async () => {
       const { data } = await supabase.auth.getUser();
-      const meta = data.user?.user_metadata?.username as string | undefined;
-      if (mounted) setUserName(meta ?? null);
+      const user = data.user;
+      const meta = user?.user_metadata?.username as string | undefined;
+      const emailFallback = user?.email ? user.email.split("@")[0] : null;
+      if (mounted) {
+        setIsLoggedIn(!!user);
+        setUserName(meta ?? emailFallback ?? null);
+      }
     };
     load();
     const { data: sub } = supabase.auth.onAuthStateChange(() => load());
@@ -603,7 +609,7 @@ export default function ObservasjonerPage() {
             </span>
           </div>
 
-          {userName ? (
+          {isLoggedIn === null ? null : isLoggedIn ? (
             <div className="flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-300">
               <span className="shrink-0">👤</span>
               <span>

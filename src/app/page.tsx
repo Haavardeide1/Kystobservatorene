@@ -216,7 +216,7 @@ export default function Home() {
       {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <div className="grid gap-10 md:grid-cols-[1.1fr_1fr]">
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
             <div>
               <h3 className="text-4xl font-black uppercase tracking-tight text-[#8bb0d9]">
                 Omtrent 80 %

@@ -104,7 +104,7 @@ export default function OmPage() {
       {/* ── Omtrent 80 % + bilder ─────────────────────────────────────────── */}
       <section className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="grid gap-12 md:grid-cols-[1.1fr_1fr]">
+          <div className="grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
             <div>
               <h2 className="text-4xl font-black uppercase tracking-tight text-[#8bb0d9] md:text-5xl">
                 Omtrent 80 %

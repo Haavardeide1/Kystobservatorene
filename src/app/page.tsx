@@ -109,8 +109,15 @@ export default function Home() {
               className="h-56 w-full rounded-3xl object-cover shadow-lg md:h-64"
             />
 
-            <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl bg-[linear-gradient(130deg,#0f172a,#0b2a4a,#07162c)] shadow-lg md:h-64">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.3),_transparent_60%)]" />
+            <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/undervann.jpg"
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(15,23,42,0.75),rgba(11,42,74,0.7),rgba(7,22,44,0.75))]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.15),_transparent_60%)]" />
               <a
                 href="/observasjoner"
                 className="relative rounded-full border-2 border-white bg-white/95 px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#0b2a4a] shadow-xl transition hover:bg-white"
@@ -333,11 +340,13 @@ export default function Home() {
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex flex-wrap items-center justify-center gap-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/norce-logo.png"
                 alt="NORCE"
                 className="h-8 object-contain opacity-80"
               />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/fremje-logo.png"
                 alt="Fremje"

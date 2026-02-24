@@ -201,7 +201,9 @@ export default function GalleriPage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex flex-wrap items-center justify-center gap-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain opacity-80" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/fremje-logo.png"
                 alt="Fremje"

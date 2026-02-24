@@ -50,6 +50,7 @@ export default function OmPage() {
                 rel="noopener noreferrer"
                 className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition hover:bg-white/10"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/norce-logo.png"
                   alt="NORCE"
@@ -186,12 +187,14 @@ export default function OmPage() {
 
           {/* Partner logos */}
           <div className="mt-14 flex flex-wrap items-center gap-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/norce-logo.png"
               alt="NORCE"
               className="h-8 object-contain"
               style={{ filter: "brightness(0)" }}
             />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/fremje-logo.png"
               alt="Fremje"
@@ -207,7 +210,9 @@ export default function OmPage() {
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex flex-wrap items-center justify-center gap-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain opacity-80" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/fremje-logo.png"
                 alt="Fremje"

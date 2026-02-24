@@ -91,6 +91,12 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           <a className={`hidden md:block transition ${classes.link}`} href="/om">
             Om prosjektet
           </a>
+          <a
+            href="/observasjoner"
+            className="rounded-full bg-[#60a5fa] px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#070b2f] transition hover:bg-[#93c5fd] md:px-5 md:text-sm"
+          >
+            Send inn
+          </a>
           <div className="relative">
             <button
               type="button"

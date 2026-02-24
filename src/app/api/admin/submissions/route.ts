@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     const SIGNED_TTL = 60 * 60;
 
     // Look up email for each unique user_id in one pass
-    const userIds = [...new Set((data ?? []).map((r) => r.user_id).filter(Boolean))] as string[];
+    const userIds = Array.from(new Set((data ?? []).map((r) => r.user_id).filter(Boolean))) as string[];
     const userEmailMap = new Map<string, string>();
     await Promise.all(
       userIds.map(async (uid) => {

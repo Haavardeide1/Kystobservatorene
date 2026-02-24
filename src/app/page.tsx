@@ -181,6 +181,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="bg-[#070b2f]">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="border-t border-white/10" />
+        </div>
+      </div>
+
       {/* ── Kart (mini-map) ───────────────────────────────────────────────── */}
       <section id="kart" className="bg-[#070b2f]">
         <div className="mx-auto w-full max-w-6xl px-6 pb-16 pt-8">

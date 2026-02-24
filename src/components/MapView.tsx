@@ -100,10 +100,14 @@ export default function MapView() {
   const clusterGroupRef = useRef<any>(null);
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const waveLayerRef = useRef<any>(null);
+
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
   const [liveCount, setLiveCount] = useState(0);
+  const [showWaves, setShowWaves] = useState(false);
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
@@ -129,6 +133,35 @@ export default function MapView() {
   }, [fetchSubmissions]);
 
   useRealtimeSubmissions(handleInsert);
+
+  // ── Wave layer toggle ─────────────────────────────────────────────────────
+
+  function toggleWaves() {
+    if (!mapRef.current || !LRef.current) return;
+    const LLib = LRef.current;
+    const map = mapRef.current;
+
+    if (waveLayerRef.current) {
+      map.removeLayer(waveLayerRef.current);
+      waveLayerRef.current = null;
+      setShowWaves(false);
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const wmsLayer = (LLib as any).tileLayer.wms(
+        "https://geo.barentswatch.no/geoserver/bw/ows",
+        {
+          layers: "waveforecast_area_iso_latest,waveforecast_xseas_area_latest",
+          format: "image/png",
+          transparent: true,
+          version: "1.3.0",
+          opacity: 0.75,
+        }
+      );
+      wmsLayer.addTo(map);
+      waveLayerRef.current = wmsLayer;
+      setShowWaves(true);
+    }
+  }
 
   // ── Init map ──────────────────────────────────────────────────────────────
 
@@ -260,6 +293,20 @@ export default function MapView() {
           title="Zoom ut til oversikt"
         >
           ↩ Hele Norge
+        </button>
+
+        {/* BarentsWatch wave forecast toggle */}
+        <button
+          type="button"
+          onClick={toggleWaves}
+          className={`absolute left-[10px] top-[120px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+            showWaves
+              ? "border-blue-400 bg-blue-600 text-white hover:bg-blue-700"
+              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+          }`}
+          title="Bølgevarsel fra BarentsWatch"
+        >
+          🌊 Bølgevarsel
         </button>
 
         {liveCount > 0 && (

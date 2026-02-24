@@ -255,6 +255,53 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Samarbeidspartner ─────────────────────────────────────────────── */}
+      <section className="bg-white">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+            Samarbeidspartner
+          </p>
+          <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-stretch">
+            <a
+              href="https://www.barentswatch.no/bolgevarsel/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-1 items-center gap-6 rounded-3xl border border-slate-200 bg-[#f0f6ff] px-8 py-8 transition hover:border-blue-300 hover:bg-[#e6f0ff] hover:shadow-lg"
+            >
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#0a3a6e] text-3xl shadow-md">
+                🌊
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  BarentsWatch
+                </p>
+                <h4 className="mt-1 text-lg font-bold text-[#070b2f]">
+                  Bølgevarsel
+                </h4>
+                <p className="mt-1 text-sm text-slate-500">
+                  Live bølgevarsler for norske farvann — isolinjer, kryssende sjø og punktvarsler langs kysten.
+                </p>
+              </div>
+              <span className="shrink-0 text-2xl text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-400">
+                →
+              </span>
+            </a>
+
+            <div className="flex flex-1 flex-col justify-center rounded-3xl border border-dashed border-slate-200 px-8 py-8 text-center">
+              <p className="text-sm text-slate-400">
+                Vil du samarbeide med oss?
+              </p>
+              <a
+                href="mailto:post@kystobservatorene.no"
+                className="mt-3 inline-block text-sm font-semibold text-[#1d5fa7] transition hover:underline"
+              >
+                Ta kontakt →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">

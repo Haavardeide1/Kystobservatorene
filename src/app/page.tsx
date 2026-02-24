@@ -315,15 +315,15 @@ export default function Home() {
 
             <div className="flex flex-1 flex-col justify-center rounded-3xl border border-dashed border-slate-200 px-8 py-8 text-center">
               <p className="text-sm text-slate-400">
-                Vil du samarbeide med oss?
+                Interessert i annen forskning fra NORCE?
               </p>
               <a
-                href="https://www.norceresearch.no/kontakt-oss"
+                href="https://www.norceresearch.no/forskergruppe/hav-og-kyst"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-block text-sm font-semibold text-[#1d5fa7] transition hover:underline"
               >
-                Ta kontakt →
+                Les mer →
               </a>
             </div>
           </div>

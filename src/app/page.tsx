@@ -316,7 +316,9 @@ export default function Home() {
                 Vil du samarbeide med oss?
               </p>
               <a
-                href="mailto:post@kystobservatorene.no"
+                href="https://www.norceresearch.no/kontakt-oss"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-3 inline-block text-sm font-semibold text-[#1d5fa7] transition hover:underline"
               >
                 Ta kontakt →

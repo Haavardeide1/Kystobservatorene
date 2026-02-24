@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { verifyAdminRequest } from "@/lib/adminAuth";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const auth = await verifyAdminRequest(req);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   try {
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return NextResponse.json({ error: "Server not configured" }, { status: 500 });
-    }
-
     const { data, error } = await supabaseAdmin
       .from("submissions")
       .select(
@@ -19,7 +21,6 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Generate signed URLs for thumbnails
     const SIGNED_TTL = 60 * 60;
     const rows = await Promise.all(
       (data ?? []).map(async (row) => {

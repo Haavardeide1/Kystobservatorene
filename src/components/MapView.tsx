@@ -108,6 +108,7 @@ export default function MapView() {
   const [mapReady, setMapReady] = useState(false);
   const [liveCount, setLiveCount] = useState(0);
   const [showWaves, setShowWaves] = useState(false);
+  const [waveLoading, setWaveLoading] = useState(false);
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
@@ -145,18 +146,28 @@ export default function MapView() {
       map.removeLayer(waveLayerRef.current);
       waveLayerRef.current = null;
       setShowWaves(false);
+      setWaveLoading(false);
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const wmsLayer = (LLib as any).tileLayer.wms(
         "https://geo.barentswatch.no/geoserver/bw/ows",
         {
-          layers: "waveforecast_area_iso_latest,waveforecast_xseas_area_latest",
+          // Only the isolines layer — halves data vs loading both layers
+          layers: "waveforecast_area_iso_latest",
           format: "image/png",
           transparent: true,
           version: "1.3.0",
           opacity: 0.75,
+          // 512-px tiles = 4× fewer requests than default 256
+          tileSize: 512,
+          zoomOffset: -1,
+          // Only load tiles when the user stops panning (no wasted mid-pan requests)
+          updateWhenIdle: true,
         }
       );
+      setWaveLoading(true);
+      wmsLayer.on("load", () => setWaveLoading(false));
+      wmsLayer.on("error", () => setWaveLoading(false));
       wmsLayer.addTo(map);
       waveLayerRef.current = wmsLayer;
       setShowWaves(true);
@@ -299,6 +310,7 @@ export default function MapView() {
         <button
           type="button"
           onClick={toggleWaves}
+          disabled={waveLoading}
           className={`absolute left-[10px] top-[120px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
             showWaves
               ? "border-blue-400 bg-blue-600 text-white hover:bg-blue-700"
@@ -306,7 +318,12 @@ export default function MapView() {
           }`}
           title="Bølgevarsel fra BarentsWatch"
         >
-          🌊 Bølgevarsel
+          {waveLoading ? (
+            <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            "🌊"
+          )}
+          {waveLoading ? "Laster…" : "Bølgevarsel"}
         </button>
 
         {liveCount > 0 && (

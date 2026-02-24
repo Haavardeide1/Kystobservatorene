@@ -10,6 +10,23 @@ async function getUserIdFromAuthHeader(authHeader: string | null) {
   return data.user.id;
 }
 
+function computeStreak(dates: string[]): number {
+  if (dates.length === 0) return 0;
+  const days = Array.from(new Set(dates.map((d) => d.slice(0, 10)))).sort(
+    (a, b) => b.localeCompare(a)
+  );
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+  if (days[0] !== today && days[0] !== yesterday) return 0;
+  let streak = 1;
+  for (let i = 1; i < days.length; i++) {
+    const diffMs = new Date(days[i - 1]).getTime() - new Date(days[i]).getTime();
+    if (Math.round(diffMs / 86_400_000) === 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
 export async function GET(req: Request) {
   try {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -24,7 +41,7 @@ export async function GET(req: Request) {
 
     const { data, error } = await supabaseAdmin
       .from("submissions")
-      .select("media_type, lat_public, lng_public")
+      .select("media_type, lat_public, lng_public, created_at")
       .eq("user_id", userId)
       .is("deleted_at", null);
 
@@ -34,28 +51,20 @@ export async function GET(req: Request) {
 
     const rows = data ?? [];
     const total = rows.length;
-    const photos = rows.filter((row) => row.media_type === "photo").length;
-    const videos = rows.filter((row) => row.media_type === "video").length;
+    const photos = rows.filter((r) => r.media_type === "photo").length;
+    const videos = rows.filter((r) => r.media_type === "video").length;
     const locations = new Set(
       rows
-        .filter((row) => row.lat_public != null && row.lng_public != null)
-        .map((row) => `${row.lat_public},${row.lng_public}`)
+        .filter((r) => r.lat_public != null && r.lng_public != null)
+        .map((r) => `${r.lat_public},${r.lng_public}`)
     ).size;
+    const streak = computeStreak(rows.map((r) => r.created_at));
 
-    const { count: badgeCount } = await supabaseAdmin
-      .from("user_badges")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .not("earned_at", "is", null);
+    // Count earned badges (progress >= threshold) by re-using the same logic
+    // Simple count: badges where total meets threshold
+    const earnedCount = [1, 5, 10, 25, 50, 100, 250].filter((t) => total >= t).length;
 
-    return NextResponse.json({
-      total,
-      photos,
-      videos,
-      locations,
-      badges: badgeCount ?? 0,
-      streak: 0,
-    });
+    return NextResponse.json({ total, photos, videos, locations, badges: earnedCount, streak });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

@@ -465,12 +465,54 @@ export default function ProfilPage() {
                 Fremdrift og belønninger
               </h3>
             </div>
-            <span className="text-xs text-slate-400">
-              Oppdateres når du sender inn
+            <span className="rounded-full bg-[#f6f7fb] px-3 py-1 text-xs font-semibold text-slate-500">
+              {(badges ?? BADGE_CATALOG).filter((b) => b.status === "earned").length} /{" "}
+              {BADGE_CATALOG.length} opptjent
             </span>
           </div>
 
-          <div className="mt-6 space-y-8">
+          {/* ── Neste merke ── */}
+          {badges && (() => {
+            const next =
+              badges.find((b) => b.status === "active") ??
+              badges.find((b) => b.status === "locked" && b.threshold > 0);
+            if (!next) return null;
+            const tier = TIER_STYLE[next.tier];
+            const pct = Math.min(100, (next.progress / next.threshold) * 100);
+            const remaining = next.threshold - next.progress;
+            return (
+              <div className="mt-6 flex items-center gap-5 rounded-2xl border-2 border-blue-100 bg-blue-50 p-5">
+                <div
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl"
+                  style={{ backgroundColor: `${tier.accent}22` }}
+                >
+                  🎯
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-blue-400">
+                    Neste merke
+                  </p>
+                  <p className="mt-0.5 text-base font-semibold text-slate-800">
+                    {next.title}
+                  </p>
+                  <div className="mt-2 h-2 w-full rounded-full bg-blue-100">
+                    <div
+                      className="h-2 rounded-full bg-blue-400 transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-xs text-slate-500">
+                    {next.progress}/{next.threshold} —{" "}
+                    <span className="font-semibold text-blue-600">
+                      {remaining} {remaining === 1 ? "igjen" : "igjen"}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
+
+          <div className="mt-8 space-y-8">
             {[
               { key: "innsendinger", label: "Antall innsendinger", icon: "🌊" },
               { key: "geografi", label: "Geografisk spredning", icon: "🗺️" },
@@ -480,6 +522,7 @@ export default function ProfilPage() {
               const groupBadges = (badges ?? BADGE_CATALOG).filter(
                 (badge) => badge.category === group.key
               );
+              const earnedInGroup = groupBadges.filter((b) => b.status === "earned").length;
               return (
                 <div key={group.key}>
                   <div className="mb-4 flex items-center justify-between">
@@ -490,7 +533,7 @@ export default function ProfilPage() {
                       </h4>
                     </div>
                     <span className="text-xs text-slate-400">
-                      Oppdateres automatisk
+                      {earnedInGroup}/{groupBadges.length} opptjent
                     </span>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -500,40 +543,35 @@ export default function ProfilPage() {
                         badge.threshold > 0
                           ? Math.min(100, (badge.progress / badge.threshold) * 100)
                           : 0;
-                      const statusLabel =
-                        badge.status === "earned"
-                          ? "Oppnådd"
-                          : badge.status === "active"
-                          ? "I gang"
-                          : "Låst";
+                      const remaining = badge.threshold - badge.progress;
                       return (
                         <div
                           key={badge.key}
                           className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition ${
                             badge.status === "earned"
-                              ? "ring-2 ring-emerald-200"
+                              ? "ring-2 ring-emerald-300"
                               : badge.status === "active"
-                              ? "ring-1 ring-blue-100"
-                              : ""
+                              ? "ring-2 ring-blue-200"
+                              : "opacity-70"
                           }`}
                         >
                           <div
-                            className={`absolute inset-0 bg-gradient-to-br ${tier.glow} to-white opacity-60`}
+                            className={`absolute inset-0 bg-gradient-to-br ${tier.glow} to-white opacity-50`}
                           />
                           <div className="relative flex items-start gap-4">
                             <div
-                              className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg"
+                              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl"
                               style={{ backgroundColor: `${tier.accent}22` }}
                             >
-                              {badge.status === "earned" ? "✅" : "🏅"}
+                              {badge.status === "earned" ? "✅" : badge.status === "active" ? "⏳" : "🔒"}
                             </div>
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2">
-                                <p className="text-sm font-semibold text-slate-800">
+                                <p className="text-sm font-semibold text-slate-800 truncate">
                                   {badge.title}
                                 </p>
                                 <span
-                                  className="rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.2em]"
+                                  className="shrink-0 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.15em]"
                                   style={{
                                     backgroundColor: `${tier.accent}22`,
                                     color: tier.accent,
@@ -542,23 +580,32 @@ export default function ProfilPage() {
                                   {tier.label}
                                 </span>
                               </div>
-                              <p className="mt-1 text-xs text-slate-500">
+                              <p className="mt-1 text-xs text-slate-500 leading-relaxed">
                                 {badge.description}
                               </p>
                               <div className="mt-3 h-2 w-full rounded-full bg-slate-100">
                                 <div
-                                  className="h-2 rounded-full"
+                                  className="h-2 rounded-full transition-all duration-500"
                                   style={{
                                     width: `${progressPct}%`,
-                                    backgroundColor: tier.accent,
+                                    backgroundColor:
+                                      badge.status === "earned" ? "#10b981" : tier.accent,
                                   }}
                                 />
                               </div>
-                              <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-slate-400">
-                                <span>
+                              <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                                <span className="font-semibold">
                                   {badge.progress}/{badge.threshold}
                                 </span>
-                                <span>{statusLabel}</span>
+                                {badge.status === "earned" ? (
+                                  <span className="font-semibold text-emerald-500">Oppnådd ✓</span>
+                                ) : badge.status === "active" ? (
+                                  <span className="font-semibold text-blue-500">
+                                    {remaining} igjen
+                                  </span>
+                                ) : (
+                                  <span>Låst</span>
+                                )}
                               </div>
                             </div>
                           </div>

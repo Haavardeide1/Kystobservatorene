@@ -42,15 +42,36 @@ export default function OmPage() {
               </p>
             </div>
 
-            {/* Stat callout */}
+            {/* NORCE card */}
             <div className="flex flex-col justify-center gap-6">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-5xl font-black text-white">80<span className="text-[#60a5fa]">%</span></p>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
-                  av Norges befolkning bor i nærheten av kysten. Havstrømmene
-                  er del av hverdagen — vi ønsker å forstå dem bedre, sammen.
+              <a
+                href="https://www.norceresearch.no"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition hover:bg-white/10"
+              >
+                <img
+                  src="/norce-logo.png"
+                  alt="NORCE"
+                  className="mb-6 h-7 object-contain opacity-90"
+                />
+                <p className="text-sm font-semibold leading-relaxed text-white/90">
+                  NORCE er et forskningsinstitutt med ett mål for øye:
+                  bærekraftige innovasjoner og løsninger for vår felles fremtid.
                 </p>
-              </div>
+                <p className="mt-3 text-sm leading-relaxed text-white/60">
+                  NORCE leverer forskning og innovasjon innen energi, helse,
+                  klima, miljø, samfunn og teknologi.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-white/60">
+                  Forskning på kyststrømmer er ikke bare relevant på skrivebordet
+                  — den angår alle som lever ved kysten. Enten du fisker,
+                  surfer, seiler eller bare liker å bade.
+                </p>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/30 transition group-hover:text-white/50">
+                  norceresearch.no →
+                </p>
+              </a>
               <div className="flex gap-3">
                 <a
                   href="/observasjoner"

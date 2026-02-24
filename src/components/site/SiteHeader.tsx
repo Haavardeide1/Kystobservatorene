@@ -81,7 +81,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
         >
           Kystobservatørene
         </a>
-        <nav className="relative flex items-center gap-4 text-sm">
+        <nav className="relative flex items-center gap-2 text-sm md:gap-4">
           <a className={`hidden md:block transition ${classes.link}`} href="/kart">
             Kart
           </a>
@@ -91,11 +91,12 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           <div className="relative">
             <button
               type="button"
-              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${classes.button}`}
+              className={`flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              Navigering
-              <span className="text-sm">▾</span>
+              <span className="hidden md:inline">Navigering</span>
+              <span className="text-base leading-none md:hidden">☰</span>
+              <span className="hidden text-sm md:inline">▾</span>
             </button>
             {menuOpen && (
               <div
@@ -124,7 +125,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
             </a>
           ) : (
             <a
-              className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${classes.button}`}
+              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
               href="/login"
             >
               Logg inn

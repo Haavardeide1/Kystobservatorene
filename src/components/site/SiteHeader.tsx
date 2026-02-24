@@ -14,7 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Kart", href: "/kart" },
   { label: "Send inn", href: "/observasjoner" },
   { label: "Profil", href: "/profil" },
-  { label: "Om prosjektet", href: "/#om" },
+  { label: "Om prosjektet", href: "/om" },
   { label: "Galleri (kommer)", href: "/galleri" },
 ];
 
@@ -85,7 +85,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           <a className={`transition ${classes.link}`} href="/kart">
             Kart
           </a>
-          <a className={`transition ${classes.link}`} href="/#om">
+          <a className={`transition ${classes.link}`} href="/om">
             Om prosjektet
           </a>
           <div className="relative">

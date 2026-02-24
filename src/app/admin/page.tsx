@@ -8,6 +8,8 @@ const ADMIN_EMAILS = ["haavardeide1@gmail.com"];
 
 type Submission = {
   id: string;
+  user_id: string | null;
+  user_email: string | null;
   display_name: string | null;
   media_type: "photo" | "video";
   media_url: string | null;
@@ -70,6 +72,9 @@ export default function AdminPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+
+  // Detail modal
+  const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
 
   // Download all
   const [downloadingAll, setDownloadingAll] = useState(false);
@@ -461,7 +466,11 @@ export default function AdminPage() {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {filtered.map((sub) => (
-                        <tr key={sub.id} className="transition hover:bg-slate-50">
+                        <tr
+                          key={sub.id}
+                          className="cursor-pointer transition hover:bg-blue-50"
+                          onClick={() => setSelectedSub(sub)}
+                        >
                           {/* Thumbnail */}
                           <td className="px-4 py-3">
                             {sub.media_url ? (
@@ -517,7 +526,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* Actions */}
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center gap-2">
                               {/* Download */}
                               <button
@@ -567,6 +576,132 @@ export default function AdminPage() {
             <p className="mt-4 text-xs text-slate-400">
               {filtered.length} av {submissions.length} observasjoner · Innlogget som {userEmail}
             </p>
+
+            {/* ── Detail modal ── */}
+            {selectedSub && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+                onClick={() => setSelectedSub(null)}
+              >
+                <div
+                  className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Media preview */}
+                  {selectedSub.media_url && (
+                    selectedSub.media_type === "photo" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={selectedSub.media_url}
+                        alt=""
+                        className="max-h-64 w-full object-cover"
+                      />
+                    ) : (
+                      <video
+                        src={selectedSub.media_url}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="max-h-64 w-full bg-black object-contain"
+                      />
+                    )
+                  )}
+
+                  <div className="p-6">
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900">
+                          {selectedSub.display_name || "Anonym"}
+                        </h3>
+                        <p className="text-xs text-slate-400">{formatDate(selectedSub.created_at)}</p>
+                      </div>
+                      <button
+                        onClick={() => setSelectedSub(null)}
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    {/* Details grid */}
+                    <div className="space-y-2 text-sm">
+                      {[
+                        { label: "Bruker-ID", value: selectedSub.user_id || "Anonym (ikke innlogget)" },
+                        { label: "E-post", value: selectedSub.user_email || "—" },
+                        { label: "Type", value: selectedSub.media_type === "photo" ? "📸 Bilde" : "🎥 Video" },
+                        {
+                          label: "Koordinater",
+                          value: selectedSub.lat_public && selectedSub.lng_public
+                            ? `${selectedSub.lat_public.toFixed(5)}, ${selectedSub.lng_public.toFixed(5)}`
+                            : "—",
+                          link: selectedSub.lat_public && selectedSub.lng_public
+                            ? `https://www.google.com/maps?q=${selectedSub.lat_public},${selectedSub.lng_public}`
+                            : null,
+                        },
+                        { label: "Havtilstand", value: selectedSub.valg || "—" },
+                        { label: "Vindretning", value: selectedSub.wind_dir || "—" },
+                        { label: "Bølgeretning", value: selectedSub.wave_dir || "—" },
+                        { label: "Kommentar", value: selectedSub.comment || "—" },
+                        { label: "Offentlig", value: selectedSub.is_public ? "Ja" : "Nei" },
+                      ].map(({ label, value, link }) => (
+                        <div key={label} className="flex gap-3 rounded-lg bg-slate-50 px-3 py-2">
+                          <span className="w-28 shrink-0 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            {label}
+                          </span>
+                          {link ? (
+                            <a
+                              href={link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-mono text-xs text-blue-600 hover:underline"
+                            >
+                              {value}
+                            </a>
+                          ) : (
+                            <span className="break-all font-mono text-xs text-slate-700">{value}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="mt-5 flex gap-2">
+                      {selectedSub.media_url && (
+                        <button
+                          onClick={() => handleDownloadOne(selectedSub)}
+                          className="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                          ⬇ Last ned
+                        </button>
+                      )}
+                      {confirmDeleteId === selectedSub.id ? (
+                        <>
+                          <button
+                            onClick={() => { handleDelete(selectedSub.id); setSelectedSub(null); }}
+                            className="flex-1 rounded-xl bg-rose-600 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700"
+                          >
+                            Bekreft sletting
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                          >
+                            Avbryt
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(selectedSub.id)}
+                          className="flex-1 rounded-xl border border-rose-200 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+                        >
+                          🗑 Slett observasjon
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
 

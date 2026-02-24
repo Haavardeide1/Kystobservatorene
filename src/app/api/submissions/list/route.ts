@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+// Never cache — deletions must propagate immediately
+export const dynamic = "force-dynamic";
+
 const MEDIA_BUCKET = "media";
 const SIGNED_URL_TTL_SECONDS = 60 * 60;
 

@@ -22,12 +22,27 @@ export async function GET(req: Request) {
     }
 
     const SIGNED_TTL = 60 * 60;
+
+    // Look up email for each unique user_id in one pass
+    const userIds = [...new Set((data ?? []).map((r) => r.user_id).filter(Boolean))] as string[];
+    const userEmailMap = new Map<string, string>();
+    await Promise.all(
+      userIds.map(async (uid) => {
+        const { data: { user } } = await supabaseAdmin.auth.admin.getUserById(uid);
+        if (user?.email) userEmailMap.set(uid, user.email);
+      })
+    );
+
     const rows = await Promise.all(
       (data ?? []).map(async (row) => {
         const { data: signed } = await supabaseAdmin.storage
           .from("media")
           .createSignedUrl(row.media_path_original, SIGNED_TTL);
-        return { ...row, media_url: signed?.signedUrl ?? null };
+        return {
+          ...row,
+          media_url: signed?.signedUrl ?? null,
+          user_email: row.user_id ? (userEmailMap.get(row.user_id) ?? null) : null,
+        };
       })
     );
 

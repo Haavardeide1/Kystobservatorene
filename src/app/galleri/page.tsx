@@ -61,18 +61,22 @@ function GalleryCard({ sub }: { sub: Submission }) {
         <img
           src={sub.media_url}
           alt={sub.display_name || "Observasjon"}
+          loading="lazy"
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (
         <>
           <video
-            src={sub.media_url}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover bg-slate-800"
             preload="metadata"
             playsInline
             muted
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+          >
+            <source src={sub.media_url} type="video/mp4" />
+            <source src={sub.media_url} type="video/quicktime" />
+            <source src={sub.media_url} type="video/webm" />
+          </video>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
               <span className="text-xl">▶</span>
             </div>

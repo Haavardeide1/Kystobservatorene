@@ -34,7 +34,7 @@ function buildPopupHtml(sub: Submission): string {
   const mediaHtml = sub.media_url
     ? sub.media_type === "photo"
       ? `<img src="${sub.media_url}" style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;">`
-      : `<video src="${sub.media_url}" controls preload="metadata" playsinline style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;background:#000;"></video>`
+      : `<video controls preload="metadata" playsinline style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;background:#000;"><source src="${sub.media_url}" type="video/mp4"><source src="${sub.media_url}" type="video/quicktime"><source src="${sub.media_url}" type="video/webm"></video>`
     : `<div style="width:100%;height:80px;border-radius:10px;background:#f1f5f9;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:28px;">${sub.media_type === "photo" ? "📸" : "🎥"}</div>`;
 
   return `

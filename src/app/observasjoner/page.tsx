@@ -685,7 +685,7 @@ export default function ObservasjonerPage() {
                 <button
                   type="button"
                   onClick={() => setShowTip(true)}
-                  className="flex h-6 w-6 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] text-xs font-bold text-white/50 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-blue-400/50 bg-blue-500/20 text-xs font-bold text-blue-300 shadow-[0_0_8px_rgba(59,130,246,0.3)] transition hover:border-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_12px_rgba(59,130,246,0.5)]"
                   title="Forklaring og tips"
                 >
                   ?

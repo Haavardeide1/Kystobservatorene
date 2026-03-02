@@ -8,4 +8,8 @@ export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
     persistSession: false,
     autoRefreshToken: false,
   },
+  global: {
+    fetch: (url, options = {}) =>
+      fetch(url, { ...options, cache: "no-store" }),
+  },
 });

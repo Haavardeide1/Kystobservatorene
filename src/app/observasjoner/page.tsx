@@ -155,6 +155,7 @@ export default function ObservasjonerPage() {
       if (mounted) {
         setIsLoggedIn(!!user);
         setUserName(meta ?? emailFallback ?? null);
+        if (user && meta) setDisplayName(meta);
       }
     };
     load();
@@ -1042,22 +1043,20 @@ export default function ObservasjonerPage() {
               </>
             )}
 
-            {/* ── Name field (if not logged in) ── */}
-            {!userName && (
-              <div className={sectionCls}>
-                <label className={labelCls} htmlFor="ko-name">
-                  Ditt navn (valgfritt)
-                </label>
-                <input
-                  id="ko-name"
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="F.eks. Ola Nordmann"
-                  className={inputCls}
-                />
-              </div>
-            )}
+            {/* ── Name field ── */}
+            <div className={sectionCls}>
+              <label className={labelCls} htmlFor="ko-name">
+                Ditt navn (valgfritt)
+              </label>
+              <input
+                id="ko-name"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="F.eks. Ola Nordmann"
+                className={inputCls}
+              />
+            </div>
 
             {/* ── Consent ── */}
             <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 transition hover:border-white/[0.12]">

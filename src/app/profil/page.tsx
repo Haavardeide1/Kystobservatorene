@@ -244,11 +244,23 @@ export default function ProfilPage() {
               <h2 className="text-2xl font-semibold">{username ?? "Velkommen"}</h2>
               <p className="text-sm text-slate-500">{email ?? ""}</p>
             </div>
-            <div
-              className="rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.2em]"
-              style={{ backgroundColor: lvl.bg, color: lvl.color }}
-            >
-              {lvl.title}
+            <div className="flex flex-col items-end gap-2">
+              <div
+                className="rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.2em]"
+                style={{ backgroundColor: lvl.bg, color: lvl.color }}
+              >
+                {lvl.title}
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.href = "/";
+                }}
+                className="rounded-full border border-slate-200 px-4 py-1.5 text-xs font-semibold text-slate-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+              >
+                Logg ut
+              </button>
             </div>
           </div>
 

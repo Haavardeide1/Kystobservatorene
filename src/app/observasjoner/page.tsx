@@ -127,6 +127,9 @@ export default function ObservasjonerPage() {
   const [submitPhase, setSubmitPhase] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  // Tip panel
+  const [showTip, setShowTip] = useState(false);
+
   // Compass
   const [compassTarget, setCompassTarget] = useState<"wind" | "wave" | null>(null);
   const [compassHeading, setCompassHeading] = useState(0);
@@ -675,9 +678,19 @@ export default function ObservasjonerPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Header row */}
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">
-                {mode === "photo" ? "Last opp bilde" : "Last opp video"}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-bold">
+                  {mode === "photo" ? "Last opp bilde" : "Last opp video"}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setShowTip(true)}
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-white/20 bg-white/[0.06] text-xs font-bold text-white/50 transition hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300"
+                  title="Forklaring og tips"
+                >
+                  ?
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => { if (mode === "video") stopCamera(); resetAll(); }}
@@ -686,6 +699,75 @@ export default function ObservasjonerPage() {
                 ← Tilbake
               </button>
             </div>
+
+            {/* ── Tip panel overlay ── */}
+            {showTip && (
+              <div
+                className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+                style={{ background: "rgba(0,0,0,0.55)" }}
+                onClick={() => setShowTip(false)}
+              >
+                <div
+                  className="w-full max-w-md rounded-2xl border border-white/[0.12] bg-[#0d1420]/95 p-6 shadow-2xl backdrop-blur-md"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-base font-bold text-white">
+                      {mode === "photo" ? "📷 Tips for bilde" : "🎥 Tips for video"}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowTip(false)}
+                      className="text-lg text-white/40 transition hover:text-white"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {mode === "photo" ? (
+                    <ul className="space-y-3 text-sm text-white/70">
+                      <li className="flex gap-3">
+                        <span className="shrink-0">🌊</span>
+                        <span>Ha horisonten midt i bildet slik at havflaten er godt synlig.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">☀️</span>
+                        <span>Unngå direkte sollys som reflekteres på vannet – beveg deg litt til siden om nødvendig.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">📱</span>
+                        <span>Hold telefonen stødig. Horisontal (liggende) orientering gir best bilde av havflaten.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">📏</span>
+                        <span>Jo mer havflate som er synlig, jo bedre datagrunnlag for forskerne.</span>
+                      </li>
+                    </ul>
+                  ) : (
+                    <ul className="space-y-3 text-sm text-white/70">
+                      <li className="flex gap-3">
+                        <span className="shrink-0">⏱️</span>
+                        <span>Film i <strong className="text-white/90">5–10 sekunder</strong>. For kort avvises opplastingen, og for lang video lastes ikke opp.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">🌊</span>
+                        <span>Ha horisonten midt i bildet og pass på at havflaten er tydelig synlig gjennom hele videoen.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">📱</span>
+                        <span>Hold telefonen så stødig som mulig – unngå å panorere eller zoome under opptaket.</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="shrink-0">🧭</span>
+                        <span>
+                          <strong className="text-white/90">Kompassfunksjonen:</strong> Trykk på «Kompass»-knappen under Retninger, så leser appen automatisk vind- og bølgeretning fra enhetens kompass. Pek telefonen i den retningen vinden kommer <em>fra</em>. Du kan også velge retning manuelt fra listen.
+                        </span>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* ── PHOTO: file upload ── */}
             {mode === "photo" && (

@@ -18,6 +18,13 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
 
+  const passwordRules = [
+    { label: "Minst 8 tegn", ok: password.length >= 8 },
+    { label: "Minst én stor bokstav", ok: /[A-Z]/.test(password) },
+    { label: "Minst ett tall", ok: /[0-9]/.test(password) },
+  ];
+  const passwordValid = passwordRules.every((r) => r.ok);
+
   // If already logged in, redirect immediately
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -35,6 +42,11 @@ function LoginForm() {
     setLoading(true);
     try {
       if (mode === "signup") {
+        if (!passwordValid) {
+          setMessage("Passordet oppfyller ikke kravene.");
+          setLoading(false);
+          return;
+        }
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
         setMessage("Sjekk e-posten din for bekreftelse før du logger inn.");
@@ -115,12 +127,21 @@ function LoginForm() {
               <input
                 type="password"
                 required
-                minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-white/40 focus:border-white/30"
-                placeholder="Minst 6 tegn"
+                placeholder="Passord"
               />
+              {mode === "signup" && password.length > 0 && (
+                <ul className="mt-2 space-y-1">
+                  {passwordRules.map((r) => (
+                    <li key={r.label} className={`flex items-center gap-2 text-xs ${r.ok ? "text-emerald-400" : "text-white/40"}`}>
+                      <span>{r.ok ? "✓" : "○"}</span>
+                      {r.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <button

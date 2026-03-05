@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import SiteHeader from "@/components/site/SiteHeader";
 
-const ADMIN_EMAILS = ["haavardeide1@gmail.com"];
+const SUPER_ADMIN_EMAILS = ["haavardeide1@gmail.com"];
 
 type Submission = {
   id: string;
@@ -28,6 +28,7 @@ type AppUser = {
   id: string;
   email: string | null;
   username: string | null;
+  is_admin: boolean;
   created_at: string;
   last_sign_in_at: string | null;
 };
@@ -89,12 +90,16 @@ export default function AdminPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      const email = data.session?.user?.email ?? null;
+      const user = data.session?.user;
+      const email = user?.email ?? null;
       const token = data.session?.access_token ?? null;
       setUserEmail(email);
       setAccessToken(token);
 
-      if (email && ADMIN_EMAILS.includes(email)) {
+      const isSuperAdmin = email && SUPER_ADMIN_EMAILS.includes(email);
+      const isMetaAdmin = user?.user_metadata?.is_admin === true;
+
+      if (isSuperAdmin || isMetaAdmin) {
         if (sessionStorage.getItem("admin_verified") === "true") {
           setStep("dashboard");
           fetchSubmissions(token);
@@ -160,6 +165,26 @@ export default function AdminPage() {
       setUsers(data ?? []);
     } finally {
       setLoadingUsers(false);
+    }
+  }
+
+  async function toggleAdmin(userId: string, grantAdmin: boolean) {
+    if (!accessToken) return;
+    const res = await fetch(`/api/admin/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ is_admin: grantAdmin }),
+    });
+    if (res.ok) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, is_admin: grantAdmin } : u))
+      );
+    } else {
+      const { error } = await res.json();
+      alert(error ?? "Noe gikk galt");
     }
   }
 
@@ -711,28 +736,13 @@ export default function AdminPage() {
 
             {/* Admin-tilganger */}
             <div>
-              <h2 className="mb-4 text-lg font-bold text-[#070b2f]">Admin-tilganger</h2>
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-100 bg-slate-50 text-left">
-                      <th className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">E-post</th>
-                      <th className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">Rolle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ADMIN_EMAILS.map((email) => (
-                      <tr key={email} className="border-b border-slate-100 last:border-0">
-                        <td className="px-5 py-3 font-medium text-slate-800">{email}</td>
-                        <td className="px-5 py-3">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                            🛡️ Admin
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <h2 className="mb-1 text-lg font-bold text-[#070b2f]">Admin-tilganger</h2>
+              <p className="mb-4 text-sm text-slate-400">
+                Gi eller fjern admin-tilgang for brukere nedenfor. Super-admin kan ikke endres.
+              </p>
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+                <span className="font-semibold">🛡️ Super-admin:</span>{" "}
+                {SUPER_ADMIN_EMAILS.join(", ")} — permanent tilgang, kan ikke fjernes.
               </div>
             </div>
 
@@ -773,7 +783,10 @@ export default function AdminPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {users.map((u) => (
+                        {users.map((u) => {
+                          const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(u.email ?? "");
+                          const isAdmin = isSuperAdmin || u.is_admin;
+                          return (
                           <tr key={u.id} className="hover:bg-slate-50">
                             <td className="px-5 py-3 font-medium text-slate-800">{u.email ?? "—"}</td>
                             <td className="px-5 py-3 text-slate-500">{u.username ?? <span className="text-slate-300">—</span>}</td>
@@ -784,18 +797,31 @@ export default function AdminPage() {
                               {u.last_sign_in_at ? formatDate(u.last_sign_in_at) : <span className="text-slate-300">—</span>}
                             </td>
                             <td className="px-5 py-3">
-                              {ADMIN_EMAILS.includes(u.email ?? "") ? (
+                              {isSuperAdmin ? (
                                 <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                                  🛡️ Admin
+                                  🛡️ Super-admin
                                 </span>
+                              ) : isAdmin ? (
+                                <button
+                                  onClick={() => toggleAdmin(u.id, false)}
+                                  className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 transition hover:bg-red-50 hover:text-red-600"
+                                  title="Klikk for å fjerne admin"
+                                >
+                                  🛡️ Admin ✕
+                                </button>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
-                                  Bruker
-                                </span>
+                                <button
+                                  onClick={() => toggleAdmin(u.id, true)}
+                                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 transition hover:bg-amber-50 hover:text-amber-700"
+                                  title="Klikk for å gi admin"
+                                >
+                                  + Gi admin
+                                </button>
                               )}
                             </td>
                           </tr>
-                        ))}
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

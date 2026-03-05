@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "./supabaseAdmin";
 
-const ADMIN_EMAILS = ["haavardeide1@gmail.com"];
+// Permanent super-admin — always has access regardless of metadata
+export const SUPER_ADMIN_EMAILS = ["haavardeide1@gmail.com"];
 
 type AuthResult =
   | { ok: true }
@@ -8,7 +9,7 @@ type AuthResult =
 
 /**
  * Verifies that the incoming request carries a valid Supabase JWT
- * belonging to one of the allowed admin emails.
+ * belonging to a super-admin email OR a user with is_admin: true in metadata.
  */
 export async function verifyAdminRequest(req: Request): Promise<AuthResult> {
   const authHeader = req.headers.get("Authorization");
@@ -22,7 +23,11 @@ export async function verifyAdminRequest(req: Request): Promise<AuthResult> {
   if (error || !user) {
     return { ok: false, status: 401, error: "Invalid token" };
   }
-  if (!ADMIN_EMAILS.includes(user.email ?? "")) {
+
+  const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email ?? "");
+  const isMetaAdmin = user.user_metadata?.is_admin === true;
+
+  if (!isSuperAdmin && !isMetaAdmin) {
     return { ok: false, status: 403, error: "Forbidden" };
   }
 

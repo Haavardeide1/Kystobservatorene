@@ -18,6 +18,7 @@ export async function GET(req: Request) {
       id: u.id,
       email: u.email ?? null,
       username: (u.user_metadata?.username as string) ?? null,
+      is_admin: u.user_metadata?.is_admin === true,
       created_at: u.created_at,
       last_sign_in_at: u.last_sign_in_at ?? null,
     }));

@@ -232,6 +232,14 @@ export default function ObservasjonerPage() {
     };
     mediaRecorderRef.current.onstop = processRecording;
     mediaRecorderRef.current.start(100);
+
+    // Re-assign srcObject so the live preview stays visible during recording
+    // (some mobile browsers drop the preview when MediaRecorder starts)
+    if (cameraPreviewRef.current && mediaStreamRef.current) {
+      cameraPreviewRef.current.srcObject = mediaStreamRef.current;
+      cameraPreviewRef.current.play().catch(() => {});
+    }
+
     recordingStartRef.current = Date.now();
     setIsRecording(true);
     setRecordingTime(0);

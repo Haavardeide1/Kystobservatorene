@@ -80,10 +80,9 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
         <a
           href="/"
-          className="shrink-0 text-sm font-semibold uppercase tracking-tight md:tracking-[0.2em]"
+          className="shrink-0 text-[0.65rem] font-semibold uppercase tracking-tight sm:text-sm md:tracking-[0.2em]"
         >
-          <span className="sm:hidden">Kystobs.</span>
-          <span className="hidden sm:inline">Kystobservatørene</span>
+          Kystobservatørene
         </a>
         <nav className="relative flex items-center gap-2 text-sm md:gap-4">
           <a className={`hidden md:block transition ${classes.link}`} href="/kart">

@@ -21,7 +21,7 @@ export default function Home() {
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
               Delta i
             </p>
-            <h1 className="mt-3 text-4xl font-black uppercase tracking-tight md:mt-4 md:text-6xl">
+            <h1 className="mt-3 text-[1.75rem] font-black uppercase tracking-tight sm:text-4xl md:mt-4 md:text-6xl">
               Kystobservatørene
             </h1>
             <p className="mt-3 max-w-xl text-base text-white/70 md:mt-4 md:text-lg">

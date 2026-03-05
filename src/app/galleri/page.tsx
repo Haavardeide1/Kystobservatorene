@@ -133,7 +133,7 @@ export default function GalleriPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/50">
             Kystobservatørene
           </p>
-          <h1 className="mt-4 text-5xl font-black uppercase tracking-tight md:text-7xl">
+          <h1 className="mt-4 text-3xl font-black uppercase tracking-tight sm:text-5xl md:text-7xl">
             <span className="text-white/40">Obs</span>
             <span className="text-white">ervasjoner</span>
           </h1>

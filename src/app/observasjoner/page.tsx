@@ -511,9 +511,15 @@ export default function ObservasjonerPage() {
       const path = `submissions/${id}/${safeName}`;
 
       setSubmitPhase("Klargjør opplasting…");
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+
       const signRes = await fetch("/api/uploads/sign", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ path, contentType: file.type || "application/octet-stream" }),
       });
       if (!signRes.ok) {
@@ -524,10 +530,6 @@ export default function ObservasjonerPage() {
 
       setSubmitPhase(isVideo ? "Laster opp video…" : "Laster opp bilde…");
       await uploadWithProgress(uploadUrl, file, setUploadProgress);
-
-      setSubmitPhase("Lagrer observasjon…");
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
 
       const submitRes = await fetch("/api/submissions", {
         method: "POST",

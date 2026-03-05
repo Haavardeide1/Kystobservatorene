@@ -16,28 +16,28 @@ export default function Home() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-10 pt-12 md:flex-row md:items-end md:gap-10 md:pb-16 md:pt-20">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-8 pt-10 md:flex-row md:items-end md:gap-10 md:pb-16 md:pt-20">
           <div className="flex-1">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
               Delta i
             </p>
-            <h1 className="mt-4 text-4xl font-black uppercase tracking-tight md:text-6xl">
+            <h1 className="mt-3 text-4xl font-black uppercase tracking-tight md:mt-4 md:text-6xl">
               Kystobservatørene
             </h1>
-            <p className="mt-4 max-w-xl text-base text-white/70 md:text-lg">
+            <p className="mt-3 max-w-xl text-base text-white/70 md:mt-4 md:text-lg">
               Borgervitenskap for kysten. Vi samler observasjoner av havoverflaten
               for å forstå strømmer, varsle bedre og skape tryggere kystliv.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 md:mt-8">
               <a
                 href="/observasjoner"
-                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90"
+                className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
               >
                 Bidra med observasjon
               </a>
               <a
                 href="/kart"
-                className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Se kartet
               </a>
@@ -47,7 +47,7 @@ export default function Home() {
           {/* Hero visual card — video background */}
           <div className="relative flex-1">
             <div className="absolute -right-10 -top-8 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
-            <div className="relative h-56 overflow-hidden rounded-3xl border border-white/10 shadow-2xl md:h-72">
+            <div className="relative h-48 overflow-hidden rounded-3xl border border-white/10 shadow-2xl md:h-72">
               {/* Background video */}
               <video
                 src="https://uerpagaucgqoytcgwgdg.supabase.co/storage/v1/object/public/assets/hero-ocean.mp4.mp4"
@@ -72,8 +72,8 @@ export default function Home() {
         </div>
 
         {/* Wave divider */}
-        <div className="relative h-24 bg-[#070b2f]">
-          <svg className="absolute bottom-0 h-24 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <div className="relative h-12 bg-[#070b2f] md:h-24">
+          <svg className="absolute bottom-0 h-12 w-full md:h-24" viewBox="0 0 1440 120" preserveAspectRatio="none">
             <path
               d="M0,96L120,90.7C240,85,480,75,720,80C960,85,1200,107,1320,117.3L1440,128L1440,120L1320,120C1200,120,960,120,720,120C480,120,240,120,120,120L0,120Z"
               fill="#ffffff"
@@ -84,7 +84,7 @@ export default function Home() {
 
       {/* ── Bidra ─────────────────────────────────────────────────────────── */}
       <section id="bidra" className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <div className="max-w-3xl">
             <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-4xl">
               Bidra med observasjoner
@@ -95,16 +95,16 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1.3fr]">
+          <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-[1.1fr_1.3fr] md:gap-6">
             {/* Real coastal photo */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/bildemobil.jpg"
               alt="Foto fra kysten"
-              className="h-56 w-full rounded-3xl object-cover shadow-lg md:h-64"
+              className="h-48 w-full rounded-3xl object-cover shadow-lg md:h-64"
             />
 
-            <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
+            <div className="relative flex h-48 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/undervann.jpg"
@@ -115,7 +115,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.15),_transparent_60%)]" />
               <a
                 href="/observasjoner"
-                className="relative rounded-full border-2 border-white bg-white/95 px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#0b2a4a] shadow-xl transition hover:bg-white"
+                className="relative rounded-full border-2 border-white bg-white/95 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#0b2a4a] shadow-xl transition hover:bg-white md:px-10 md:py-4"
               >
                 Send inn her
               </a>
@@ -126,11 +126,11 @@ export default function Home() {
 
       {/* ── Slik gjør du det ──────────────────────────────────────────────── */}
       <section className="border-t border-slate-100 bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
             Slik gjør du det
           </p>
-          <div className="mt-8 grid gap-10 md:grid-cols-3">
+          <div className="mt-6 grid gap-8 sm:grid-cols-3 md:mt-8 md:gap-10">
             {[
               {
                 step: "01",
@@ -148,8 +148,8 @@ export default function Home() {
                 body: "Trykk send. Observasjonen havner rett i databasen og vises på kartet for alle.",
               },
             ].map((item) => (
-              <div key={item.step} className="flex gap-5">
-                <span className="mt-0.5 select-none text-5xl font-black leading-none text-slate-100">
+              <div key={item.step} className="flex gap-4 md:gap-5">
+                <span className="mt-0.5 select-none text-4xl font-black leading-none text-slate-100 md:text-5xl">
                   {item.step}
                 </span>
                 <div>
@@ -164,7 +164,7 @@ export default function Home() {
 
       {/* ── Om prosjektet banner ───────────────────────────────────────────── */}
       <section className="bg-[#070b2f] text-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-12 text-center">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 text-center md:py-12">
           <p className="text-sm uppercase tracking-[0.3em] text-white/70">
             Om prosjektet
           </p>
@@ -192,20 +192,20 @@ export default function Home() {
 
       {/* ── Kart (mini-map) ───────────────────────────────────────────────── */}
       <section id="kart" className="bg-[#070b2f]">
-        <div className="mx-auto w-full max-w-6xl px-6 pb-16 pt-8">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8 md:pb-16">
           <HomeMiniMap />
         </div>
       </section>
 
       {/* ── Ukens topp 5 ─────────────────────────────────────────────────── */}
       <section className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#8bb0d9]">
                 Denne uken
               </p>
-              <h3 className="mt-1 text-3xl font-black uppercase tracking-tight text-[#070b2f]">
+              <h3 className="mt-1 text-2xl font-black uppercase tracking-tight text-[#070b2f] md:text-3xl">
                 Ukens observasjoner
               </h3>
             </div>
@@ -216,7 +216,7 @@ export default function Home() {
               Se alle på kartet →
             </a>
           </div>
-          <div className="mt-8">
+          <div className="mt-6 md:mt-8">
             <TopFive />
           </div>
         </div>
@@ -224,10 +224,10 @@ export default function Home() {
 
       {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
-          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
+          <div className="grid items-center gap-8 md:grid-cols-[1.1fr_1fr] md:gap-10">
             <div>
-              <h3 className="text-4xl font-black uppercase tracking-tight text-[#8bb0d9]">
+              <h3 className="text-3xl font-black uppercase tracking-tight text-[#8bb0d9] md:text-4xl">
                 Omtrent 80 %
               </h3>
               <p className="mt-4 text-base text-slate-600 md:text-lg">
@@ -236,23 +236,23 @@ export default function Home() {
                 bedre forståelse av kysten og tryggere beslutninger.
               </p>
             </div>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/bildebat.jpg"
                 alt="Fiskebåt ved kysten"
-                className="h-36 w-full rounded-2xl object-cover shadow-md"
+                className="h-32 w-full rounded-2xl object-cover shadow-md md:h-36"
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/oppdrett.jpg"
                 alt="Oppdrettsanlegg"
-                className="h-36 w-full rounded-2xl object-cover shadow-md"
+                className="h-32 w-full rounded-2xl object-cover shadow-md md:h-36"
               />
             </div>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-3 md:mt-12 md:gap-6">
             {[
               {
                 title: "Oppdrag",
@@ -269,7 +269,7 @@ export default function Home() {
             ].map((card) => (
               <div
                 key={card.title}
-                className="rounded-2xl bg-[#070b2f] px-6 py-8 text-white shadow"
+                className="rounded-2xl bg-[#070b2f] px-5 py-6 text-white shadow md:px-6 md:py-8"
               >
                 <h4 className="text-lg font-semibold uppercase tracking-[0.15em]">
                   {card.title}
@@ -283,37 +283,37 @@ export default function Home() {
 
       {/* ── Samarbeidspartner ─────────────────────────────────────────────── */}
       <section className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
             Samarbeidspartner
           </p>
-          <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-stretch">
+          <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
             <a
               href="https://www.barentswatch.no/bolgevarsel/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-1 items-center gap-6 rounded-3xl border border-slate-200 bg-[#f0f6ff] px-8 py-8 transition hover:border-blue-300 hover:bg-[#e6f0ff] hover:shadow-lg"
+              className="group flex flex-1 items-center gap-4 rounded-3xl border border-slate-200 bg-[#f0f6ff] px-5 py-6 transition hover:border-blue-300 hover:bg-[#e6f0ff] hover:shadow-lg md:gap-6 md:px-8 md:py-8"
             >
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#0a3a6e] text-3xl shadow-md">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0a3a6e] text-2xl shadow-md md:h-14 md:w-14 md:text-3xl">
                 🌊
               </div>
               <div className="flex-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
                   BarentsWatch
                 </p>
-                <h4 className="mt-1 text-lg font-bold text-[#070b2f]">
+                <h4 className="mt-1 text-base font-bold text-[#070b2f] md:text-lg">
                   Bølgevarsel
                 </h4>
                 <p className="mt-1 text-sm text-slate-500">
                   Live bølgevarsler for norske farvann — isolinjer, kryssende sjø og punktvarsler langs kysten.
                 </p>
               </div>
-              <span className="shrink-0 text-2xl text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-400">
+              <span className="shrink-0 text-xl text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-400">
                 →
               </span>
             </a>
 
-            <div className="flex flex-1 flex-col justify-center rounded-3xl border border-dashed border-slate-200 px-8 py-8 text-center">
+            <div className="flex flex-1 flex-col justify-center rounded-3xl border border-dashed border-slate-200 px-5 py-6 text-center md:px-8 md:py-8">
               <p className="text-sm text-slate-400">
                 Interessert i annen forskning fra NORCE?
               </p>
@@ -334,7 +334,7 @@ export default function Home() {
       <footer className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-10">
+            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/norce-logo.png"

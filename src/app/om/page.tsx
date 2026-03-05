@@ -7,16 +7,16 @@ export default function OmPage() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#070b2f] text-white">
-        <div className="mx-auto w-full max-w-6xl px-6 pb-12 pt-12 md:pb-20 md:pt-20">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-10 pt-10 md:pb-20 md:pt-20">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/50">
             Kystobservatørene
           </p>
-          <h1 className="mt-4 text-5xl font-black uppercase tracking-tight md:text-7xl">
+          <h1 className="mt-4 text-4xl font-black uppercase tracking-tight md:text-7xl">
             <span className="text-white/40">Om</span>{" "}
             <span className="text-white">prosjektet</span>
           </h1>
 
-          <div className="mt-10 grid max-w-5xl gap-10 md:grid-cols-2">
+          <div className="mt-8 grid max-w-5xl gap-8 md:mt-10 md:grid-cols-2 md:gap-10">
             <div className="space-y-6 text-base leading-relaxed text-white/75">
               <p>
                 Ved å ta bilder eller korte videoer av havflaten kan publikum
@@ -73,16 +73,16 @@ export default function OmPage() {
                   norceresearch.no →
                 </p>
               </a>
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <a
                   href="/observasjoner"
-                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90"
+                  className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
                 >
                   Bidra nå
                 </a>
                 <a
                   href="/kart"
-                  className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                  className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Se kartet
                 </a>
@@ -92,8 +92,8 @@ export default function OmPage() {
         </div>
 
         {/* Wave divider */}
-        <div className="relative h-20 bg-[#070b2f]">
-          <svg className="absolute bottom-0 h-20 w-full" viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <div className="relative h-10 bg-[#070b2f] md:h-20">
+          <svg className="absolute bottom-0 h-10 w-full md:h-20" viewBox="0 0 1440 80" preserveAspectRatio="none">
             <path
               d="M0,64L120,58C240,52,480,42,720,48C960,54,1200,72,1320,78L1440,84L1440,80L0,80Z"
               fill="#ffffff"
@@ -104,8 +104,8 @@ export default function OmPage() {
 
       {/* ── Oppdrag / Visjon / Mål ────────────────────────────────────────── */}
       <section className="bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 pb-20">
-          <div className="grid gap-6 md:grid-cols-3">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-10 md:pb-20">
+          <div className="grid gap-4 sm:grid-cols-3 md:gap-6">
             {[
               {
                 title: "Oppdrag",
@@ -138,8 +138,8 @@ export default function OmPage() {
 
       {/* ── Bakgrunn ──────────────────────────────────────────────────────── */}
       <section className="border-t border-slate-100 bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <h2 className="text-4xl font-black uppercase tracking-tight text-[#070b2f] md:text-5xl">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-20">
+          <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-5xl">
             Bakgrunn
           </h2>
           <div className="mt-8 grid max-w-3xl gap-5 text-base leading-relaxed text-slate-600">

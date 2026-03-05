@@ -210,10 +210,10 @@ export default function ProfilPage() {
     <div className="min-h-screen bg-[#eef2f7] text-slate-900">
       <SiteHeader variant="light" />
 
-      <main className="mx-auto w-full max-w-6xl px-6 pb-16 pt-12">
-        <div className="mb-10">
+      <main className="mx-auto w-full max-w-6xl px-4 pb-12 pt-8 md:px-6 md:pb-16 md:pt-12">
+        <div className="mb-8 md:mb-10">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Profil</p>
-          <h1 className="mt-3 text-4xl font-black uppercase tracking-tight text-slate-900">Din side</h1>
+          <h1 className="mt-3 text-3xl font-black uppercase tracking-tight text-slate-900 md:text-4xl">Din side</h1>
           <p className="mt-3 max-w-2xl text-base text-slate-600 md:text-lg">
             Her finner du dine merker, statistikk og fremdrift.
           </p>
@@ -229,38 +229,38 @@ export default function ProfilPage() {
           )}
 
           {/* Avatar + navn + level-chip */}
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex items-start gap-4">
             <div
-              className="relative flex h-20 w-20 items-center justify-center rounded-full text-2xl font-semibold text-white"
+              className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-white md:h-20 md:w-20 md:text-2xl"
               style={{ backgroundColor: lvl.color }}
             >
               {initials}
-              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow-sm whitespace-nowrap"
+              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow-sm"
                 style={{ backgroundColor: lvl.color }}>
                 Niv. {lvl.level}
               </span>
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-semibold">{username ?? "Velkommen"}</h2>
+            <div className="flex flex-1 flex-col gap-1 pt-1">
+              <h2 className="text-xl font-semibold md:text-2xl">{username ?? "Velkommen"}</h2>
               <p className="text-sm text-slate-500">{email ?? ""}</p>
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              <div
-                className="rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.2em]"
-                style={{ backgroundColor: lvl.bg, color: lvl.color }}
-              >
-                {lvl.title}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <div
+                  className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.2em]"
+                  style={{ backgroundColor: lvl.bg, color: lvl.color }}
+                >
+                  {lvl.title}
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = "/";
+                  }}
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                >
+                  Logg ut
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  window.location.href = "/";
-                }}
-                className="rounded-full border border-slate-200 px-4 py-1.5 text-xs font-semibold text-slate-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
-              >
-                Logg ut
-              </button>
             </div>
           </div>
 
@@ -346,7 +346,7 @@ export default function ProfilPage() {
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Dine statistikker</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid grid-cols-2 gap-3 md:gap-4">
                 {[
                   { label: "Observasjoner", value: stats?.total ?? 0 },
                   { label: "Merker opptjent", value: (badges ?? []).filter((b) => b.status === "earned").length },
@@ -367,7 +367,7 @@ export default function ProfilPage() {
         <section className="mt-6 rounded-[28px] bg-white p-6 shadow-xl md:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Nivåer</p>
           <h3 className="mt-2 text-2xl font-semibold text-slate-900">Alle nivåer</h3>
-          <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
             {LEVELS.map((lv) => {
               const isCurrentLevel = lv.level === lvl.level;
               const isPassed = xpInfo.totalXp >= lv.minXp;
@@ -403,7 +403,7 @@ export default function ProfilPage() {
           {/* XP per badge-tier forklaring */}
           <div className="mt-8 border-t border-slate-100 pt-6">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Slik tjener du XP</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {[
                 { icon: "🌊", label: "Observasjon", xp: XP_PER_SUBMISSION, note: "per innsendt observasjon" },
                 { icon: "🥉", label: "Bronsemedalje", xp: TIER_XP.bronze, note: "per bronse-merke" },

@@ -57,16 +57,8 @@ export default function Home() {
                 playsInline
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              {/* Dark overlay so text stays readable */}
+              {/* Dark overlay */}
               <div className="absolute inset-0 bg-[#070b2f]/50" />
-              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a1a3a] to-transparent" />
-              {/* Coordinate readout */}
-              <div className="absolute right-5 top-5 font-mono text-xs text-white/40">
-                63.4°N · 10.4°E
-              </div>
-              <p className="absolute bottom-6 left-6 text-xs uppercase tracking-[0.35em] text-white/60">
-                Havet i bevegelse
-              </p>
             </div>
           </div>
         </div>

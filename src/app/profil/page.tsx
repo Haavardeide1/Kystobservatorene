@@ -42,10 +42,10 @@ type BadgeApiResponse = {
 const XP_PER_SUBMISSION = 10;
 
 const TIER_XP: Record<Badge["tier"], number> = {
-  bronze: 100,
-  silver: 250,
-  gold: 500,
-  platinum: 1000,
+  bronze: 50,
+  silver: 100,
+  gold: 150,
+  platinum: 250,
 };
 
 type LevelDef = {
@@ -57,16 +57,11 @@ type LevelDef = {
 };
 
 const LEVELS: LevelDef[] = [
-  { level: 1,  title: "Nybegynner",    minXp: 0,     color: "#64748b", bg: "#f1f5f9" },
-  { level: 2,  title: "Strandvakt",    minXp: 150,   color: "#16a34a", bg: "#dcfce7" },
-  { level: 3,  title: "Kystfarer",     minXp: 400,   color: "#0891b2", bg: "#cffafe" },
-  { level: 4,  title: "Havkjentmann",  minXp: 800,   color: "#2563eb", bg: "#dbeafe" },
-  { level: 5,  title: "Kystmester",    minXp: 1400,  color: "#7c3aed", bg: "#ede9fe" },
-  { level: 6,  title: "Havekspert",    minXp: 2200,  color: "#9333ea", bg: "#f3e8ff" },
-  { level: 7,  title: "Kystnavigator", minXp: 3500,  color: "#c026d3", bg: "#fae8ff" },
-  { level: 8,  title: "Havforsker",    minXp: 5500,  color: "#e11d48", bg: "#ffe4e6" },
-  { level: 9,  title: "Kystlegende",   minXp: 8500,  color: "#ea580c", bg: "#ffedd5" },
-  { level: 10, title: "Havvokter",     minXp: 13000, color: "#d97706", bg: "#fef3c7" },
+  { level: 1, title: "Nybegynner",   minXp: 0,   color: "#64748b", bg: "#f1f5f9" },
+  { level: 2, title: "Strandvakt",   minXp: 100, color: "#16a34a", bg: "#dcfce7" },
+  { level: 3, title: "Kystfarer",    minXp: 250, color: "#0891b2", bg: "#cffafe" },
+  { level: 4, title: "Havkjentmann", minXp: 450, color: "#2563eb", bg: "#dbeafe" },
+  { level: 5, title: "Kystmester",   minXp: 700, color: "#7c3aed", bg: "#ede9fe" },
 ];
 
 function getLevelInfo(xp: number) {
@@ -91,13 +86,13 @@ const BADGE_CATALOG: Badge[] = [
   { key: "active_observer",      title: "Aktiv observatør",    description: "Send inn 5 observasjoner.",             progress: 0, threshold: 5,   tier: "bronze",   category: "innsendinger", status: "locked" },
   { key: "dedicated_observer",   title: "Dedikert observatør", description: "Send inn 10 observasjoner.",            progress: 0, threshold: 10,  tier: "silver",   category: "innsendinger", status: "locked" },
   { key: "experienced_observer", title: "Erfaren observatør",  description: "Send inn 25 observasjoner.",            progress: 0, threshold: 25,  tier: "gold",     category: "innsendinger", status: "locked" },
-  { key: "master_observer",      title: "Mester observatør",   description: "Send inn 50 observasjoner.",            progress: 0, threshold: 50,  tier: "gold",     category: "innsendinger", status: "locked" },
+  { key: "master_observer",      title: "Mesterobservatør",    description: "Send inn 50 observasjoner.",            progress: 0, threshold: 50,  tier: "gold",     category: "innsendinger", status: "locked" },
   { key: "elite_observer",       title: "Elite observatør",    description: "Send inn 100 observasjoner.",           progress: 0, threshold: 100, tier: "platinum", category: "innsendinger", status: "locked" },
   { key: "legendary_observer",   title: "Legendarisk observatør", description: "Send inn 250 observasjoner.",        progress: 0, threshold: 250, tier: "platinum", category: "innsendinger", status: "locked" },
   { key: "local_hero",           title: "Lokal helt",          description: "10 innsendinger innen 10 km radius.",   progress: 0, threshold: 10,  tier: "bronze",   category: "geografi",     status: "locked" },
   { key: "regional_explorer",    title: "Regional utforsker",  description: "Innsendinger fra 3 ulike fylker.",      progress: 0, threshold: 3,   tier: "silver",   category: "geografi",     status: "locked" },
   { key: "national_observer",    title: "Nasjonal observatør", description: "Innsendinger fra 5 eller flere fylker.", progress: 0, threshold: 5,   tier: "gold",     category: "geografi",     status: "locked" },
-  { key: "coast_master",         title: "Kystlinjemester",     description: "100 unike GPS-punkter.",                progress: 0, threshold: 100, tier: "platinum", category: "geografi",     status: "locked" },
+  { key: "coast_master",         title: "Kystlinjemester",     description: "25 unike GPS-punkter.",                 progress: 0, threshold: 25,  tier: "platinum", category: "geografi",     status: "locked" },
   { key: "week_streak",          title: "Ukestreak",           description: "Send inn hver dag i 7 dager.",          progress: 0, threshold: 7,   tier: "bronze",   category: "streaks",      status: "locked" },
   { key: "month_streak",         title: "Månedstreak",         description: "Send inn hver dag i 30 dager.",         progress: 0, threshold: 30,  tier: "gold",     category: "streaks",      status: "locked" },
   { key: "winter_observer",      title: "Vinterobservatør",    description: "10 innsendinger i desember–februar.",   progress: 0, threshold: 10,  tier: "silver",   category: "streaks",      status: "locked" },

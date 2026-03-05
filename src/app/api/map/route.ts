@@ -56,18 +56,20 @@ export async function GET() {
     }
 
     const rows = (data ?? []) as unknown as SubmissionRow[];
-    const results = await Promise.all(
-      rows.map(async (row) => {
-        const { data: signed, error: signedError } = await supabaseAdmin.storage
-          .from(MEDIA_BUCKET)
-          .createSignedUrl(row.media_path_original, SIGNED_URL_TTL_SECONDS);
 
-        return {
-          ...row,
-          media_url: signedError ? null : signed?.signedUrl ?? null,
-        };
-      })
+    const paths = rows.map((r) => r.media_path_original);
+    const { data: signedList } = await supabaseAdmin.storage
+      .from(MEDIA_BUCKET)
+      .createSignedUrls(paths, SIGNED_URL_TTL_SECONDS);
+
+    const urlMap = new Map(
+      (signedList ?? []).map((s) => [s.path, s.signedUrl])
     );
+
+    const results = rows.map((row) => ({
+      ...row,
+      media_url: urlMap.get(row.media_path_original) ?? null,
+    }));
 
     return NextResponse.json({ data: results }, {
       headers: { 'Cache-Control': 'no-store' },

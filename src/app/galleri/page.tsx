@@ -204,16 +204,15 @@ export default function GalleriPage() {
       <footer className="bg-[#070b2f] text-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain opacity-80" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/fremje-logo.png"
-                alt="Fremje"
-                className="h-16 object-contain opacity-80"
-                style={{ filter: "brightness(0) invert(1)" }}
-              />
+            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-10">
+              <a href="https://www.norceresearch.no/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain" />
+              </a>
+              <a href="https://www.fremje.com/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/fremje-logo.png" alt="Fremje" className="h-16 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+              </a>
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>
           </div>

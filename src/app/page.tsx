@@ -137,7 +137,7 @@ export default function Home() {
               {
                 step: "03",
                 title: "Send inn",
-                body: "Trykk send. Observasjonen havner rett i databasen og vises på kartet for alle.",
+                body: "Observasjonen havner rett i databasen og vises på kartet for alle.",
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4 md:gap-5">
@@ -227,48 +227,27 @@ export default function Home() {
                 og bølger til hva som driver hvor. Mer kunnskap om strøm gir en
                 bedre forståelse av kysten og tryggere beslutninger.
               </p>
+              <a
+                href="/om"
+                className="mt-6 inline-block text-sm font-semibold text-[#1d5fa7] transition hover:underline"
+              >
+                Les mer om prosjektet →
+              </a>
             </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/bildebat.jpg"
                 alt="Fiskebåt ved kysten"
-                className="h-32 w-full rounded-2xl object-cover shadow-md md:h-36"
+                className="h-44 w-full rounded-2xl object-cover shadow-md md:h-52"
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/oppdrett.jpg"
                 alt="Oppdrettsanlegg"
-                className="h-32 w-full rounded-2xl object-cover shadow-md md:h-36"
+                className="h-44 w-full rounded-2xl object-cover shadow-md md:h-52"
               />
             </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-3 md:mt-12 md:gap-6">
-            {[
-              {
-                title: "Oppdrag",
-                body: "Gjøre havet mer forståelig ved å koble observasjoner med prediksjonsmodeller. Bidragene styrker datagrunnlaget for forskning og varsling.",
-              },
-              {
-                title: "Visjon",
-                body: "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og strømmer blir litt mindre farlige.",
-              },
-              {
-                title: "Mål",
-                body: "Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
-              },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="rounded-2xl bg-[#070b2f] px-5 py-6 text-white shadow md:px-6 md:py-8"
-              >
-                <h4 className="text-lg font-semibold uppercase tracking-[0.15em]">
-                  {card.title}
-                </h4>
-                <p className="mt-4 text-sm text-white/80">{card.body}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -327,19 +306,14 @@ export default function Home() {
         <div className="mx-auto w-full max-w-6xl px-6 py-10">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex flex-wrap items-center justify-center gap-8 md:gap-10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/norce-logo.png"
-                alt="NORCE"
-                className="h-8 object-contain opacity-80"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/fremje-logo.png"
-                alt="Fremje"
-                className="h-16 object-contain opacity-80"
-                style={{ filter: "brightness(0) invert(1)" }}
-              />
+              <a href="https://www.norceresearch.no/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain" />
+              </a>
+              <a href="https://www.fremje.com/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/fremje-logo.png" alt="Fremje" className="h-16 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+              </a>
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>
           </div>

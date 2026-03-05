@@ -85,12 +85,6 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           Kystobservatørene
         </a>
         <nav className="relative flex items-center gap-2 text-sm md:gap-4">
-          <a className={`hidden md:block transition ${classes.link}`} href="/kart">
-            Kart
-          </a>
-          <a className={`hidden md:block transition ${classes.link}`} href="/om">
-            Om prosjektet
-          </a>
           <a
             href="/observasjoner"
             className="rounded-full bg-[#60a5fa] px-3 py-2 text-xs font-semibold uppercase text-[#070b2f] transition hover:bg-[#93c5fd] md:px-5 md:tracking-[0.15em]"

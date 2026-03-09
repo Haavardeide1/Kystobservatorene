@@ -42,6 +42,7 @@ function buildPopupHtml(sub: Submission): string {
       ${mediaHtml}
       <div style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:2px;">${name}</div>
       <div style="font-size:12px;color:#94a3b8;">${date} · ${typeLabel}</div>
+      <button data-lightbox-id="${sub.id}" style="margin-top:10px;width:100%;padding:7px 0;background:#0b1b36;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🔍 Vis stort</button>
     </div>
   `;
 }
@@ -75,6 +76,29 @@ export default function HomeMiniMap() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
+  const [lightboxSub, setLightboxSub] = useState<Submission | null>(null);
+
+  // Lightbox – event delegation for popup-knapper
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest("[data-lightbox-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-lightbox-id");
+      if (!id) return;
+      const sub = submissions.find((s) => s.id === id);
+      if (sub) setLightboxSub(sub);
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [submissions]);
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxSub(null);
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, []);
 
   // Fetch submissions
   useEffect(() => {
@@ -175,7 +199,70 @@ export default function HomeMiniMap() {
   const photos = submissions.filter((s) => s.media_type === "photo").length;
   const videos = submissions.filter((s) => s.media_type === "video").length;
 
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString("nb-NO", {
+      day: "numeric", month: "short", year: "numeric",
+    });
+  }
+
   return (
+    <>
+    {/* Lightbox modal */}
+    {lightboxSub && (
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-4"
+        onClick={() => setLightboxSub(null)}
+      >
+        <div
+          className="relative max-h-[92vh] w-full max-w-3xl overflow-auto rounded-2xl bg-white shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setLightboxSub(null)}
+            className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+
+          {lightboxSub.media_url ? (
+            lightboxSub.media_type === "photo" ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={lightboxSub.media_url}
+                alt=""
+                className="w-full rounded-t-2xl object-contain"
+                style={{ maxHeight: "70vh" }}
+              />
+            ) : (
+              <video
+                controls
+                autoPlay
+                playsInline
+                className="w-full rounded-t-2xl"
+                style={{ maxHeight: "70vh", background: "#000" }}
+              >
+                <source src={lightboxSub.media_url} type="video/mp4" />
+                <source src={lightboxSub.media_url} type="video/quicktime" />
+                <source src={lightboxSub.media_url} type="video/webm" />
+              </video>
+            )
+          ) : (
+            <div className="flex h-48 w-full items-center justify-center rounded-t-2xl bg-slate-100 text-5xl">
+              {lightboxSub.media_type === "photo" ? "📸" : "🎥"}
+            </div>
+          )}
+
+          <div className="p-5">
+            <p className="font-bold text-slate-800">{lightboxSub.display_name || "Anonym"}</p>
+            <p className="text-sm text-slate-400">
+              {formatDate(lightboxSub.created_at)} · {lightboxSub.media_type === "photo" ? "Bilde" : "Video"}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+
     <div>
       {/* Stats row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -261,5 +348,6 @@ export default function HomeMiniMap() {
         </div>
       </div>
     </div>
+    </>
   );
 }

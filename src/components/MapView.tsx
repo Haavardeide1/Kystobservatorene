@@ -56,6 +56,7 @@ function buildPopupHtml(sub: Submission): string {
       <div style="font-size:12px;color:#94a3b8;margin-bottom:${meta ? "8px" : "0"};">${date} · ${typeLabel}</div>
       ${meta ? `<div style="display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:#475569;">${meta}</div>` : ""}
       ${sub.comment ? `<div style="font-size:12px;color:#475569;margin-top:8px;font-style:italic;">"${sub.comment}"</div>` : ""}
+      <button data-lightbox-id="${sub.id}" style="margin-top:10px;width:100%;padding:7px 0;background:#0b1b36;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🔍 Vis stort</button>
     </div>
   `;
 }
@@ -109,6 +110,7 @@ export default function MapView() {
   const [liveCount, setLiveCount] = useState(0);
   const [showWaves, setShowWaves] = useState(false);
   const [waveLoading, setWaveLoading] = useState(false);
+  const [lightboxSub, setLightboxSub] = useState<Submission | null>(null);
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
@@ -125,6 +127,29 @@ export default function MapView() {
   }, []);
 
   useEffect(() => { fetchSubmissions(); }, [fetchSubmissions]);
+
+  // ── Lightbox – event delegation for popup-knapper ────────────────────────
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest("[data-lightbox-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-lightbox-id");
+      if (!id) return;
+      const sub = submissions.find((s) => s.id === id);
+      if (sub) setLightboxSub(sub);
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [submissions]);
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxSub(null);
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, []);
 
   // ── Realtime ──────────────────────────────────────────────────────────────
 
@@ -283,6 +308,73 @@ export default function MapView() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
+    <>
+    {/* Lightbox modal */}
+    {lightboxSub && (
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-4"
+        onClick={() => setLightboxSub(null)}
+      >
+        <div
+          className="relative max-h-[92vh] w-full max-w-3xl overflow-auto rounded-2xl bg-white shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setLightboxSub(null)}
+            className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+
+          {lightboxSub.media_url ? (
+            lightboxSub.media_type === "photo" ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={lightboxSub.media_url}
+                alt=""
+                className="w-full rounded-t-2xl object-contain"
+                style={{ maxHeight: "70vh" }}
+              />
+            ) : (
+              <video
+                controls
+                autoPlay
+                playsInline
+                className="w-full rounded-t-2xl"
+                style={{ maxHeight: "70vh", background: "#000" }}
+              >
+                <source src={lightboxSub.media_url} type="video/mp4" />
+                <source src={lightboxSub.media_url} type="video/quicktime" />
+                <source src={lightboxSub.media_url} type="video/webm" />
+              </video>
+            )
+          ) : (
+            <div className="flex h-48 w-full items-center justify-center rounded-t-2xl bg-slate-100 text-5xl">
+              {lightboxSub.media_type === "photo" ? "📸" : "🎥"}
+            </div>
+          )}
+
+          <div className="p-5">
+            <p className="font-bold text-slate-800">{lightboxSub.display_name || "Anonym"}</p>
+            <p className="text-sm text-slate-400">
+              {formatDate(lightboxSub.created_at)} · {lightboxSub.media_type === "photo" ? "Bilde" : "Video"}
+            </p>
+            {(lightboxSub.valg || lightboxSub.wind_dir || lightboxSub.wave_dir) && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {lightboxSub.valg && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">{lightboxSub.valg}</span>}
+                {lightboxSub.wind_dir && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">💨 {lightboxSub.wind_dir}</span>}
+                {lightboxSub.wave_dir && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">🌊 {lightboxSub.wave_dir}</span>}
+              </div>
+            )}
+            {lightboxSub.comment && (
+              <p className="mt-3 text-sm italic text-slate-600">&quot;{lightboxSub.comment}&quot;</p>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
     <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 64px)" }}>
       {/* MAP */}
       <div className="relative flex-1">
@@ -456,5 +548,6 @@ export default function MapView() {
         </div>
       </div>
     </div>
+    </>
   );
 }

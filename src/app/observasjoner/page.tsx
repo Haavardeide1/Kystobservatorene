@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
 import { supabase } from "@/lib/supabase";
+import { getLevelInfo, XP_PER_SUBMISSION, type LevelDef } from "@/lib/levels";
+import LevelUpToast from "@/components/LevelUpToast";
 
 const LocationPicker = dynamic(() => import("@/components/LocationPicker"), {
   ssr: false,
@@ -126,6 +128,7 @@ export default function ObservasjonerPage() {
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [submitPhase, setSubmitPhase] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [levelUpInfo, setLevelUpInfo] = useState<LevelDef | null>(null);
 
   // Tip panel
   const [showTip, setShowTip] = useState(false);
@@ -570,6 +573,26 @@ export default function ObservasjonerPage() {
       });
       setSubmitPhase("");
       setUploadProgress(null);
+
+      // Sjekk om brukeren levlet opp
+      if (token) {
+        try {
+          const statsRes = await fetch("/api/profile/stats", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (statsRes.ok) {
+            const stats = await statsRes.json();
+            const newXp = (stats.total ?? 0) * XP_PER_SUBMISSION;
+            const oldXp = Math.max(0, newXp - XP_PER_SUBMISSION);
+            const newLevel = getLevelInfo(newXp).current;
+            const oldLevel = getLevelInfo(oldXp).current;
+            if (newLevel.level > oldLevel.level) {
+              setLevelUpInfo(newLevel);
+            }
+          }
+        } catch { /* ikke kritisk */ }
+      }
+
       setTimeout(resetAll, 4000);
     } catch (err) {
       setMessage({
@@ -602,6 +625,10 @@ export default function ObservasjonerPage() {
   // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
+    <>
+    {levelUpInfo && (
+      <LevelUpToast level={levelUpInfo} onClose={() => setLevelUpInfo(null)} />
+    )}
     <div className="min-h-screen bg-[#050916] text-white">
       <SiteHeader variant="dark" />
 
@@ -1324,5 +1351,6 @@ export default function ObservasjonerPage() {
         }
       `}</style>
     </div>
+    </>
   );
 }

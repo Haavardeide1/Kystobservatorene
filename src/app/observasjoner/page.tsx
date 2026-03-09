@@ -447,6 +447,7 @@ export default function ObservasjonerPage() {
     setMessage(null);
     setUploadProgress(null);
     setSubmitPhase("");
+    setLevelUpInfo(null);
   }
 
   // ─── Submit ─────────────────────────────────────────────────────────────

@@ -43,7 +43,7 @@ export default function WeeklyCarousel() {
   if (items.length === 0) return null;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 pb-6 pt-2">
+    <div className="mt-6">
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
         Ukens bilder
       </p>

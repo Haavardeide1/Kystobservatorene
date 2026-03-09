@@ -23,24 +23,30 @@ const NAV_ITEMS: NavItem[] = [
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [initial, setInitial] = useState<string | null>(null);
+  const [authLoaded, setAuthLoaded] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadUser() {
-      const { data } = await supabase.auth.getUser();
+    function applyUser(user: { email?: string; user_metadata?: { username?: string } } | null) {
       if (!isMounted) return;
-      const email = data.user?.email ?? "";
-      const fallback = email ? email[0]?.toUpperCase() ?? null : null;
-      const metaInitial = data.user?.user_metadata?.username?.[0]?.toUpperCase();
-      setInitial(metaInitial || fallback || null);
+      if (!user) {
+        setInitial(null);
+      } else {
+        const email = user.email ?? "";
+        const fallback = email ? email[0]?.toUpperCase() ?? null : null;
+        const metaInitial = user.user_metadata?.username?.[0]?.toUpperCase();
+        setInitial(metaInitial || fallback || null);
+      }
+      setAuthLoaded(true);
     }
 
-    loadUser();
+    // getSession() reads from local storage cache — no network round-trip
+    supabase.auth.getSession().then(({ data }) => applyUser(data.session?.user ?? null));
 
-    const { data: subscription } = supabase.auth.onAuthStateChange(() => {
-      loadUser();
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      applyUser(session?.user ?? null);
     });
 
     return () => {
@@ -118,7 +124,9 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
               </div>
             )}
           </div>
-          {initial ? (
+          {!authLoaded ? (
+            <div className={`h-9 w-9 animate-pulse rounded-full border ${classes.avatar} opacity-40`} />
+          ) : initial ? (
             <a
               href="/profil"
               className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold ${classes.avatar}`}

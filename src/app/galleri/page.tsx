@@ -11,6 +11,10 @@ type Submission = {
   lat_public: number | null;
   lng_public: number | null;
   created_at: string;
+  comment: string | null;
+  valg: string | null;
+  wind_dir: string | null;
+  wave_dir: string | null;
 };
 
 // Module-level cache so repeated renders don't re-fetch the same coordinates
@@ -43,7 +47,7 @@ function formatDate(iso: string) {
   });
 }
 
-function GalleryCard({ sub }: { sub: Submission }) {
+function GalleryCard({ sub, onOpen }: { sub: Submission; onOpen: () => void }) {
   const [place, setPlace] = useState<string | null>(null);
 
   useEffect(() => {
@@ -55,7 +59,11 @@ function GalleryCard({ sub }: { sub: Submission }) {
   if (!sub.media_url) return null;
 
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-2xl bg-slate-100 shadow-md">
+    <button
+      type="button"
+      onClick={onOpen}
+      className="group relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-100 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+    >
       {sub.media_type === "photo" ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -76,17 +84,24 @@ function GalleryCard({ sub }: { sub: Submission }) {
             <source src={sub.media_url} type="video/quicktime" />
             <source src={sub.media_url} type="video/webm" />
           </video>
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 transition group-hover:bg-black/40">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition group-hover:scale-110">
               <span className="text-xl">▶</span>
             </div>
           </div>
         </>
       )}
 
+      {/* Hover-hint */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 transition group-hover:opacity-100">
+        <span className="rounded-full bg-black/50 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+          {sub.media_type === "photo" ? "🔍 Vis stort" : "▶ Spill av"}
+        </span>
+      </div>
+
       {/* Bottom overlay */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-4 pt-10">
-        <p className="truncate text-sm font-semibold text-white">
+        <p className="truncate text-left text-sm font-semibold text-white">
           {sub.display_name || "Anonym"}
         </p>
         <div className="mt-0.5 flex items-center gap-1.5 text-xs text-white/70">
@@ -99,31 +114,140 @@ function GalleryCard({ sub }: { sub: Submission }) {
             <span className="animate-pulse">Henter sted…</span>
           ) : null}
         </div>
-        <p className="mt-1 text-[10px] text-white/40">{formatDate(sub.created_at)}</p>
+        <p className="mt-1 text-left text-[10px] text-white/40">{formatDate(sub.created_at)}</p>
       </div>
-    </div>
+    </button>
   );
 }
 
 export default function GalleriPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxSub, setLightboxSub] = useState<Submission | null>(null);
 
   useEffect(() => {
     fetch("/api/submissions/list")
       .then((r) => r.json())
       .then(({ data }) => {
-        // Only show entries that have a media URL
         setSubmissions((data ?? []).filter((s: Submission) => s.media_url));
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (!lightboxSub) return;
+      if (e.key === "Escape") setLightboxSub(null);
+      if (e.key === "ArrowRight") {
+        const idx = submissions.findIndex((s) => s.id === lightboxSub.id);
+        const next = submissions[idx + 1];
+        if (next) setLightboxSub(next);
+      }
+      if (e.key === "ArrowLeft") {
+        const idx = submissions.findIndex((s) => s.id === lightboxSub.id);
+        const prev = submissions[idx - 1];
+        if (prev) setLightboxSub(prev);
+      }
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [lightboxSub, submissions]);
+
   const photoCount = submissions.filter((s) => s.media_type === "photo").length;
   const videoCount = submissions.filter((s) => s.media_type === "video").length;
 
+  const lightboxIdx = lightboxSub ? submissions.findIndex((s) => s.id === lightboxSub.id) : -1;
+
   return (
+    <>
+    {/* Lightbox */}
+    {lightboxSub && (
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
+        onClick={() => setLightboxSub(null)}
+      >
+        <div
+          className="relative max-h-[92vh] w-full max-w-4xl overflow-auto rounded-2xl bg-white shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Lukk */}
+          <button
+            onClick={() => setLightboxSub(null)}
+            className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+
+          {/* Forrige / Neste */}
+          {lightboxIdx > 0 && (
+            <button
+              onClick={() => setLightboxSub(submissions[lightboxIdx - 1])}
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+              aria-label="Forrige"
+            >
+              ←
+            </button>
+          )}
+          {lightboxIdx < submissions.length - 1 && (
+            <button
+              onClick={() => setLightboxSub(submissions[lightboxIdx + 1])}
+              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70"
+              aria-label="Neste"
+            >
+              →
+            </button>
+          )}
+
+          {/* Media */}
+          {lightboxSub.media_type === "photo" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={lightboxSub.media_url!}
+              alt=""
+              className="w-full rounded-t-2xl object-contain"
+              style={{ maxHeight: "72vh" }}
+            />
+          ) : (
+            <video
+              key={lightboxSub.id}
+              controls
+              autoPlay
+              playsInline
+              className="w-full rounded-t-2xl"
+              style={{ maxHeight: "72vh", background: "#000" }}
+            >
+              <source src={lightboxSub.media_url!} type="video/mp4" />
+              <source src={lightboxSub.media_url!} type="video/quicktime" />
+              <source src={lightboxSub.media_url!} type="video/webm" />
+            </video>
+          )}
+
+          {/* Info */}
+          <div className="p-5">
+            <p className="font-bold text-slate-800">{lightboxSub.display_name || "Anonym"}</p>
+            <p className="text-sm text-slate-400">
+              {formatDate(lightboxSub.created_at)} · {lightboxSub.media_type === "photo" ? "Bilde" : "Video"}
+            </p>
+            {(lightboxSub.valg || lightboxSub.wind_dir || lightboxSub.wave_dir) && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {lightboxSub.valg && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">{lightboxSub.valg}</span>}
+                {lightboxSub.wind_dir && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">💨 {lightboxSub.wind_dir}</span>}
+                {lightboxSub.wave_dir && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">🌊 {lightboxSub.wave_dir}</span>}
+              </div>
+            )}
+            {lightboxSub.comment && (
+              <p className="mt-3 text-sm italic text-slate-600">&quot;{lightboxSub.comment}&quot;</p>
+            )}
+            <p className="mt-3 text-xs text-slate-400">
+              {lightboxIdx + 1} / {submissions.length} · Bruk piltaster for å bla
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+
     <div className="min-h-screen bg-white text-slate-900">
       <SiteHeader variant="dark" />
 
@@ -193,7 +317,7 @@ export default function GalleriPage() {
           {!loading && submissions.length > 0 && (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
               {submissions.map((sub) => (
-                <GalleryCard key={sub.id} sub={sub} />
+                <GalleryCard key={sub.id} sub={sub} onOpen={() => setLightboxSub(sub)} />
               ))}
             </div>
           )}
@@ -219,5 +343,6 @@ export default function GalleriPage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

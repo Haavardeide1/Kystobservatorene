@@ -150,9 +150,7 @@ export default function ObservasjonerPage() {
 
   useEffect(() => {
     let mounted = true;
-    const load = async () => {
-      const { data } = await supabase.auth.getUser();
-      const user = data.user;
+    const applyUser = (user: { email?: string; user_metadata?: { username?: string } } | null | undefined) => {
       const meta = user?.user_metadata?.username as string | undefined;
       const emailFallback = user?.email ? user.email.split("@")[0] : null;
       if (mounted) {
@@ -161,8 +159,9 @@ export default function ObservasjonerPage() {
         if (user && meta) setDisplayName(meta);
       }
     };
-    load();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => load());
+    // getSession() leser fra lokal cache — ingen nettverksrunde
+    supabase.auth.getSession().then(({ data }) => applyUser(data.session?.user));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => applyUser(session?.user));
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();

@@ -43,7 +43,7 @@ export default function OmPage() {
             </div>
 
             {/* NORCE card */}
-            <div className="flex flex-col justify-center gap-6">
+            <div className="flex flex-col justify-center gap-6 md:pl-8">
               <a
                 href="https://www.norceresearch.no"
                 target="_blank"

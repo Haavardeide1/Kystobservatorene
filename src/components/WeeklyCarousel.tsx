@@ -42,48 +42,28 @@ export default function WeeklyCarousel() {
 
   if (items.length === 0) return null;
 
-  // Tripler for å sikre sømløs loop uansett antall
-  const track = [...items, ...items, ...items];
-  const duration = Math.max(items.length * 5, 20);
-
   return (
-    <section className="overflow-hidden border-t border-slate-100 bg-white py-8">
-      <style>{`
-        @keyframes ky-scroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-33.333%); }
-        }
-        .ky-track {
-          display: flex;
-          gap: 12px;
-          width: max-content;
-          animation: ky-scroll ${duration}s linear infinite;
-        }
-        .ky-track:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-
-      <div className="mx-auto mb-4 w-full max-w-6xl px-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-          Ukens bilder
-        </p>
-      </div>
-
-      <div className="ky-track">
-        {track.map((sub, i) =>
+    <div className="mx-auto w-full max-w-6xl px-6 pb-6 pt-2">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+        Ukens bilder
+      </p>
+      <div
+        className="flex gap-3 overflow-x-auto pb-2"
+        style={{ scrollbarWidth: "none" }}
+      >
+        {items.map((sub) =>
           sub.media_type === "photo" ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              key={`${sub.id}-${i}`}
+              key={sub.id}
               src={sub.media_url!}
               alt={sub.display_name || "Observasjon"}
-              className="h-32 w-32 shrink-0 rounded-2xl object-cover shadow-md"
+              className="h-28 w-28 shrink-0 rounded-2xl object-cover shadow-md"
             />
           ) : (
             <div
-              key={`${sub.id}-${i}`}
-              className="relative h-32 w-32 shrink-0 overflow-hidden rounded-2xl bg-slate-800 shadow-md"
+              key={sub.id}
+              className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-slate-800 shadow-md"
             >
               <video
                 className="h-full w-full object-cover"
@@ -101,6 +81,6 @@ export default function WeeklyCarousel() {
           )
         )}
       </div>
-    </section>
+    </div>
   );
 }

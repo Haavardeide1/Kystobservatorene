@@ -212,11 +212,9 @@ export default function Home() {
           <div className="mt-6 md:mt-8">
             <TopFive />
           </div>
+          <WeeklyCarousel />
         </div>
       </section>
-
-      {/* ── Ukens bilder karusell ─────────────────────────────────────────── */}
-      <WeeklyCarousel />
 
       {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">

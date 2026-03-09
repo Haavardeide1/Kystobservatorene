@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
 import TopFive from "@/components/TopFive";
+import WeeklyCarousel from "@/components/WeeklyCarousel";
 
 const HomeMiniMap = dynamic(() => import("@/components/HomeMiniMap"), {
   ssr: false,
@@ -213,6 +214,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Ukens bilder karusell ─────────────────────────────────────────── */}
+      <WeeklyCarousel />
 
       {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">

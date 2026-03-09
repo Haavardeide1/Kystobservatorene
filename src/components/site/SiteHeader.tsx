@@ -76,7 +76,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
   }, [variant]);
 
   return (
-    <header className={`sticky top-0 z-30 backdrop-blur ${classes.wrapper}`}>
+    <header className={`sticky top-0 z-[2000] backdrop-blur ${classes.wrapper}`}>
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
         <a
           href="/"

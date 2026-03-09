@@ -506,7 +506,15 @@ export default function ObservasjonerPage() {
         typeof crypto !== "undefined" && "randomUUID" in crypto
           ? crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-      const safeName = file.name.replace(/\s+/g, "-");
+      const ext = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
+      const safeName = file.name
+        .slice(0, file.name.length - ext.length)
+        .normalize("NFD")                      // dekomponerr æøå til base + diakritika
+        .replace(/[\u0300-\u036f]/g, "")       // fjern diakritika (å→a, ø→o, æ→ae)
+        .replace(/æ/gi, "ae").replace(/ø/gi, "o").replace(/å/gi, "a")
+        .replace(/\s+/g, "-")
+        .replace(/[^a-zA-Z0-9.\-_]/g, "_")    // bytt ut alle gjenværende spesialtegn
+        + ext;
       const path = `submissions/${id}/${safeName}`;
 
       setSubmitPhase("Klargjør opplasting…");

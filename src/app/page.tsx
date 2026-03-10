@@ -60,6 +60,13 @@ export default function Home() {
               />
               {/* Dark overlay */}
               <div className="absolute inset-0 bg-[#070b2f]/50" />
+              {/* NORCE logo */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/norce-logo.png"
+                alt="NORCE"
+                className="absolute inset-0 m-auto h-auto w-32 object-contain opacity-80 drop-shadow-lg md:w-44"
+              />
             </div>
           </div>
         </div>

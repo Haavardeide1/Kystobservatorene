@@ -28,32 +28,248 @@ function formatDate(iso: string) {
   });
 }
 
-function ShareButton({ sub }: { sub: Submission }) {
-  const [copied, setCopied] = useState(false);
+// ── Tile helpers ──────────────────────────────────────────────────────────────
 
-  async function handleShare() {
-    const text = `Jeg bidro med en ${sub.media_type === "photo" ? "havobservasjon" : "havvideo"} til Kystobservatørene!${sub.comment ? ` "${sub.comment}"` : ""} 🌊`;
-    const url = "https://kystobservatorene.no";
+function latLngToTile(lat: number, lng: number, zoom: number) {
+  const n = Math.pow(2, zoom);
+  const x = Math.floor(((lng + 180) / 360) * n);
+  const latRad = (lat * Math.PI) / 180;
+  const y = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
+  );
+  return { x, y };
+}
 
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "Kystobservatørene", text, url });
-      } catch {
-        // bruker avbrøt
-      }
+function tilePixelOffset(lat: number, lng: number, zoom: number) {
+  const n = Math.pow(2, zoom);
+  const tx = ((lng + 180) / 360) * n;
+  const latRad = (lat * Math.PI) / 180;
+  const ty =
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n;
+  return { px: (tx - Math.floor(tx)) * 256, py: (ty - Math.floor(ty)) * 256 };
+}
+
+async function loadImage(src: string, crossOrigin = false): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    if (crossOrigin) img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number, y: number, w: number, h: number, r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+async function generateShareCard(sub: Submission): Promise<Blob | null> {
+  const W = 1080, H = 1350;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d")!;
+
+  // ── Bakgrunn ────────────────────────────────────────────────────────────────
+  if (sub.media_url && sub.media_type === "photo") {
+    const img = await loadImage(sub.media_url, true);
+    if (img) {
+      // Cover-fit
+      const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+      const sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
+      ctx.drawImage(img, (W - sw) / 2, (H - sh) / 2, sw, sh);
     } else {
-      await navigator.clipboard.writeText(`${text}\n${url}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      // CORS fallback: havgradient
+      drawOceanBg(ctx, W, H);
+    }
+  } else {
+    drawOceanBg(ctx, W, H);
+  }
+
+  // ── Overlay-gradienter ──────────────────────────────────────────────────────
+  const topGrad = ctx.createLinearGradient(0, 0, 0, H * 0.45);
+  topGrad.addColorStop(0, "rgba(7,11,47,0.82)");
+  topGrad.addColorStop(1, "rgba(7,11,47,0)");
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  const botGrad = ctx.createLinearGradient(0, H * 0.45, 0, H);
+  botGrad.addColorStop(0, "rgba(7,11,47,0)");
+  botGrad.addColorStop(1, "rgba(7,11,47,0.92)");
+  ctx.fillStyle = botGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Logo øverst ─────────────────────────────────────────────────────────────
+  ctx.textAlign = "left";
+  ctx.fillStyle = "white";
+  ctx.font = "bold 52px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillText("KYSTOBSERVATØRENE", 72, 110);
+  ctx.font = "34px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillText("NORCE Research", 72, 158);
+
+  // ── Dato + tid ───────────────────────────────────────────────────────────────
+  const date = new Date(sub.created_at);
+  const dateStr = date.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
+  const timeStr = date.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = "white";
+  ctx.font = "bold 72px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillText(dateStr, 72, H - 280);
+
+  ctx.font = "44px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.65)";
+  ctx.fillText(`kl. ${timeStr}`, 72, H - 210);
+
+  // ── Koordinater ──────────────────────────────────────────────────────────────
+  if (sub.lat_public && sub.lng_public) {
+    ctx.font = "32px 'Courier New', monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.fillText(
+      `${sub.lat_public.toFixed(4)}° N   ${sub.lng_public.toFixed(4)}° Ø`,
+      72, H - 155
+    );
+  }
+
+  // ── Type-badge ───────────────────────────────────────────────────────────────
+  const badgeColor = sub.media_type === "photo" ? "#3b82f6" : "#10b981";
+  const badgeLabel = sub.media_type === "photo" ? "📸  Havobservasjon" : "🎥  Havvideo";
+  ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  const badgeW = ctx.measureText(badgeLabel).width + 52;
+  roundRect(ctx, 72, H - 115, badgeW, 62, 31);
+  ctx.fillStyle = badgeColor;
+  ctx.fill();
+  ctx.fillStyle = "white";
+  ctx.textAlign = "left";
+  ctx.fillText(badgeLabel, 72 + 26, H - 115 + 41);
+
+  // ── Mini-kart ─────────────────────────────────────────────────────────────────
+  if (sub.lat_public && sub.lng_public) {
+    const ZOOM = 10, TILE_SIZE = 256, MAP_SIZE = 220;
+    const { x, y } = latLngToTile(sub.lat_public, sub.lng_public, ZOOM);
+    const tileUrl = `https://a.basemaps.cartocdn.com/dark_all/${ZOOM}/${x}/${y}.png`;
+    const tileImg = await loadImage(tileUrl, true);
+
+    const mx = W - 72 - MAP_SIZE, my = H - 115 - MAP_SIZE - 24;
+    ctx.save();
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
+    ctx.clip();
+
+    if (tileImg) {
+      // Scale tile to MAP_SIZE and draw
+      const scale = MAP_SIZE / TILE_SIZE;
+      const { px, py } = tilePixelOffset(sub.lat_public, sub.lng_public, ZOOM);
+      // Center the point in the map box
+      const dx = mx + MAP_SIZE / 2 - px * scale;
+      const dy = my + MAP_SIZE / 2 - py * scale;
+      ctx.drawImage(tileImg, dx, dy, TILE_SIZE * scale, TILE_SIZE * scale);
+    } else {
+      ctx.fillStyle = "#1e3a5f";
+      ctx.fillRect(mx, my, MAP_SIZE, MAP_SIZE);
+    }
+
+    ctx.restore();
+
+    // Border on map
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Pin marker
+    const pinX = mx + MAP_SIZE / 2, pinY = my + MAP_SIZE / 2;
+    ctx.beginPath();
+    ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
+    ctx.fillStyle = "#f97316";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pinX, pinY, 14, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(249,115,22,0.5)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // ── URL watermark ────────────────────────────────────────────────────────────
+  ctx.textAlign = "right";
+  ctx.font = "26px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+  ctx.fillText("kystobservatorene.no", W - 72, H - 36);
+
+  return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
+}
+
+function drawOceanBg(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  const g = ctx.createLinearGradient(0, 0, w * 0.3, h);
+  g.addColorStop(0, "#070b2f");
+  g.addColorStop(0.5, "#0a2a5e");
+  g.addColorStop(1, "#04111f");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// ── ShareCardButton ────────────────────────────────────────────────────────────
+
+function ShareCardButton({ sub }: { sub: Submission }) {
+  const [state, setState] = useState<"idle" | "generating" | "done">("idle");
+
+  async function handleGenerate() {
+    setState("generating");
+    try {
+      const blob = await generateShareCard(sub);
+      if (!blob) { setState("idle"); return; }
+
+      const file = new File([blob], "kystobservasjon.png", { type: "image/png" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "Kystobservatørene",
+          text: "Jeg har bidratt til havforskning langs kysten! 🌊",
+        });
+        setState("idle");
+      } else {
+        // Fallback: last ned
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kystobservasjon.png";
+        a.click();
+        URL.revokeObjectURL(url);
+        setState("done");
+        setTimeout(() => setState("idle"), 2500);
+      }
+    } catch {
+      setState("idle");
     }
   }
 
   return (
     <button
-      onClick={handleShare}
-      className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+      onClick={handleGenerate}
+      disabled={state === "generating"}
+      className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-100 disabled:opacity-60"
     >
-      {copied ? "✓ Kopiert!" : "↗ Del"}
+      {state === "generating" ? (
+        <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" /> Lager kort…</>
+      ) : state === "done" ? (
+        "✓ Lastet ned!"
+      ) : (
+        "↗ Lag delekort"
+      )}
     </button>
   );
 }
@@ -267,7 +483,7 @@ export default function MineObservasjonerPage() {
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-2">
-                        <ShareButton sub={sub} />
+                        <ShareCardButton sub={sub} />
                         {sub.media_url && (
                           <button
                             onClick={() => setLightbox(sub)}

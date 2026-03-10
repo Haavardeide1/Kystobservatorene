@@ -90,7 +90,7 @@ async function load3x3Map(lat: number, lng: number, zoom: number): Promise<{ can
   for (let dy = -1; dy <= 1; dy++) {
     for (let dx = -1; dx <= 1; dx++) {
       const tx = cx + dx, ty = cy + dy;
-      const url = `https://a.basemaps.cartocdn.com/dark_all/${zoom}/${tx}/${ty}.png`;
+      const url = `https://a.basemaps.cartocdn.com/rastertiles/voyager/${zoom}/${tx}/${ty}.png`;
       loads.push(
         loadImage(url, true).then((img) => {
           if (img) octx.drawImage(img, (dx + 1) * TILE, (dy + 1) * TILE, TILE, TILE);
@@ -109,104 +109,93 @@ async function load3x3Map(lat: number, lng: number, zoom: number): Promise<{ can
 
 async function generateShareCard(sub: Submission): Promise<Blob | null> {
   const W = 1080, H = 1350;
-  const PHOTO_H = Math.round(H * 0.68); // top 68% = photo
-  const INFO_H = H - PHOTO_H;           // bottom 32% = dark info bar
 
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext("2d")!;
 
-  // ── 1. Fotoseksjon ──────────────────────────────────────────────────────────
-  ctx.save();
-  ctx.rect(0, 0, W, PHOTO_H);
-  ctx.clip();
-
+  // ── 1. Full-bleed foto ──────────────────────────────────────────────────────
   if (sub.media_url && sub.media_type === "photo") {
     const img = await loadImage(sub.media_url, true);
     if (img) {
-      const scale = Math.max(W / img.naturalWidth, PHOTO_H / img.naturalHeight);
+      const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight);
       const sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
-      ctx.drawImage(img, (W - sw) / 2, (PHOTO_H - sh) / 2, sw, sh);
+      ctx.drawImage(img, (W - sw) / 2, (H - sh) / 2, sw, sh);
     } else {
-      drawOceanBg(ctx, W, PHOTO_H);
+      drawOceanBg(ctx, W, H);
     }
   } else {
-    drawOceanBg(ctx, W, PHOTO_H);
+    drawOceanBg(ctx, W, H);
   }
 
-  // Gradient ned mot info-baren
-  const photoBot = ctx.createLinearGradient(0, PHOTO_H * 0.6, 0, PHOTO_H);
-  photoBot.addColorStop(0, "rgba(5,9,38,0)");
-  photoBot.addColorStop(1, "rgba(5,9,38,0.95)");
-  ctx.fillStyle = photoBot;
-  ctx.fillRect(0, 0, W, PHOTO_H);
+  // ── 2. Gradients for text readability ───────────────────────────────────────
+  // Top gradient (logo)
+  const gTop = ctx.createLinearGradient(0, 0, 0, H * 0.32);
+  gTop.addColorStop(0, "rgba(4,8,30,0.82)");
+  gTop.addColorStop(1, "rgba(4,8,30,0)");
+  ctx.fillStyle = gTop;
+  ctx.fillRect(0, 0, W, H);
 
-  // Gradient øverst for logo
-  const photoTop = ctx.createLinearGradient(0, 0, 0, PHOTO_H * 0.28);
-  photoTop.addColorStop(0, "rgba(5,9,38,0.75)");
-  photoTop.addColorStop(1, "rgba(5,9,38,0)");
-  ctx.fillStyle = photoTop;
-  ctx.fillRect(0, 0, W, PHOTO_H);
+  // Bottom gradient (info + map)
+  const gBot = ctx.createLinearGradient(0, H * 0.52, 0, H);
+  gBot.addColorStop(0, "rgba(4,8,30,0)");
+  gBot.addColorStop(0.45, "rgba(4,8,30,0.78)");
+  gBot.addColorStop(1, "rgba(4,8,30,0.97)");
+  ctx.fillStyle = gBot;
+  ctx.fillRect(0, 0, W, H);
 
-  ctx.restore();
-
-  // ── 2. Logo øverst ──────────────────────────────────────────────────────────
+  // ── 3. Logo øverst ──────────────────────────────────────────────────────────
   ctx.textAlign = "left";
   ctx.fillStyle = "white";
-  ctx.font = "800 54px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillText("KYSTOBSERVATØRENE", 72, 102);
-  ctx.font = "400 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.font = "800 52px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillText("KYSTOBSERVATØRENE", 72, 100);
+  ctx.font = "400 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ctx.fillText("NORCE Research", 72, 146);
+  ctx.fillText("NORCE Research", 72, 142);
 
-  // ── 3. Mørk info-seksjon ────────────────────────────────────────────────────
-  ctx.fillStyle = "#050926";
-  ctx.fillRect(0, PHOTO_H, W, INFO_H);
-
-  // Tynn aksentlinje øverst i info-seksjonen
-  const lineGrad = ctx.createLinearGradient(0, 0, W, 0);
-  lineGrad.addColorStop(0, "#3b82f6");
-  lineGrad.addColorStop(0.5, "#06b6d4");
-  lineGrad.addColorStop(1, "#3b82f6");
-  ctx.fillStyle = lineGrad;
-  ctx.fillRect(0, PHOTO_H, W, 3);
-
-  // ── 4. Dato + tid (venstre i info-seksjonen) ────────────────────────────────
+  // ── 4. Dato + info (nede til venstre) ───────────────────────────────────────
   const date = new Date(sub.created_at);
   const dateStr = date.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
   const timeStr = date.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
   const textX = 72;
-  const textTop = PHOTO_H + 52;
+  const textBase = H - 72;
 
+  // Watermark
   ctx.textAlign = "left";
-  ctx.fillStyle = "white";
-  ctx.font = "800 62px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillText(dateStr, textX, textTop);
-
-  ctx.font = "400 38px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillText(`kl. ${timeStr}`, textX, textTop + 58);
+  ctx.font = "400 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.22)";
+  ctx.fillText("kystobservatorene.no", textX, textBase);
 
   // Koordinater
   if (sub.lat_public && sub.lng_public) {
     ctx.font = "400 28px 'Courier New', monospace";
-    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.fillStyle = "rgba(255,255,255,0.4)";
     ctx.fillText(
       `${sub.lat_public.toFixed(4)}° N  ${sub.lng_public.toFixed(4)}° Ø`,
-      textX, textTop + 118
+      textX, textBase - 48
     );
   }
+
+  // Klokkeslett
+  ctx.font = "400 38px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillText(`kl. ${timeStr}`, textX, textBase - 108);
+
+  // Dato (stor)
+  ctx.font = "800 68px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "white";
+  ctx.fillText(dateStr, textX, textBase - 166);
 
   // Type-badge
   const badgeColor = sub.media_type === "photo" ? "#3b82f6" : "#10b981";
   const badgeLabel = sub.media_type === "photo" ? "📸  Havobservasjon" : "🎥  Havvideo";
   ctx.font = "600 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   const badgeW = ctx.measureText(badgeLabel).width + 48;
-  const badgeY = textTop + 154;
+  const badgeY = textBase - 284;
   roundRect(ctx, textX, badgeY, badgeW, 56, 28);
-  ctx.fillStyle = badgeColor + "33";
+  ctx.fillStyle = badgeColor + "44";
   ctx.fill();
   roundRect(ctx, textX, badgeY, badgeW, 56, 28);
   ctx.strokeStyle = badgeColor;
@@ -215,69 +204,60 @@ async function generateShareCard(sub: Submission): Promise<Blob | null> {
   ctx.fillStyle = "white";
   ctx.fillText(badgeLabel, textX + 24, badgeY + 38);
 
-  // ── 5. Kart (høyre i info-seksjonen) ────────────────────────────────────────
+  // ── 5. Kart (nede til høyre) ─────────────────────────────────────────────────
   if (sub.lat_public && sub.lng_public) {
-    const MAP_SIZE = INFO_H - 64;
+    const MAP_SIZE = 300;
     const mx = W - 72 - MAP_SIZE;
-    const my = PHOTO_H + 32;
+    const my = H - 72 - MAP_SIZE;
 
     const mapResult = await load3x3Map(sub.lat_public, sub.lng_public, 11);
 
     ctx.save();
-    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 24);
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
     ctx.clip();
 
     if (mapResult) {
-      // Scale the 768x768 (3x256) canvas to MAP_SIZE, centering the pin
       const src = mapResult.canvas;
       const scale = MAP_SIZE / src.width;
-      const srcW = src.width, srcH = src.height;
-      // Center pin in the map box
       const destPinX = mx + MAP_SIZE / 2;
       const destPinY = my + MAP_SIZE / 2;
       const offsetX = destPinX - mapResult.pinX * scale;
       const offsetY = destPinY - mapResult.pinY * scale;
-      ctx.drawImage(src, offsetX, offsetY, srcW * scale, srcH * scale);
+      ctx.drawImage(src, offsetX, offsetY, src.width * scale, src.height * scale);
     } else {
-      ctx.fillStyle = "#0a1a3e";
+      ctx.fillStyle = "#dde8f4";
       ctx.fillRect(mx, my, MAP_SIZE, MAP_SIZE);
     }
     ctx.restore();
 
     // Border
-    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 24);
-    ctx.strokeStyle = "rgba(59,130,246,0.4)";
-    ctx.lineWidth = 2;
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = 2.5;
     ctx.stroke();
 
-    // Pin — glow ring
+    // Pin glow
     const pinX = mx + MAP_SIZE / 2;
     const pinY = my + MAP_SIZE / 2;
-    const glowGrad = ctx.createRadialGradient(pinX, pinY, 8, pinX, pinY, 32);
-    glowGrad.addColorStop(0, "rgba(249,115,22,0.6)");
+    const glowGrad = ctx.createRadialGradient(pinX, pinY, 6, pinX, pinY, 28);
+    glowGrad.addColorStop(0, "rgba(249,115,22,0.65)");
     glowGrad.addColorStop(1, "rgba(249,115,22,0)");
     ctx.fillStyle = glowGrad;
     ctx.beginPath();
-    ctx.arc(pinX, pinY, 32, 0, Math.PI * 2);
+    ctx.arc(pinX, pinY, 28, 0, Math.PI * 2);
     ctx.fill();
 
     // Pin dot
     ctx.beginPath();
-    ctx.arc(pinX, pinY, 11, 0, Math.PI * 2);
+    ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
     ctx.fillStyle = "#f97316";
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(pinX, pinY, 11, 0, Math.PI * 2);
+    ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
     ctx.stroke();
   }
-
-  // ── 6. Watermark ────────────────────────────────────────────────────────────
-  ctx.textAlign = "left";
-  ctx.font = "400 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  ctx.fillText("kystobservatorene.no", 72, H - 28);
 
   return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
 }

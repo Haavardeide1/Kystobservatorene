@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const { data, error } = await supabaseAdmin
       .from("submissions")
       .select(
-        "id,user_id,display_name,media_type,media_path_original,created_at,lat_public,lng_public,comment,valg,wind_dir,wave_dir,level,is_public,deleted_at"
+        "id,user_id,display_name,media_type,media_path_original,created_at,lat_public,lng_public,comment,valg,wind_dir,wave_dir,level,is_public,deleted_at,researcher_comment,researcher_name"
       )
       .is("deleted_at", null)
       .order("created_at", { ascending: false });

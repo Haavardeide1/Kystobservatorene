@@ -22,6 +22,8 @@ type Submission = {
   wave_dir: string | null;
   level: number;
   is_public: boolean;
+  researcher_comment: string | null;
+  researcher_name: string | null;
 };
 
 type AppUser = {
@@ -210,7 +212,7 @@ export default function AdminPage() {
     setCommentSaved(false);
   }
 
-  async function handleSaveComment() {
+  async function saveComment(comment: string | null, name: string) {
     if (!accessToken || !selectedSub) return;
     setSavingComment(true);
     try {
@@ -221,18 +223,34 @@ export default function AdminPage() {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          researcher_comment: researcherComment.trim() || null,
-          researcher_name: researcherName.trim(),
+          researcher_comment: comment || null,
+          researcher_name: name,
         }),
       });
       if (res.ok) {
         setCommentSaved(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setSubmissions((prev) => prev.map((s) => s.id === selectedSub.id ? { ...s, researcher_comment: researcherComment.trim() || null, researcher_name: researcherName.trim() } as any : s));
+        setSubmissions((prev) => prev.map((s) =>
+          s.id === selectedSub.id
+            ? { ...s, researcher_comment: comment || null, researcher_name: name }
+            : s
+        ));
+        if (!comment) {
+          setSelectedSub((prev) => prev ? { ...prev, researcher_comment: null, researcher_name: null } : null);
+        }
       }
     } finally {
       setSavingComment(false);
     }
+  }
+
+  function handleSaveComment() {
+    saveComment(researcherComment.trim(), researcherName.trim());
+  }
+
+  function handleClearComment() {
+    setResearcherComment("");
+    setResearcherName("");
+    saveComment(null, "");
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────
@@ -554,7 +572,14 @@ export default function AdminPage() {
 
                           {/* Name */}
                           <td className="px-4 py-3 font-medium text-slate-800">
-                            {sub.display_name || <span className="text-slate-400">Anonym</span>}
+                            <div className="flex items-center gap-2">
+                              {sub.display_name || <span className="text-slate-400">Anonym</span>}
+                              {sub.researcher_comment && (
+                                <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-bold text-cyan-700">
+                                  🔬 Kommentert
+                                </span>
+                              )}
+                            </div>
                           </td>
 
                           {/* Type badge */}
@@ -753,11 +778,20 @@ export default function AdminPage() {
                       <div className="mt-2 flex items-center gap-2">
                         <button
                           onClick={handleSaveComment}
-                          disabled={savingComment}
+                          disabled={savingComment || !researcherComment.trim()}
                           className="rounded-xl bg-cyan-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-cyan-700 disabled:opacity-50"
                         >
-                          {savingComment ? "Lagrer…" : researcherComment.trim() ? "Lagre kommentar" : "Fjern kommentar"}
+                          {savingComment ? "Lagrer…" : "Lagre kommentar"}
                         </button>
+                        {selectedSub?.researcher_comment && (
+                          <button
+                            onClick={handleClearComment}
+                            disabled={savingComment}
+                            className="rounded-xl border border-rose-200 px-4 py-2 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
+                          >
+                            🗑 Fjern kommentar
+                          </button>
+                        )}
                         {commentSaved && (
                           <span className="text-xs font-semibold text-emerald-600">✓ Lagret!</span>
                         )}

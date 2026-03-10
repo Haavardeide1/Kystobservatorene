@@ -279,6 +279,65 @@ export default function ProfilPage() {
             </div>
           </div>
 
+          {/* ── Streak-kort ──────────────────────────────────────────────── */}
+          {isLoggedIn && stats && (
+            <div className={`mt-6 rounded-2xl p-5 ${
+              (stats.streak ?? 0) > 0
+                ? "bg-gradient-to-r from-orange-500 to-red-500"
+                : "bg-slate-100"
+            }`}>
+              <div className="flex items-center gap-4">
+                <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-4xl ${
+                  (stats.streak ?? 0) > 0 ? "bg-white/20" : "bg-slate-200"
+                }`}>
+                  {(stats.streak ?? 0) > 0 ? "🔥" : "💧"}
+                </div>
+                <div className="flex-1">
+                  {(stats.streak ?? 0) > 0 ? (
+                    <>
+                      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/70">
+                        Aktiv streak
+                      </p>
+                      <p className="text-3xl font-black text-white">
+                        {stats.streak} dag{stats.streak === 1 ? "" : "er"} på rad 🔥
+                      </p>
+                      <p className="mt-1 text-sm text-white/70">
+                        Send inn i dag for å holde streaken i live!
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-400">
+                        Ingen aktiv streak
+                      </p>
+                      <p className="text-xl font-bold text-slate-700">Start streaken din i dag!</p>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Send inn en observasjon for å sette i gang 🔥
+                      </p>
+                    </>
+                  )}
+                </div>
+                {(stats.streak ?? 0) >= 7 && (
+                  <div className="shrink-0 rounded-2xl bg-white/20 px-4 py-3 text-center">
+                    <p className="text-2xl font-black text-white">{stats.streak}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-white/70">dager</p>
+                  </div>
+                )}
+              </div>
+              {(stats.streak ?? 0) > 0 && (
+                <div className="mt-4 flex gap-1.5 overflow-hidden">
+                  {Array.from({ length: Math.min(stats.streak, 30) }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-2 flex-1 rounded-full bg-white/40"
+                      style={{ opacity: 0.4 + (i / Math.min(stats.streak, 30)) * 0.6 }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── Stats + brukernavn ───────────────────────────────────────── */}
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
             {!username && (
@@ -315,7 +374,7 @@ export default function ProfilPage() {
                   { label: "Observasjoner", value: stats?.total ?? 0 },
                   { label: "Merker opptjent", value: (badges ?? []).filter((b) => b.status === "earned").length },
                   { label: "Steder", value: stats?.locations ?? 0 },
-                  { label: "Streak", value: `${stats?.streak ?? 0} dager` },
+                  { label: "Videoer", value: stats?.videos ?? 0 },
                 ].map((stat) => (
                   <div key={stat.label} className="rounded-2xl bg-[#f6f7fb] px-5 py-4 text-center">
                     <div className="text-2xl font-semibold text-slate-900">{stat.value}</div>

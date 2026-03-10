@@ -76,138 +76,208 @@ function roundRect(
   ctx.closePath();
 }
 
+async function load3x3Map(lat: number, lng: number, zoom: number): Promise<{ canvas: HTMLCanvasElement; pinX: number; pinY: number } | null> {
+  const TILE = 256;
+  const { x: cx, y: cy } = latLngToTile(lat, lng, zoom);
+  const { px, py } = tilePixelOffset(lat, lng, zoom);
+
+  const offscreen = document.createElement("canvas");
+  offscreen.width = TILE * 3;
+  offscreen.height = TILE * 3;
+  const octx = offscreen.getContext("2d")!;
+
+  const loads: Promise<void>[] = [];
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const tx = cx + dx, ty = cy + dy;
+      const url = `https://a.basemaps.cartocdn.com/dark_all/${zoom}/${tx}/${ty}.png`;
+      loads.push(
+        loadImage(url, true).then((img) => {
+          if (img) octx.drawImage(img, (dx + 1) * TILE, (dy + 1) * TILE, TILE, TILE);
+        })
+      );
+    }
+  }
+  await Promise.all(loads);
+
+  // Pin is at center tile offset + 1 tile (for the 3x3 grid offset)
+  const pinX = TILE + px;
+  const pinY = TILE + py;
+
+  return { canvas: offscreen, pinX, pinY };
+}
+
 async function generateShareCard(sub: Submission): Promise<Blob | null> {
   const W = 1080, H = 1350;
+  const PHOTO_H = Math.round(H * 0.68); // top 68% = photo
+  const INFO_H = H - PHOTO_H;           // bottom 32% = dark info bar
+
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext("2d")!;
 
-  // ── Bakgrunn ────────────────────────────────────────────────────────────────
+  // ── 1. Fotoseksjon ──────────────────────────────────────────────────────────
+  ctx.save();
+  ctx.rect(0, 0, W, PHOTO_H);
+  ctx.clip();
+
   if (sub.media_url && sub.media_type === "photo") {
     const img = await loadImage(sub.media_url, true);
     if (img) {
-      // Cover-fit
-      const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+      const scale = Math.max(W / img.naturalWidth, PHOTO_H / img.naturalHeight);
       const sw = img.naturalWidth * scale, sh = img.naturalHeight * scale;
-      ctx.drawImage(img, (W - sw) / 2, (H - sh) / 2, sw, sh);
+      ctx.drawImage(img, (W - sw) / 2, (PHOTO_H - sh) / 2, sw, sh);
     } else {
-      // CORS fallback: havgradient
-      drawOceanBg(ctx, W, H);
+      drawOceanBg(ctx, W, PHOTO_H);
     }
   } else {
-    drawOceanBg(ctx, W, H);
+    drawOceanBg(ctx, W, PHOTO_H);
   }
 
-  // ── Overlay-gradienter ──────────────────────────────────────────────────────
-  const topGrad = ctx.createLinearGradient(0, 0, 0, H * 0.45);
-  topGrad.addColorStop(0, "rgba(7,11,47,0.82)");
-  topGrad.addColorStop(1, "rgba(7,11,47,0)");
-  ctx.fillStyle = topGrad;
-  ctx.fillRect(0, 0, W, H);
+  // Gradient ned mot info-baren
+  const photoBot = ctx.createLinearGradient(0, PHOTO_H * 0.6, 0, PHOTO_H);
+  photoBot.addColorStop(0, "rgba(5,9,38,0)");
+  photoBot.addColorStop(1, "rgba(5,9,38,0.95)");
+  ctx.fillStyle = photoBot;
+  ctx.fillRect(0, 0, W, PHOTO_H);
 
-  const botGrad = ctx.createLinearGradient(0, H * 0.45, 0, H);
-  botGrad.addColorStop(0, "rgba(7,11,47,0)");
-  botGrad.addColorStop(1, "rgba(7,11,47,0.92)");
-  ctx.fillStyle = botGrad;
-  ctx.fillRect(0, 0, W, H);
+  // Gradient øverst for logo
+  const photoTop = ctx.createLinearGradient(0, 0, 0, PHOTO_H * 0.28);
+  photoTop.addColorStop(0, "rgba(5,9,38,0.75)");
+  photoTop.addColorStop(1, "rgba(5,9,38,0)");
+  ctx.fillStyle = photoTop;
+  ctx.fillRect(0, 0, W, PHOTO_H);
 
-  // ── Logo øverst ─────────────────────────────────────────────────────────────
+  ctx.restore();
+
+  // ── 2. Logo øverst ──────────────────────────────────────────────────────────
   ctx.textAlign = "left";
   ctx.fillStyle = "white";
-  ctx.font = "bold 52px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillText("KYSTOBSERVATØRENE", 72, 110);
-  ctx.font = "34px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillText("NORCE Research", 72, 158);
+  ctx.font = "800 54px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillText("KYSTOBSERVATØRENE", 72, 102);
+  ctx.font = "400 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.fillText("NORCE Research", 72, 146);
 
-  // ── Dato + tid ───────────────────────────────────────────────────────────────
+  // ── 3. Mørk info-seksjon ────────────────────────────────────────────────────
+  ctx.fillStyle = "#050926";
+  ctx.fillRect(0, PHOTO_H, W, INFO_H);
+
+  // Tynn aksentlinje øverst i info-seksjonen
+  const lineGrad = ctx.createLinearGradient(0, 0, W, 0);
+  lineGrad.addColorStop(0, "#3b82f6");
+  lineGrad.addColorStop(0.5, "#06b6d4");
+  lineGrad.addColorStop(1, "#3b82f6");
+  ctx.fillStyle = lineGrad;
+  ctx.fillRect(0, PHOTO_H, W, 3);
+
+  // ── 4. Dato + tid (venstre i info-seksjonen) ────────────────────────────────
   const date = new Date(sub.created_at);
   const dateStr = date.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
   const timeStr = date.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
+  const textX = 72;
+  const textTop = PHOTO_H + 52;
+
   ctx.textAlign = "left";
   ctx.fillStyle = "white";
-  ctx.font = "bold 72px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillText(dateStr, 72, H - 280);
+  ctx.font = "800 62px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillText(dateStr, textX, textTop);
 
-  ctx.font = "44px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.65)";
-  ctx.fillText(`kl. ${timeStr}`, 72, H - 210);
+  ctx.font = "400 38px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillText(`kl. ${timeStr}`, textX, textTop + 58);
 
-  // ── Koordinater ──────────────────────────────────────────────────────────────
+  // Koordinater
   if (sub.lat_public && sub.lng_public) {
-    ctx.font = "32px 'Courier New', monospace";
-    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.font = "400 28px 'Courier New', monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
     ctx.fillText(
-      `${sub.lat_public.toFixed(4)}° N   ${sub.lng_public.toFixed(4)}° Ø`,
-      72, H - 155
+      `${sub.lat_public.toFixed(4)}° N  ${sub.lng_public.toFixed(4)}° Ø`,
+      textX, textTop + 118
     );
   }
 
-  // ── Type-badge ───────────────────────────────────────────────────────────────
+  // Type-badge
   const badgeColor = sub.media_type === "photo" ? "#3b82f6" : "#10b981";
   const badgeLabel = sub.media_type === "photo" ? "📸  Havobservasjon" : "🎥  Havvideo";
-  ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  const badgeW = ctx.measureText(badgeLabel).width + 52;
-  roundRect(ctx, 72, H - 115, badgeW, 62, 31);
-  ctx.fillStyle = badgeColor;
+  ctx.font = "600 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  const badgeW = ctx.measureText(badgeLabel).width + 48;
+  const badgeY = textTop + 154;
+  roundRect(ctx, textX, badgeY, badgeW, 56, 28);
+  ctx.fillStyle = badgeColor + "33";
   ctx.fill();
+  roundRect(ctx, textX, badgeY, badgeW, 56, 28);
+  ctx.strokeStyle = badgeColor;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
   ctx.fillStyle = "white";
-  ctx.textAlign = "left";
-  ctx.fillText(badgeLabel, 72 + 26, H - 115 + 41);
+  ctx.fillText(badgeLabel, textX + 24, badgeY + 38);
 
-  // ── Mini-kart ─────────────────────────────────────────────────────────────────
+  // ── 5. Kart (høyre i info-seksjonen) ────────────────────────────────────────
   if (sub.lat_public && sub.lng_public) {
-    const ZOOM = 10, TILE_SIZE = 256, MAP_SIZE = 220;
-    const { x, y } = latLngToTile(sub.lat_public, sub.lng_public, ZOOM);
-    const tileUrl = `https://a.basemaps.cartocdn.com/dark_all/${ZOOM}/${x}/${y}.png`;
-    const tileImg = await loadImage(tileUrl, true);
+    const MAP_SIZE = INFO_H - 64;
+    const mx = W - 72 - MAP_SIZE;
+    const my = PHOTO_H + 32;
 
-    const mx = W - 72 - MAP_SIZE, my = H - 115 - MAP_SIZE - 24;
+    const mapResult = await load3x3Map(sub.lat_public, sub.lng_public, 11);
+
     ctx.save();
-    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 24);
     ctx.clip();
 
-    if (tileImg) {
-      // Scale tile to MAP_SIZE and draw
-      const scale = MAP_SIZE / TILE_SIZE;
-      const { px, py } = tilePixelOffset(sub.lat_public, sub.lng_public, ZOOM);
-      // Center the point in the map box
-      const dx = mx + MAP_SIZE / 2 - px * scale;
-      const dy = my + MAP_SIZE / 2 - py * scale;
-      ctx.drawImage(tileImg, dx, dy, TILE_SIZE * scale, TILE_SIZE * scale);
+    if (mapResult) {
+      // Scale the 768x768 (3x256) canvas to MAP_SIZE, centering the pin
+      const src = mapResult.canvas;
+      const scale = MAP_SIZE / src.width;
+      const srcW = src.width, srcH = src.height;
+      // Center pin in the map box
+      const destPinX = mx + MAP_SIZE / 2;
+      const destPinY = my + MAP_SIZE / 2;
+      const offsetX = destPinX - mapResult.pinX * scale;
+      const offsetY = destPinY - mapResult.pinY * scale;
+      ctx.drawImage(src, offsetX, offsetY, srcW * scale, srcH * scale);
     } else {
-      ctx.fillStyle = "#1e3a5f";
+      ctx.fillStyle = "#0a1a3e";
       ctx.fillRect(mx, my, MAP_SIZE, MAP_SIZE);
     }
-
     ctx.restore();
 
-    // Border on map
-    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 20);
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    // Border
+    roundRect(ctx, mx, my, MAP_SIZE, MAP_SIZE, 24);
+    ctx.strokeStyle = "rgba(59,130,246,0.4)";
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Pin marker
-    const pinX = mx + MAP_SIZE / 2, pinY = my + MAP_SIZE / 2;
+    // Pin — glow ring
+    const pinX = mx + MAP_SIZE / 2;
+    const pinY = my + MAP_SIZE / 2;
+    const glowGrad = ctx.createRadialGradient(pinX, pinY, 8, pinX, pinY, 32);
+    glowGrad.addColorStop(0, "rgba(249,115,22,0.6)");
+    glowGrad.addColorStop(1, "rgba(249,115,22,0)");
+    ctx.fillStyle = glowGrad;
     ctx.beginPath();
-    ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
+    ctx.arc(pinX, pinY, 32, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pin dot
+    ctx.beginPath();
+    ctx.arc(pinX, pinY, 11, 0, Math.PI * 2);
     ctx.fillStyle = "#f97316";
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(pinX, pinY, 14, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(249,115,22,0.5)";
+    ctx.arc(pinX, pinY, 11, 0, Math.PI * 2);
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 3;
     ctx.stroke();
   }
 
-  // ── URL watermark ────────────────────────────────────────────────────────────
-  ctx.textAlign = "right";
-  ctx.font = "26px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.3)";
-  ctx.fillText("kystobservatorene.no", W - 72, H - 36);
+  // ── 6. Watermark ────────────────────────────────────────────────────────────
+  ctx.textAlign = "left";
+  ctx.font = "400 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  ctx.fillText("kystobservatorene.no", 72, H - 28);
 
   return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
 }

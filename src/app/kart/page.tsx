@@ -1,7 +1,5 @@
 import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
-import ResearcherComments from "@/components/ResearcherComments";
-
 const MapView = dynamic(() => import("@/components/MapView"), {
   ssr: false,
   loading: () => (
@@ -16,7 +14,6 @@ export default function KartPage() {
     <div className="flex min-h-screen flex-col bg-white">
       <SiteHeader variant="dark" />
       <MapView />
-      <ResearcherComments />
     </div>
   );
 }

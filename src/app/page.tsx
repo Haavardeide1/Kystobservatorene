@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import SiteHeader from "@/components/site/SiteHeader";
 import TopFive from "@/components/TopFive";
 import WeeklyCarousel from "@/components/WeeklyCarousel";
+import ResearcherComments from "@/components/ResearcherComments";
 
 const HomeMiniMap = dynamic(() => import("@/components/HomeMiniMap"), {
   ssr: false,
@@ -222,6 +223,8 @@ export default function Home() {
           <WeeklyCarousel />
         </div>
       </section>
+
+      <ResearcherComments />
 
       {/* ── Om (full) ─────────────────────────────────────────────────────── */}
       <section id="om" className="bg-white">

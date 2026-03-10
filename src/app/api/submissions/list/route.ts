@@ -23,9 +23,6 @@ type SubmissionRow = {
   wave_dir: string | null;
   video_duration: number | null;
   video_analysis: Record<string, unknown> | null;
-  researcher_comment: string | null;
-  researcher_name: string | null;
-  researcher_commented_at: string | null;
 };
 
 export async function GET() {
@@ -53,9 +50,6 @@ export async function GET() {
           "wave_dir",
           "video_duration",
           "video_analysis",
-          "researcher_comment",
-          "researcher_name",
-          "researcher_commented_at",
         ].join(",")
       )
       .eq("is_public", true)

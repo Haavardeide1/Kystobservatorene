@@ -25,15 +25,11 @@ export default function ResearcherComments() {
   const [items, setItems] = useState<ResearcherComment[]>([]);
 
   useEffect(() => {
-    fetch("/api/submissions/list")
+    fetch("/api/researcher-comments")
       .then((r) => r.json())
       .then(({ data }) => {
         if (!data) return;
-        const withComments = data.filter(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (s: any) => s.researcher_comment && s.researcher_name
-        ) as ResearcherComment[];
-        setItems(withComments.slice(0, 6));
+        setItems(data as ResearcherComment[]);
       })
       .catch(() => {});
   }, []);

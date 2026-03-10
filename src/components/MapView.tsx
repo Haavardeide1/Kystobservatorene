@@ -104,12 +104,18 @@ export default function MapView() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const waveLayerRef = useRef<any>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const baseLayerRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const satelliteLayerRef = useRef<any>(null);
+
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [mapReady, setMapReady] = useState(false);
   const [liveCount, setLiveCount] = useState(0);
   const [showWaves, setShowWaves] = useState(false);
   const [waveLoading, setWaveLoading] = useState(false);
+  const [showSatellite, setShowSatellite] = useState(false);
   const [lightboxSub, setLightboxSub] = useState<Submission | null>(null);
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
@@ -199,6 +205,22 @@ export default function MapView() {
     }
   }
 
+  // ── Satellite toggle ──────────────────────────────────────────────────────
+
+  function toggleSatellite() {
+    if (!mapRef.current || !baseLayerRef.current || !satelliteLayerRef.current) return;
+    const map = mapRef.current;
+    if (showSatellite) {
+      map.removeLayer(satelliteLayerRef.current);
+      baseLayerRef.current.addTo(map);
+      setShowSatellite(false);
+    } else {
+      map.removeLayer(baseLayerRef.current);
+      satelliteLayerRef.current.addTo(map);
+      setShowSatellite(true);
+    }
+  }
+
   // ── Init map ──────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -229,7 +251,7 @@ export default function MapView() {
 
       const map = LLib.map(mapContainerRef.current).setView([63.5, 10.5], 5);
 
-      LLib.tileLayer(
+      const baseLayer = LLib.tileLayer(
         "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         {
           attribution:
@@ -237,7 +259,17 @@ export default function MapView() {
           subdomains: "abcd",
           maxZoom: 19,
         }
-      ).addTo(map);
+      );
+      baseLayer.addTo(map);
+      baseLayerRef.current = baseLayer;
+
+      satelliteLayerRef.current = LLib.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution: "Tiles &copy; Esri",
+          maxZoom: 19,
+        }
+      );
 
       // Cluster group
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -416,6 +448,20 @@ export default function MapView() {
             "🌊"
           )}
           {waveLoading ? "Laster…" : "Bølgevarsel"}
+        </button>
+
+        {/* Satellitt-toggle */}
+        <button
+          type="button"
+          onClick={toggleSatellite}
+          className={`absolute left-[10px] top-[160px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+            showSatellite
+              ? "border-amber-400 bg-amber-500 text-white hover:bg-amber-600"
+              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+          }`}
+          title="Bytt til satellittkart"
+        >
+          🛰 Satellitt
         </button>
 
         {/* Mobile-only floating CTA — sidebar is hidden on small screens */}

@@ -15,6 +15,12 @@ type Badge = {
   status: "locked" | "active" | "earned";
 };
 
+type ResearcherNotification = {
+  researcher_comment: string;
+  researcher_name: string;
+  researcher_commented_at: string;
+};
+
 type ProfileStats = {
   total: number;
   photos: number;
@@ -22,6 +28,7 @@ type ProfileStats = {
   locations: number;
   badges: number;
   streak: number;
+  researcherComments: ResearcherNotification[];
 };
 
 type BadgeApiItem = {
@@ -335,6 +342,29 @@ export default function ProfilPage() {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ── Forskerkommentar-varsling ─────────────────────────────────── */}
+          {isLoggedIn && stats && (stats.researcherComments ?? []).length > 0 && (
+            <div className="mt-6 space-y-3">
+              {(stats.researcherComments ?? []).map((rc, i) => (
+                <div key={i} className="flex gap-4 rounded-2xl border border-cyan-200 bg-cyan-50 p-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-xl">
+                    🔬
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-600">
+                      En forsker har kommentert observasjonen din!
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800">{rc.researcher_name}</p>
+                    <p className="mt-1 text-sm italic text-slate-600">&quot;{rc.researcher_comment}&quot;</p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {new Date(rc.researcher_commented_at).toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" })}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

@@ -77,6 +77,12 @@ export default function AdminPage() {
   // Detail modal
   const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
 
+  // Researcher comment
+  const [researcherComment, setResearcherComment] = useState("");
+  const [researcherName, setResearcherName] = useState("");
+  const [savingComment, setSavingComment] = useState(false);
+  const [commentSaved, setCommentSaved] = useState(false);
+
   // Download all
   const [downloadingAll, setDownloadingAll] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
@@ -191,6 +197,42 @@ export default function AdminPage() {
   function handleTabChange(t: Tab) {
     setTab(t);
     if (t === "tilganger" && users.length === 0) fetchUsers();
+  }
+
+  // ── Researcher comment ────────────────────────────────────────────────────
+
+  function openModal(sub: Submission) {
+    setSelectedSub(sub);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setResearcherComment((sub as any).researcher_comment ?? "");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setResearcherName((sub as any).researcher_name ?? "");
+    setCommentSaved(false);
+  }
+
+  async function handleSaveComment() {
+    if (!accessToken || !selectedSub) return;
+    setSavingComment(true);
+    try {
+      const res = await fetch(`/api/admin/submissions/${selectedSub.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          researcher_comment: researcherComment.trim() || null,
+          researcher_name: researcherName.trim(),
+        }),
+      });
+      if (res.ok) {
+        setCommentSaved(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setSubmissions((prev) => prev.map((s) => s.id === selectedSub.id ? { ...s, researcher_comment: researcherComment.trim() || null, researcher_name: researcherName.trim() } as any : s));
+      }
+    } finally {
+      setSavingComment(false);
+    }
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────
@@ -494,7 +536,7 @@ export default function AdminPage() {
                         <tr
                           key={sub.id}
                           className="cursor-pointer transition hover:bg-blue-50"
-                          onClick={() => setSelectedSub(sub)}
+                          onClick={() => openModal(sub)}
                         >
                           {/* Thumbnail */}
                           <td className="px-4 py-3">
@@ -687,6 +729,39 @@ export default function AdminPage() {
                           )}
                         </div>
                       ))}
+                    </div>
+
+                    {/* Forskerkommentar */}
+                    <div className="mt-5 rounded-2xl border border-cyan-100 bg-cyan-50 p-4">
+                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-cyan-700">
+                        🔬 Forskerkommentar
+                      </p>
+                      <input
+                        type="text"
+                        placeholder="Forskerens navn (f.eks. Bjarne Log)"
+                        value={researcherName}
+                        onChange={(e) => { setResearcherName(e.target.value); setCommentSaved(false); }}
+                        className="mb-2 w-full rounded-xl border border-cyan-200 bg-white px-3 py-2 text-sm outline-none focus:border-cyan-400"
+                      />
+                      <textarea
+                        placeholder="Skriv en forskerkommentar som vises offentlig under kartet…"
+                        value={researcherComment}
+                        onChange={(e) => { setResearcherComment(e.target.value); setCommentSaved(false); }}
+                        rows={3}
+                        className="w-full rounded-xl border border-cyan-200 bg-white px-3 py-2 text-sm outline-none focus:border-cyan-400"
+                      />
+                      <div className="mt-2 flex items-center gap-2">
+                        <button
+                          onClick={handleSaveComment}
+                          disabled={savingComment}
+                          className="rounded-xl bg-cyan-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-cyan-700 disabled:opacity-50"
+                        >
+                          {savingComment ? "Lagrer…" : researcherComment.trim() ? "Lagre kommentar" : "Fjern kommentar"}
+                        </button>
+                        {commentSaved && (
+                          <span className="text-xs font-semibold text-emerald-600">✓ Lagret!</span>
+                        )}
+                      </div>
                     </div>
 
                     {/* Actions */}

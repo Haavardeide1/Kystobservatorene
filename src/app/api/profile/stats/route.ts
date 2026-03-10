@@ -41,7 +41,7 @@ export async function GET(req: Request) {
 
     const { data, error } = await supabaseAdmin
       .from("submissions")
-      .select("media_type, lat_public, lng_public, created_at")
+      .select("media_type, lat_public, lng_public, created_at, researcher_comment, researcher_name, researcher_commented_at")
       .eq("user_id", userId)
       .is("deleted_at", null);
 
@@ -60,11 +60,18 @@ export async function GET(req: Request) {
     ).size;
     const streak = computeStreak(rows.map((r) => r.created_at));
 
-    // Count earned badges (progress >= threshold) by re-using the same logic
-    // Simple count: badges where total meets threshold
     const earnedCount = [1, 5, 10, 25, 50, 100, 250].filter((t) => total >= t).length;
 
-    return NextResponse.json({ total, photos, videos, locations, badges: earnedCount, streak });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const researcherComments = (rows as any[])
+      .filter((r) => r.researcher_comment)
+      .map((r) => ({
+        researcher_comment: r.researcher_comment,
+        researcher_name: r.researcher_name,
+        researcher_commented_at: r.researcher_commented_at,
+      }));
+
+    return NextResponse.json({ total, photos, videos, locations, badges: earnedCount, streak, researcherComments });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

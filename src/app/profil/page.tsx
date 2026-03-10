@@ -368,6 +368,23 @@ export default function ProfilPage() {
             </div>
           )}
 
+          {/* ── Mine observasjoner-knapp ─────────────────────────────────── */}
+          {isLoggedIn && (
+            <a
+              href="/mine-observasjoner"
+              className="mt-6 flex items-center justify-between rounded-2xl bg-[#070b2f] px-6 py-5 text-white transition hover:bg-[#0f2744]"
+            >
+              <div className="flex items-center gap-4">
+                <span className="text-3xl">🗺️</span>
+                <div>
+                  <p className="font-bold text-white">Mine observasjoner</p>
+                  <p className="text-sm text-white/60">Se alle dine bidrag på kart og del dem</p>
+                </div>
+              </div>
+              <span className="text-white/50 text-xl">→</span>
+            </a>
+          )}
+
           {/* ── Stats + brukernavn ───────────────────────────────────────── */}
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
             {!username && (

@@ -146,13 +146,23 @@ async function generateShareCard(sub: Submission): Promise<Blob | null> {
   ctx.fillRect(0, 0, W, H);
 
   // ── 3. Logo øverst ──────────────────────────────────────────────────────────
+  ctx.shadowColor = "rgba(0,0,0,0.6)";
+  ctx.shadowBlur = 18;
   ctx.textAlign = "left";
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "#ffffff";
   ctx.font = "800 52px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   ctx.fillText("KYSTOBSERVATØRENE", 72, 100);
-  ctx.font = "400 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ctx.fillText("NORCE Research", 72, 142);
+  ctx.shadowBlur = 0;
+
+  // NORCE-logo under tittel
+  const norceLogo = await loadImage("/norce-logo.png");
+  if (norceLogo) {
+    const logoH = 44;
+    const logoW = Math.round((norceLogo.naturalWidth / norceLogo.naturalHeight) * logoH);
+    ctx.globalAlpha = 0.85;
+    ctx.drawImage(norceLogo, 72, 116, logoW, logoH);
+    ctx.globalAlpha = 1;
+  }
 
   // ── 4. Dato + info (nede til venstre) ───────────────────────────────────────
   const date = new Date(sub.created_at);
@@ -165,13 +175,13 @@ async function generateShareCard(sub: Submission): Promise<Blob | null> {
   // Watermark
   ctx.textAlign = "left";
   ctx.font = "400 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.22)";
+  ctx.fillStyle = "rgba(255,255,255,0.28)";
   ctx.fillText("kystobservatorene.no", textX, textBase);
 
   // Koordinater
   if (sub.lat_public && sub.lng_public) {
     ctx.font = "400 28px 'Courier New', monospace";
-    ctx.fillStyle = "rgba(255,255,255,0.4)";
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
     ctx.fillText(
       `${sub.lat_public.toFixed(4)}° N  ${sub.lng_public.toFixed(4)}° Ø`,
       textX, textBase - 48
@@ -180,29 +190,16 @@ async function generateShareCard(sub: Submission): Promise<Blob | null> {
 
   // Klokkeslett
   ctx.font = "400 38px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.fillText(`kl. ${timeStr}`, textX, textBase - 108);
 
-  // Dato (stor)
+  // Dato (stor) med shadow
+  ctx.shadowColor = "rgba(0,0,0,0.5)";
+  ctx.shadowBlur = 14;
   ctx.font = "800 68px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "#ffffff";
   ctx.fillText(dateStr, textX, textBase - 166);
-
-  // Type-badge
-  const badgeColor = sub.media_type === "photo" ? "#3b82f6" : "#10b981";
-  const badgeLabel = sub.media_type === "photo" ? "📸  Havobservasjon" : "🎥  Havvideo";
-  ctx.font = "600 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-  const badgeW = ctx.measureText(badgeLabel).width + 48;
-  const badgeY = textBase - 284;
-  roundRect(ctx, textX, badgeY, badgeW, 56, 28);
-  ctx.fillStyle = badgeColor + "44";
-  ctx.fill();
-  roundRect(ctx, textX, badgeY, badgeW, 56, 28);
-  ctx.strokeStyle = badgeColor;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.fillStyle = "white";
-  ctx.fillText(badgeLabel, textX + 24, badgeY + 38);
+  ctx.shadowBlur = 0;
 
   // ── 5. Kart (nede til høyre) ─────────────────────────────────────────────────
   if (sub.lat_public && sub.lng_public) {
@@ -218,7 +215,9 @@ async function generateShareCard(sub: Submission): Promise<Blob | null> {
 
     if (mapResult) {
       const src = mapResult.canvas;
-      const scale = MAP_SIZE / src.width;
+      // Scale so each tile = MAP_SIZE, ensuring the box is always fully covered
+      const TILE = 256;
+      const scale = MAP_SIZE / TILE;
       const destPinX = mx + MAP_SIZE / 2;
       const destPinY = my + MAP_SIZE / 2;
       const offsetX = destPinX - mapResult.pinX * scale;

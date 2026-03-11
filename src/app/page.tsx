@@ -90,9 +90,8 @@ export default function Home() {
             <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-4xl">
               Bidra med observasjoner
             </h2>
-            <p className="mt-4 text-base text-slate-600 md:text-lg">
-              Ta et bilde eller en kort video av havflaten og bidra til ny kunnskap
-              om havstrømmer <span className="whitespace-nowrap">langs kysten.</span>
+            <p className="mt-4 text-base text-slate-600 md:whitespace-nowrap">
+              Ta bilde eller video av havflaten og bidra til ny kunnskap om havstrømmer langs kysten.
             </p>
           </div>
 

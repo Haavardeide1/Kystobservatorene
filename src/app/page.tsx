@@ -141,7 +141,7 @@ export default function Home() {
               {
                 step: "02",
                 title: "Merk posisjonen",
-                body: "GPS finner deg automatisk, eller du klikker på kartet. Det tar fem sekunder og gir observasjonen verdi.",
+                body: "Lokasjonen din er viktig for observasjonsgrunnlaget.",
               },
               {
                 step: "03",
@@ -170,7 +170,7 @@ export default function Home() {
             Om prosjektet
           </p>
           <p className="mt-4 text-base text-white/90 md:text-lg">
-            Kystobservatørene er et forskningsprosjekt for å engasjere folk langs kysten
+            Kystobservatørene er et forskningsprosjekt som skal engasjere folk langs kysten
             i forskning på havstrømmer. Vi inviterer publikum til å bidra med bilder
             eller korte videoer av havflaten som kan brukes til verifisering og
             forbedring av varslingsmodeller.

@@ -12,12 +12,11 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Kart", href: "/kart" },
-  { label: "Send inn", href: "/observasjoner" },
-  { label: "Profil", href: "/profil" },
   { label: "Om prosjektet", href: "/om" },
+  { label: "Profil", href: "/profil" },
+  { label: "Send inn", href: "/observasjoner" },
+  { label: "Kart", href: "/kart" },
   { label: "Galleri", href: "/galleri" },
-  { label: "Admin", href: "/admin" },
 ];
 
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {

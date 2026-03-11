@@ -268,7 +268,7 @@ export default function Home() {
       <section className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-            Samarbeidspartner
+            Datakilder
           </p>
           <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
             <a
@@ -298,7 +298,7 @@ export default function Home() {
 
             <div className="flex flex-1 flex-col justify-center rounded-3xl border border-dashed border-slate-200 px-5 py-6 text-center md:px-8 md:py-8">
               <p className="text-sm text-slate-400">
-                Interessert i annen forskning fra NORCE?
+                Interessert i havforskningen til NORCE?
               </p>
               <a
                 href="https://www.norceresearch.no/forskergruppe/hav-og-kyst"

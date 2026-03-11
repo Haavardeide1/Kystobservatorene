@@ -80,9 +80,6 @@ function LoginForm() {
         <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-8 shadow-2xl">
           <div className="mb-6">
             <h1 className="text-3xl font-semibold tracking-tight">Logg inn</h1>
-            <p className="mt-2 text-sm text-white/70">
-              Bruk e-post og passord. Nye brukere må bekrefte e-postadressen sin.
-            </p>
           </div>
 
           <div className="mb-6 flex gap-2">

@@ -92,7 +92,7 @@ export default function Home() {
             </h2>
             <p className="mt-4 text-base text-slate-600 md:text-lg">
               Ta et bilde eller en kort video av havflaten og bidra til ny kunnskap
-              om havstrømmer langs kysten.
+              om havstrømmer <span className="whitespace-nowrap">langs kysten.</span>
             </p>
           </div>
 

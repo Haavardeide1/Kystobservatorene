@@ -322,7 +322,7 @@ export default function HomeMiniMap() {
         {/* Bottom CTA */}
         <div className="absolute inset-x-0 bottom-4 flex justify-center">
           <a
-            href="/kart"
+            href="/observasjonskart"
             className="pointer-events-auto flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#0b1b36] shadow-lg transition hover:bg-slate-50 hover:shadow-xl"
           >
             Se fullt kart

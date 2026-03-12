@@ -29,13 +29,13 @@ export default function Home() {
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 md:mt-8">
               <a
-                href="/observasjoner"
+                href="/sendinn"
                 className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
               >
                 Bidra med observasjoner
               </a>
               <a
-                href="/kart"
+                href="/observasjonskart"
                 className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Observasjonskartet
@@ -172,7 +172,7 @@ export default function Home() {
             Kystobservatørene er et forskningsprosjekt som skal engasjere folk i havforskning på bølger og strøm. Publikum inviteres til å bidra med bilder og videoer av havoverflaten som kan brukes til validering og forbedring av varslingsmodeller.
           </p>
           <a
-            href="/om"
+            href="/omprosjektet"
             className="mt-6 inline-block text-sm font-semibold uppercase tracking-[0.2em] text-white/50 transition hover:text-white/80"
           >
             Les mer →
@@ -207,7 +207,7 @@ export default function Home() {
               </h3>
             </div>
             <a
-              href="/kart"
+              href="/observasjonskart"
               className="rounded-full border border-[#070b2f]/20 bg-white px-5 py-2.5 text-xs font-semibold text-[#070b2f] shadow-sm transition hover:bg-[#070b2f] hover:text-white"
             >
               Se alle på kartet →
@@ -234,7 +234,7 @@ export default function Home() {
                 av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer kunnskap om bølger og strøm er viktig for å kunne ta tryggere beslutninger til havs.
               </p>
               <a
-                href="/om"
+                href="/omprosjektet"
                 className="mt-6 inline-block text-sm font-semibold text-[#1d5fa7] transition hover:underline"
               >
                 Les mer om prosjektet →

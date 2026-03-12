@@ -12,10 +12,10 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Om prosjektet", href: "/om" },
-  { label: "Profil", href: "/profil" },
-  { label: "Send inn", href: "/observasjoner" },
-  { label: "Kart", href: "/kart" },
+  { label: "Om prosjektet", href: "/omprosjektet" },
+  { label: "Min profil", href: "/profil" },
+  { label: "Send inn", href: "/sendinn" },
+  { label: "Observasjonskart", href: "/observasjonskart" },
   { label: "Galleri", href: "/galleri" },
 ];
 
@@ -91,7 +91,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
         </a>
         <nav className="relative flex items-center gap-2 text-sm md:gap-4">
           <a
-            href="/observasjoner"
+            href="/sendinn"
             className="rounded-full bg-[#60a5fa] px-3 py-2 text-xs font-semibold uppercase text-[#070b2f] transition hover:bg-[#93c5fd] md:px-5 md:tracking-[0.15em]"
           >
             Send inn

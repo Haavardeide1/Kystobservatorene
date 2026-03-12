@@ -466,7 +466,7 @@ export default function MapView() {
 
         {/* Mobile-only floating CTA — sidebar is hidden on small screens */}
         <a
-          href="/observasjoner"
+          href="/sendinn"
           className="absolute bottom-5 right-4 z-[1000] flex items-center gap-2 rounded-full bg-[#0b1b36] px-5 py-2.5 text-xs font-semibold text-white shadow-lg transition hover:bg-[#0f2744] lg:hidden"
         >
           + Send inn
@@ -586,7 +586,7 @@ export default function MapView() {
 
         <div className="border-t border-slate-100 p-4">
           <a
-            href="/observasjoner"
+            href="/sendinn"
             className="block w-full rounded-xl bg-[#0b1b36] py-3 text-center text-sm font-semibold text-white transition hover:bg-[#0f2744]"
           >
             + Send inn observasjon

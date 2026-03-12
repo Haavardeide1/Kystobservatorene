@@ -76,13 +76,13 @@ export default function OmPage() {
               </a>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <a
-                  href="/observasjoner"
+                  href="/sendinn"
                   className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
                 >
                   Bidra nå
                 </a>
                 <a
-                  href="/kart"
+                  href="/observasjonskart"
                   className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Se kartet

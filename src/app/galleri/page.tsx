@@ -306,7 +306,7 @@ export default function GalleriPage() {
                 Bli den første til å bidra!
               </p>
               <a
-                href="/observasjoner"
+                href="/sendinn"
                 className="mt-6 inline-block rounded-full bg-[#070b2f] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0f2744]"
               >
                 Send inn observasjon →

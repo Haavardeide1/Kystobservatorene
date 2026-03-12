@@ -673,7 +673,7 @@ export default function ObservasjonerPage() {
                 Registrer deg for å spore bidrag og tjene badges
               </span>
               <a
-                href="/login?redirect=/observasjoner"
+                href="/login?redirect=/sendinn"
                 className="font-semibold text-blue-400 transition hover:text-blue-300"
               >
                 Logg inn →

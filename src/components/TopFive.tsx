@@ -118,13 +118,13 @@ export default function TopFive() {
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <a
-            href="/login?redirect=/observasjoner"
+            href="/login?redirect=/sendinn"
             className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
           >
             Logg inn
           </a>
           <a
-            href="/observasjoner"
+            href="/sendinn"
             className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#070b2f] transition hover:bg-white/90"
           >
             Send inn →

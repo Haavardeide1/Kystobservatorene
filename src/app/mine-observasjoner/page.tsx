@@ -444,7 +444,7 @@ export default function MineObservasjonerPage() {
           <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
             <p className="text-2xl">🌊</p>
             <p className="mt-3 font-semibold text-slate-700">Ingen observasjoner ennå</p>
-            <a href="/observasjoner" className="mt-4 inline-block rounded-full bg-[#0b1b36] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f2744]">
+            <a href="/sendinn" className="mt-4 inline-block rounded-full bg-[#0b1b36] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0f2744]">
               Send inn din første
             </a>
           </div>

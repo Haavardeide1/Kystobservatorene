@@ -254,6 +254,7 @@ export default function MapView() {
         const dirStr = now?.direction ?? now?.dir ?? "–";
         const timeStr = now?.time ? new Date(now.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "";
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const upcoming = forecasts.slice(1, 4).map((f: any) => {
           const t = f.time ? new Date(f.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit" }) : "";
           const s = f.speed != null ? `${f.speed.toFixed(1)} m/s` : "–";

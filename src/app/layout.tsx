@@ -17,6 +17,11 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Kystobservatørene",
   description: "Del observasjoner fra kysten og bidra til havforskningen",
+  openGraph: {
+    title: "Kystobservatørene",
+    description: "Del observasjoner fra kysten og bidra til havforskningen",
+    images: ["/bildemobil.jpg"],
+  },
 };
 
 export default function RootLayout({

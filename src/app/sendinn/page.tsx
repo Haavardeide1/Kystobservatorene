@@ -377,17 +377,21 @@ export default function ObservasjonerPage() {
       setCompassStatusText("Trykk «Tillat» for å aktivere kompasset.");
       DOE.requestPermission()
         .then((state) => {
-          if (state === "granted") activateCompass();
+          if (state === "granted") activateCompass(target);
           else setCompassStatusText("⚠️ Tillatelse avslått.");
         })
         .catch(() => setCompassStatusText("⚠️ Kunne ikke aktivere kompass."));
     } else {
-      activateCompass();
+      activateCompass(target);
     }
   }
 
-  function activateCompass() {
-    setCompassStatusText("Pek telefonen dit du vil måle retningen.");
+  function activateCompass(target: "wind" | "wave") {
+    const msg =
+      target === "wind"
+        ? "Pek telefonen mot den retningen vinden kommer fra."
+        : "Pek telefonen mot bølgene.";
+    setCompassStatusText(msg);
     setCompassReady(true);
 
     const handler = (e: DeviceOrientationEvent) => {
@@ -653,8 +657,7 @@ export default function ObservasjonerPage() {
           <div className="flex items-start gap-3 rounded-xl border border-blue-500/20 bg-blue-500/[0.08] px-4 py-3 text-sm text-blue-300">
             <span className="mt-0.5 shrink-0">🗺️</span>
             <span>
-              Bilder og videoer du sender inn vises automatisk på det offentlige
-              kartet.
+              Bilder og videoer du sender inn vises automatisk på observasjonskartet.
             </span>
           </div>
 

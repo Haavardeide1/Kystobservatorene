@@ -91,7 +91,7 @@ export default function OmPage() {
               },
               {
                 title: "Visjon",
-                body: "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og strømmer blir litt mindre farlige.",
+                body: "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og varslinger blir enda mer presise.",
               },
               {
                 title: "Mål",

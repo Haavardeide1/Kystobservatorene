@@ -103,6 +103,8 @@ export default function MapView() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const waveLayerRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const stromMarkersRef = useRef<any[]>([]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const baseLayerRef = useRef<any>(null);
@@ -116,6 +118,8 @@ export default function MapView() {
   const [showWaves, setShowWaves] = useState(false);
   const [waveLoading, setWaveLoading] = useState(false);
   const [showSatellite, setShowSatellite] = useState(false);
+  const [showStrom, setShowStrom] = useState(false);
+  const [stromLoading, setStromLoading] = useState(false);
   const [lightboxSub, setLightboxSub] = useState<Submission | null>(null);
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
@@ -203,6 +207,86 @@ export default function MapView() {
       waveLayerRef.current = wmsLayer;
       setShowWaves(true);
     }
+  }
+
+  // ── Strøm toggle ─────────────────────────────────────────────────────────
+
+  async function toggleStrom() {
+    if (!mapRef.current || !LRef.current) return;
+    const LLib = LRef.current;
+    const map = mapRef.current;
+
+    if (showStrom) {
+      stromMarkersRef.current.forEach((m) => map.removeLayer(m));
+      stromMarkersRef.current = [];
+      setShowStrom(false);
+      return;
+    }
+
+    setStromLoading(true);
+    try {
+      const res = await fetch("/api/strom");
+      const json = await res.json();
+      if (!json.locations) { setStromLoading(false); return; }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const markers = json.locations.map((loc: any) => {
+        const d = loc.data;
+        // Handle both GeoJSON Feature and array formats
+        let lat: number | null = null;
+        let lng: number | null = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let forecasts: any[] = [];
+
+        if (d?.geometry?.coordinates) {
+          [lng, lat] = d.geometry.coordinates;
+          forecasts = d.properties?.forecasts ?? d.properties?.predictions ?? [];
+        } else if (Array.isArray(d) && d.length > 0) {
+          lat = d[0].lat ?? d[0].latitude ?? null;
+          lng = d[0].lon ?? d[0].longitude ?? null;
+          forecasts = d;
+        }
+
+        if (lat === null || lng === null) return null;
+
+        const now = forecasts[0];
+        const speedStr = now?.speed != null ? `${now.speed.toFixed(1)} m/s` : "–";
+        const dirStr = now?.direction ?? now?.dir ?? "–";
+        const timeStr = now?.time ? new Date(now.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "";
+
+        const upcoming = forecasts.slice(1, 4).map((f: any) => {
+          const t = f.time ? new Date(f.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit" }) : "";
+          const s = f.speed != null ? `${f.speed.toFixed(1)} m/s` : "–";
+          const dir = f.direction ?? f.dir ?? "–";
+          return `<tr><td style="padding:2px 6px;color:#666">${t}</td><td style="padding:2px 6px">${s}</td><td style="padding:2px 6px">${dir}</td></tr>`;
+        }).join("");
+
+        const popup = `
+          <div style="font-family:sans-serif;min-width:180px">
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px">🌀 ${loc.name}</div>
+            <div style="font-size:12px;color:#444;margin-bottom:4px">${timeStr}</div>
+            <div style="font-size:16px;font-weight:700;margin-bottom:8px">${speedStr} <span style="font-weight:400;font-size:13px">${dirStr}</span></div>
+            ${upcoming ? `<table style="font-size:11px;border-collapse:collapse;width:100%"><thead><tr><th style="padding:2px 6px;text-align:left;color:#999">Tid</th><th style="padding:2px 6px;text-align:left;color:#999">Fart</th><th style="padding:2px 6px;text-align:left;color:#999">Retning</th></tr></thead><tbody>${upcoming}</tbody></table>` : ""}
+          </div>
+        `;
+
+        const icon = LLib.divIcon({
+          html: `<div style="background:#1d4ed8;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)">🌀</div>`,
+          className: "",
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+        });
+
+        const marker = LLib.marker([lat, lng], { icon });
+        marker.bindPopup(popup);
+        marker.addTo(map);
+        return marker;
+      }).filter(Boolean);
+
+      stromMarkersRef.current = markers;
+      setShowStrom(true);
+    } catch { /* silently fail */ }
+    setStromLoading(false);
   }
 
   // ── Satellite toggle ──────────────────────────────────────────────────────
@@ -450,11 +534,29 @@ export default function MapView() {
           {waveLoading ? "Laster…" : "Bølgevarsel"}
         </button>
 
+        {/* Strøm-toggle */}
+        <button
+          type="button"
+          onClick={toggleStrom}
+          disabled={stromLoading}
+          className={`absolute left-[10px] top-[160px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+            showStrom
+              ? "border-blue-400 bg-blue-600 text-white hover:bg-blue-700"
+              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+          }`}
+          title="Strømvarsel fra BarentsWatch"
+        >
+          {stromLoading ? (
+            <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : "🌀"}
+          {stromLoading ? "Laster…" : "Strømvarsel"}
+        </button>
+
         {/* Satellitt-toggle */}
         <button
           type="button"
           onClick={toggleSatellite}
-          className={`absolute left-[10px] top-[160px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+          className={`absolute left-[10px] top-[200px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
             showSatellite
               ? "border-amber-400 bg-amber-500 text-white hover:bg-amber-600"
               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"

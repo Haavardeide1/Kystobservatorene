@@ -108,7 +108,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="relative flex h-48 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
+            <div className="relative hidden md:flex h-48 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
               <Image
                 src="/undervann.jpg"
                 alt=""

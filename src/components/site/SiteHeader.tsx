@@ -96,6 +96,24 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
           >
             Send inn
           </a>
+          {!authLoaded ? (
+            <div className={`h-9 w-9 animate-pulse rounded-full border ${classes.avatar} opacity-40`} />
+          ) : initial ? (
+            <a
+              href="/profil"
+              className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold ${classes.avatar}`}
+              aria-label="Profil"
+            >
+              {initial}
+            </a>
+          ) : (
+            <a
+              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
+              href={`/login?redirect=${encodeURIComponent(pathname)}`}
+            >
+              Logg inn
+            </a>
+          )}
           <div className="relative">
             <button
               type="button"
@@ -123,24 +141,6 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
               </div>
             )}
           </div>
-          {!authLoaded ? (
-            <div className={`h-9 w-9 animate-pulse rounded-full border ${classes.avatar} opacity-40`} />
-          ) : initial ? (
-            <a
-              href="/profil"
-              className={`flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold ${classes.avatar}`}
-              aria-label="Profil"
-            >
-              {initial}
-            </a>
-          ) : (
-            <a
-              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
-              href={`/login?redirect=${encodeURIComponent(pathname)}`}
-            >
-              Logg inn
-            </a>
-          )}
         </nav>
       </div>
     </header>

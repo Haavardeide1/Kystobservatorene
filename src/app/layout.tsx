@@ -16,11 +16,10 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Kystobservatørene",
-  description: "Del observasjoner fra kysten og bidra til havforskningen",
+  description: "Du ser havet. Vi analyserer det. Send inn bilder og videoer fra kysten og bli en del av norsk havforskning.",
   openGraph: {
     title: "Kystobservatørene",
-    description: "Del observasjoner fra kysten og bidra til havforskningen",
-    images: ["/bildemobil.jpg"],
+    description: "Du ser havet. Vi analyserer det. Send inn bilder og videoer fra kysten og bli en del av norsk havforskning.",
   },
 };
 

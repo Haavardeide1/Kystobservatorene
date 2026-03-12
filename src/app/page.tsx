@@ -38,7 +38,7 @@ export default function Home() {
                 href="/kart"
                 className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                Se kartet
+                Observasjonskartet
               </a>
             </div>
           </div>

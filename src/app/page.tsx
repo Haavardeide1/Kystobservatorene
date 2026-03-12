@@ -25,15 +25,14 @@ export default function Home() {
               Kystobservatørene
             </h1>
             <p className="mt-3 max-w-xl text-base text-white/70 md:mt-4 md:text-lg">
-              Borgervitenskap for kysten. Vi samler observasjoner av havoverflaten
-              for å forstå strømmer, varsle bedre og skape tryggere kystliv.
+              Send inn bilder og video av havoverflaten og bidra til å forbedre kystvarslinger.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 md:mt-8">
               <a
                 href="/observasjoner"
                 className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
               >
-                Bidra med observasjon
+                Bidra med observasjoner
               </a>
               <a
                 href="/kart"
@@ -120,12 +119,6 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(15,23,42,0.75),rgba(11,42,74,0.7),rgba(7,22,44,0.75))]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.15),_transparent_60%)]" />
-              <a
-                href="/observasjoner"
-                className="relative rounded-full border-2 border-white bg-white/95 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#0b2a4a] shadow-xl transition hover:bg-white md:px-10 md:py-4"
-              >
-                Send inn her
-              </a>
             </div>
           </div>
         </div>

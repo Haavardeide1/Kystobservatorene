@@ -17,6 +17,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Send inn", href: "/sendinn" },
   { label: "Observasjonskart", href: "/observasjonskart" },
   { label: "Galleri", href: "/galleri" },
+  { label: "Logg inn", href: "/login" },
 ];
 
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {
@@ -92,7 +93,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
         <nav className="relative flex items-center gap-2 text-sm md:gap-4">
           <a
             href="/sendinn"
-            className="rounded-full bg-[#60a5fa] px-3 py-2 text-xs font-semibold uppercase text-[#070b2f] transition hover:bg-[#93c5fd] md:px-5 md:tracking-[0.15em]"
+            className="whitespace-nowrap rounded-full bg-[#60a5fa] px-3 py-2 text-xs font-semibold uppercase text-[#070b2f] transition hover:bg-[#93c5fd] md:px-5 md:tracking-[0.15em]"
           >
             Send inn
           </a>
@@ -108,7 +109,7 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
             </a>
           ) : (
             <a
-              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase transition md:px-4 md:tracking-[0.2em] ${classes.button}`}
+              className={`hidden whitespace-nowrap rounded-full border px-3 py-2 text-xs font-semibold uppercase transition sm:inline-block md:px-4 md:tracking-[0.2em] ${classes.button}`}
               href={`/login?redirect=${encodeURIComponent(pathname)}`}
             >
               Logg inn

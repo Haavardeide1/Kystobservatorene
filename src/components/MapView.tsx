@@ -232,34 +232,40 @@ export default function MapView() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const markers = json.locations.map((loc: any) => {
         const d = loc.data;
-        // Handle both GeoJSON Feature and array formats
-        let lat: number | null = null;
-        let lng: number | null = null;
+
+        // BarentsWatch returns a FeatureCollection
+        const feature = d?.features?.[0];
+        if (!feature) return null;
+
+        const [lng, lat] = feature.geometry.coordinates as [number, number];
+        const props = feature.properties;
+
+        const timeStart = new Date(props.TimeStart);
+        const stepMin: number = props.TimeStep_min ?? 10;
+        const knotsArr: number[] = props.Current_knots ?? [];
+        const dirIn: number | undefined = props.Direction_in;
+        const dirOut: number | undefined = props.Direction_out;
+
+        // Build forecast rows from knots array
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let forecasts: any[] = [];
-
-        if (d?.geometry?.coordinates) {
-          [lng, lat] = d.geometry.coordinates;
-          forecasts = d.properties?.forecasts ?? d.properties?.predictions ?? [];
-        } else if (Array.isArray(d) && d.length > 0) {
-          lat = d[0].lat ?? d[0].latitude ?? null;
-          lng = d[0].lon ?? d[0].longitude ?? null;
-          forecasts = d;
-        }
-
-        if (lat === null || lng === null) return null;
+        const forecasts: any[] = knotsArr.slice(0, 13).map((k: number, i: number) => {
+          const t = new Date(timeStart.getTime() + i * stepMin * 60000).toISOString();
+          const dir = dirIn != null && dirOut != null
+            ? (k >= 0 ? `inn (${dirIn}°)` : `ut (${dirOut}°)`)
+            : "–";
+          return { time: t, speedKnots: k, direction: dir };
+        });
 
         const now = forecasts[0];
-        const speedStr = now?.speed != null ? `${now.speed.toFixed(1)} m/s` : "–";
-        const dirStr = now?.direction ?? now?.dir ?? "–";
+        const absKnots = now ? Math.abs(now.speedKnots).toFixed(1) : "–";
+        const speedStr = now ? `${absKnots} kn` : "–";
+        const dirStr = now?.direction ?? "–";
         const timeStr = now?.time ? new Date(now.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "";
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const upcoming = forecasts.slice(1, 4).map((f: any) => {
+        const upcoming = forecasts.slice(1, 4).map((f: { time: string; speedKnots: number; direction: string }) => {
           const t = f.time ? new Date(f.time).toLocaleString("nb-NO", { hour: "2-digit", minute: "2-digit" }) : "";
-          const s = f.speed != null ? `${f.speed.toFixed(1)} m/s` : "–";
-          const dir = f.direction ?? f.dir ?? "–";
-          return `<tr><td style="padding:2px 6px;color:#666">${t}</td><td style="padding:2px 6px">${s}</td><td style="padding:2px 6px">${dir}</td></tr>`;
+          const s = `${Math.abs(f.speedKnots).toFixed(1)} kn`;
+          return `<tr><td style="padding:2px 6px;color:#666">${t}</td><td style="padding:2px 6px">${s}</td><td style="padding:2px 6px">${f.direction}</td></tr>`;
         }).join("");
 
         const popup = `

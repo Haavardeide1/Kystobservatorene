@@ -35,10 +35,10 @@ export default function Home() {
                 Bidra med observasjoner
               </a>
               <a
-                href="/observasjonskart"
+                href="/omprosjektet"
                 className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                Observasjonskartet
+                Om prosjektet
               </a>
             </div>
           </div>

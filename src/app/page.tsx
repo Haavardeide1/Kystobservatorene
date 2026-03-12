@@ -234,9 +234,7 @@ export default function Home() {
                 Omtrent 80 %
               </h3>
               <p className="mt-4 text-base text-slate-600 md:text-lg">
-                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær
-                og bølger til hva som driver hvor. Mer kunnskap om strøm gir en
-                bedre forståelse av kysten og tryggere beslutninger.
+                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer kunnskap om bølger og strøm er viktig for å kunne ta tryggere beslutninger til havs.
               </p>
               <a
                 href="/om"

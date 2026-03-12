@@ -273,53 +273,62 @@ function drawOceanBg(ctx: CanvasRenderingContext2D, w: number, h: number) {
 // ── ShareCardButton ────────────────────────────────────────────────────────────
 
 function ShareCardButton({ sub }: { sub: Submission }) {
-  const [state, setState] = useState<"idle" | "generating" | "done">("idle");
+  const [shareState, setShareState] = useState<"idle" | "generating" | "done">("idle");
+  const [dlState, setDlState] = useState<"idle" | "generating" | "done">("idle");
 
-  async function handleGenerate() {
-    setState("generating");
+  async function handleShare() {
+    setShareState("generating");
     try {
       const blob = await generateShareCard(sub);
-      if (!blob) { setState("idle"); return; }
-
+      if (!blob) { setShareState("idle"); return; }
       const file = new File([blob], "kystobservasjon.png", { type: "image/png" });
-
       if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: "Kystobservatørene",
-          text: "Jeg har bidratt til havforskning langs kysten! 🌊",
-        });
-        setState("idle");
+        await navigator.share({ files: [file], title: "Kystobservatørene", text: "Jeg har bidratt til havforskning langs kysten! 🌊" });
       } else {
-        // Fallback: last ned
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = url;
-        a.download = "kystobservasjon.png";
-        a.click();
+        a.href = url; a.download = "kystobservasjon.png"; a.click();
         URL.revokeObjectURL(url);
-        setState("done");
-        setTimeout(() => setState("idle"), 2500);
       }
-    } catch {
-      setState("idle");
-    }
+      setShareState("idle");
+    } catch { setShareState("idle"); }
+  }
+
+  async function handleDownload() {
+    setDlState("generating");
+    try {
+      const blob = await generateShareCard(sub);
+      if (!blob) { setDlState("idle"); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "kystobservasjon.png"; a.click();
+      URL.revokeObjectURL(url);
+      setDlState("done");
+      setTimeout(() => setDlState("idle"), 2500);
+    } catch { setDlState("idle"); }
   }
 
   return (
-    <button
-      onClick={handleGenerate}
-      disabled={state === "generating"}
-      className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-100 disabled:opacity-60"
-    >
-      {state === "generating" ? (
-        <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" /> Lager kort…</>
-      ) : state === "done" ? (
-        "✓ Lastet ned!"
-      ) : (
-        "↗ Lag delekort"
-      )}
-    </button>
+    <div className="flex gap-2">
+      <button
+        onClick={handleShare}
+        disabled={shareState === "generating"}
+        className="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-100 disabled:opacity-60"
+      >
+        {shareState === "generating" ? (
+          <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" /> Lager…</>
+        ) : "↗ Del kort"}
+      </button>
+      <button
+        onClick={handleDownload}
+        disabled={dlState === "generating"}
+        className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 disabled:opacity-60"
+      >
+        {dlState === "generating" ? (
+          <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" /> Lager…</>
+        ) : dlState === "done" ? "✓ Lastet ned!" : "↓ Last ned"}
+      </button>
+    </div>
   );
 }
 

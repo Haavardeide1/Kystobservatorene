@@ -91,7 +91,7 @@ export default function Home() {
               Bidra med observasjoner
             </h2>
             <p className="mt-4 text-base text-slate-600 md:whitespace-nowrap">
-              Ta et bilde eller en kort video av havflaten og bidra til ny kunnskap om havstrømmer langs kysten.
+              Innsendte observasjoner vil kunne gi verdifulle data som kan forbedre modeller for prediksjon og varsling av bølger og strøm. Varslinger er viktig for sikkerheten til alle som ferdes langs kysten.
             </p>
           </div>
 

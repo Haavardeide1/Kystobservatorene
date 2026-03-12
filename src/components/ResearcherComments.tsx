@@ -47,7 +47,7 @@ export default function ResearcherComments() {
             Forskerkommentarer
           </h2>
           <p className="mt-2 text-sm text-white/60">
-            Observasjoner som NORCE-forskere har kommentert.
+            Observasjoner som forskerne ved Hav- og kystavdelingen i NORCE har kommentert.
           </p>
         </div>
 

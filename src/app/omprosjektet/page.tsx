@@ -87,15 +87,15 @@ export default function OmPage() {
             {[
               {
                 title: "Oppdrag",
-                body: "Gjøre havet mer forståelig ved å koble observasjoner med prediksjonsmodeller. Bidragene styrker datagrunnlaget for forskning og varsling.",
+                body: "Gjøre havet mer forståelig ved å la folk bidra direkte til forskningen.",
               },
               {
                 title: "Visjon",
-                body: "Et kyst-Norge som forstår havet og havforskning bedre. Varslinger som gir bedre beslutninger og tryggere aktivitet langs kysten.",
+                body: "Et kyst-Norge der alle forstår havet bedre, og der bedre kunnskap gir tryggere ferdsel.",
               },
               {
                 title: "Mål",
-                body: "Å få observasjoner som kan validere og forbedre prediksjonsmodeller, slik at varslingene blir enda mer presise.",
+                body: "Samle observasjoner som gjør at varslinger blir bedre for alle som lever og arbeider langs kysten.",
               },
             ].map((card) => (
               <div

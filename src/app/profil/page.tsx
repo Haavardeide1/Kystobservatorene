@@ -63,19 +63,19 @@ const BADGE_CATALOG: Badge[] = [
   { key: "dedicated_observer",   title: "Dedikert observatør", description: "Send inn 10 observasjoner.",            progress: 0, threshold: 10,  tier: "silver",   category: "innsendinger", status: "locked" },
   { key: "experienced_observer", title: "Erfaren observatør",  description: "Send inn 25 observasjoner.",            progress: 0, threshold: 25,  tier: "gold",     category: "innsendinger", status: "locked" },
   { key: "master_observer",      title: "Mesterobservatør",    description: "Send inn 50 observasjoner.",            progress: 0, threshold: 50,  tier: "gold",     category: "innsendinger", status: "locked" },
-  { key: "elite_observer",       title: "Elite observatør",    description: "Send inn 100 observasjoner.",           progress: 0, threshold: 100, tier: "platinum", category: "innsendinger", status: "locked" },
+  { key: "elite_observer",       title: "Eliteobservatør",     description: "Send inn 100 observasjoner.",           progress: 0, threshold: 100, tier: "platinum", category: "innsendinger", status: "locked" },
   { key: "legendary_observer",   title: "Legendarisk observatør", description: "Send inn 250 observasjoner.",        progress: 0, threshold: 250, tier: "platinum", category: "innsendinger", status: "locked" },
   { key: "local_hero",           title: "Lokal helt",          description: "10 innsendinger innen 10 km radius.",   progress: 0, threshold: 10,  tier: "bronze",   category: "geografi",     status: "locked" },
   { key: "regional_explorer",    title: "Regional utforsker",  description: "Innsendinger fra 3 ulike fylker.",      progress: 0, threshold: 3,   tier: "silver",   category: "geografi",     status: "locked" },
   { key: "national_observer",    title: "Nasjonal observatør", description: "Innsendinger fra 5 eller flere fylker.", progress: 0, threshold: 5,   tier: "gold",     category: "geografi",     status: "locked" },
   { key: "coast_master",         title: "Kystlinjemester",     description: "25 unike GPS-punkter.",                 progress: 0, threshold: 25,  tier: "platinum", category: "geografi",     status: "locked" },
-  { key: "week_streak",          title: "Ukestreak",           description: "Send inn hver dag i 7 dager.",          progress: 0, threshold: 7,   tier: "bronze",   category: "streaks",      status: "locked" },
-  { key: "month_streak",         title: "Månedstreak",         description: "Send inn hver dag i 30 dager.",         progress: 0, threshold: 30,  tier: "gold",     category: "streaks",      status: "locked" },
+  { key: "week_streak",          title: "Ukesrekke",           description: "Send inn hver dag i 7 dager.",          progress: 0, threshold: 7,   tier: "bronze",   category: "streaks",      status: "locked" },
+  { key: "month_streak",         title: "Månedsrekke",         description: "Send inn hver dag i 30 dager.",         progress: 0, threshold: 30,  tier: "gold",     category: "streaks",      status: "locked" },
   { key: "winter_observer",      title: "Vinterobservatør",    description: "10 innsendinger i desember–februar.",   progress: 0, threshold: 10,  tier: "silver",   category: "streaks",      status: "locked" },
   { key: "summer_observer",      title: "Sommerobservatør",    description: "10 innsendinger i juni–august.",        progress: 0, threshold: 10,  tier: "silver",   category: "streaks",      status: "locked" },
-  { key: "year_round",           title: "Hele året",           description: "Innsendinger i alle 12 måneder.",       progress: 0, threshold: 12,  tier: "platinum", category: "streaks",      status: "locked" },
+  { key: "year_round",           title: "Helårsobservatør",    description: "Innsending i 12 måneder i strekk.",     progress: 0, threshold: 12,  tier: "platinum", category: "streaks",      status: "locked" },
   { key: "storm_hunter",         title: "Stormjeger",          description: "5 innsendinger med større bølger.",     progress: 0, threshold: 5,   tier: "gold",     category: "forhold",      status: "locked" },
-  { key: "calm_guardian",        title: "Rolig sjøvokter",     description: "10 innsendinger med rolig havflate.",   progress: 0, threshold: 10,  tier: "bronze",   category: "forhold",      status: "locked" },
+  { key: "calm_guardian",        title: "Rolig sjøvokter",     description: "10 innsendinger med rolig havoverflate.", progress: 0, threshold: 10,  tier: "bronze",   category: "forhold",      status: "locked" },
   { key: "wind_meter",           title: "Vindmåler",           description: "20 innsendinger med vindretning.",      progress: 0, threshold: 20,  tier: "silver",   category: "forhold",      status: "locked" },
   { key: "wave_expert",          title: "Bølgeekspert",        description: "20 innsendinger med bølgeretning.",     progress: 0, threshold: 20,  tier: "silver",   category: "forhold",      status: "locked" },
 ];
@@ -415,7 +415,7 @@ export default function ProfilPage() {
             )}
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Dine statistikker</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Din statistikk</p>
               <div className="mt-4 grid grid-cols-2 gap-3 md:gap-4">
                 {[
                   { label: "Observasjoner", value: stats?.total ?? 0 },
@@ -472,13 +472,13 @@ export default function ProfilPage() {
 
           {/* XP per badge-tier forklaring */}
           <div className="mt-8 border-t border-slate-100 pt-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Slik tjener du XP</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Slik tjener du poeng</p>
             <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {[
-                { icon: "🌊", label: "Observasjon", xp: XP_PER_SUBMISSION, note: "per innsendt observasjon" },
-                { icon: "🥉", label: "Bronsemedalje", xp: TIER_XP.bronze, note: "per bronse-merke" },
-                { icon: "🥈", label: "Sølvmedalje", xp: TIER_XP.silver, note: "per sølv-merke" },
-                { icon: "🥇", label: "Gull / Platina", xp: `${TIER_XP.gold}–${TIER_XP.platinum}`, note: "per høyt merke" },
+                { icon: "🌊", label: "Observasjon", xp: XP_PER_SUBMISSION, note: "per observasjon" },
+                { icon: "🥉", label: "Bronsemedalje", xp: TIER_XP.bronze, note: "per bronsemerke" },
+                { icon: "🥈", label: "Sølvmedalje", xp: TIER_XP.silver, note: "per sølvmerke" },
+                { icon: "🥇", label: "Gull / Platina", xp: `${TIER_XP.gold}–${TIER_XP.platinum}`, note: "per gullmerke" },
               ].map((row) => (
                 <div key={row.label} className="flex items-center gap-3 rounded-2xl bg-[#f6f7fb] px-4 py-3">
                   <span className="text-2xl">{row.icon}</span>
@@ -546,7 +546,7 @@ export default function ProfilPage() {
             {[
               { key: "innsendinger", label: "Antall innsendinger", icon: "🌊" },
               { key: "geografi",     label: "Geografisk spredning", icon: "🗺️" },
-              { key: "streaks",      label: "Aktivitets‑streaks",   icon: "🔥" },
+              { key: "streaks",      label: "Aktivitetsrekker",     icon: "🔥" },
               { key: "forhold",      label: "Spesielle forhold",    icon: "🌪️" },
             ].map((group) => {
               const groupBadges = (badges ?? BADGE_CATALOG).filter((b) => b.category === group.key);

@@ -169,10 +169,7 @@ export default function Home() {
             Om prosjektet
           </p>
           <p className="mt-4 text-base text-white/90 md:text-lg">
-            Kystobservatørene er et forskningsprosjekt som skal engasjere folk langs kysten
-            i forskning på havstrømmer. Vi inviterer publikum til å bidra med bilder
-            eller korte videoer av havflaten som kan brukes til verifisering og
-            forbedring av varslingsmodeller.
+            Kystobservatørene er et forskningsprosjekt som skal engasjere folk i havforskning på bølger og strøm. Publikum inviteres til å bidra med bilder og videoer av havoverflaten som kan brukes til validering og forbedring av varslingsmodeller.
           </p>
           <a
             href="/om"

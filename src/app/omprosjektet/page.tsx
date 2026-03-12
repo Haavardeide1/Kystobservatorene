@@ -91,11 +91,11 @@ export default function OmPage() {
               },
               {
                 title: "Visjon",
-                body: "Et kyst-Norge som forstår havet bedre. Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
+                body: "Et kyst-Norge som forstår havet og havforskning bedre. Varslinger som gir bedre beslutninger og tryggere aktivitet langs kysten.",
               },
               {
                 title: "Mål",
-                body: "Å få observasjoner langs hele kysten, slik at varslingsmodellene blir enda mer presise.",
+                body: "Å få observasjoner som kan validere og forbedre prediksjonsmodeller, slik at varslingene blir enda mer presise.",
               },
             ].map((card) => (
               <div

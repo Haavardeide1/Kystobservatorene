@@ -539,7 +539,8 @@ export default function MapView() {
           type="button"
           onClick={toggleStrom}
           disabled={stromLoading}
-          className={`absolute left-[10px] top-[160px] z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+          style={{ top: "160px", left: "10px" }}
+          className={`absolute z-[1000] flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-md transition ${
             showStrom
               ? "border-blue-400 bg-blue-600 text-white hover:bg-blue-700"
               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"

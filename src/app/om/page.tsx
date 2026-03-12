@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SiteHeader from "@/components/site/SiteHeader";
 
 export default function OmPage() {
@@ -166,8 +167,7 @@ export default function OmPage() {
                 <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain" />
               </a>
               <a href="https://www.fremje.com/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/fremje-logo.png" alt="Fremje" className="h-16 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+                <Image src="/fremje-logo.png" alt="Fremje" width={160} height={64} className="h-16 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
               </a>
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>

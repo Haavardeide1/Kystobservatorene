@@ -98,19 +98,25 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-[1.1fr_1.3fr] md:gap-6">
             {/* Real coastal photo */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/bildemobil.jpg"
-              alt="Foto fra kysten"
-              className="h-48 w-full rounded-3xl object-cover shadow-lg md:h-64"
-            />
+            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-64">
+              <Image
+                src="/bildemobil.jpg"
+                alt="Foto fra kysten"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+            </div>
 
             <div className="relative flex h-48 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/undervann.jpg"
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 55vw"
+                className="object-cover"
+                priority
               />
               <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(15,23,42,0.75),rgba(11,42,74,0.7),rgba(7,22,44,0.75))]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.15),_transparent_60%)]" />
@@ -247,18 +253,24 @@ export default function Home() {
               </a>
             </div>
             <div className="grid grid-cols-2 gap-3 md:gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/bildebat.jpg"
-                alt="Fiskebåt ved kysten"
-                className="h-44 w-full rounded-2xl object-cover shadow-md md:h-52"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/oppdrett.jpg"
-                alt="Oppdrettsanlegg"
-                className="h-44 w-full rounded-2xl object-cover shadow-md md:h-52"
-              />
+              <div className="relative h-44 w-full overflow-hidden rounded-2xl shadow-md md:h-52">
+                <Image
+                  src="/bildebat.jpg"
+                  alt="Fiskebåt ved kysten"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative h-44 w-full overflow-hidden rounded-2xl shadow-md md:h-52">
+                <Image
+                  src="/oppdrett.jpg"
+                  alt="Oppdrettsanlegg"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -320,11 +332,10 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-center gap-8 md:gap-10">
               <a href="https://www.norceresearch.no/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/norce-logo.png" alt="NORCE" className="h-8 object-contain" />
+                <Image src="/norce-logo.png" alt="NORCE" width={80} height={32} className="h-8 w-auto object-contain" />
               </a>
               <a href="https://www.fremje.com/" target="_blank" rel="noopener noreferrer" className="opacity-80 transition hover:opacity-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/fremje-logo.png" alt="Fremje" className="h-16 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+                <Image src="/fremje-logo.png" alt="Fremje" width={160} height={64} className="h-16 w-auto object-contain" style={{ filter: "brightness(0) invert(1)" }} />
               </a>
             </div>
             <div className="text-xs text-white/60">© 2026 Kystobservatørene</div>

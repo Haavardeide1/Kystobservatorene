@@ -204,12 +204,6 @@ export default function TopFive() {
         <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
           {weekLabel}
         </p>
-        <a
-          href="/observasjoner"
-          className="rounded-full bg-[#070b2f] px-5 py-2 text-xs font-semibold text-white transition hover:bg-[#0f2744]"
-        >
-          + Send inn og konkurrer
-        </a>
       </div>
     </div>
   );

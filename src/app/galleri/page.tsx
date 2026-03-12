@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import SiteHeader from "@/components/site/SiteHeader";
 
 type Submission = {
@@ -65,12 +66,12 @@ function GalleryCard({ sub, onOpen }: { sub: Submission; onOpen: () => void }) {
       className="group relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-100 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
     >
       {sub.media_type === "photo" ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={sub.media_url}
+        <Image
+          src={sub.media_url!}
           alt={sub.display_name || "Observasjon"}
-          loading="lazy"
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (
         <>

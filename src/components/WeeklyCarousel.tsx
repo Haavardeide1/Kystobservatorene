@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 type Submission = {
   id: string;
@@ -108,14 +109,19 @@ export default function WeeklyCarousel() {
         >
           {items.map((sub) =>
             sub.media_type === "photo" ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <div
                 key={sub.id}
-                src={sub.media_url!}
-                alt={sub.display_name || "Observasjon"}
-                className="h-28 w-28 shrink-0 cursor-pointer rounded-2xl object-cover shadow-md transition hover:opacity-90 hover:scale-105"
+                className="relative h-28 w-28 shrink-0 cursor-pointer overflow-hidden rounded-2xl shadow-md transition hover:opacity-90 hover:scale-105"
                 onClick={() => setSelected(sub)}
-              />
+              >
+                <Image
+                  src={sub.media_url!}
+                  alt={sub.display_name || "Observasjon"}
+                  fill
+                  sizes="112px"
+                  className="object-cover"
+                />
+              </div>
             ) : (
               <div
                 key={sub.id}

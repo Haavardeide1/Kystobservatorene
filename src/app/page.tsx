@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import SiteHeader from "@/components/site/SiteHeader";
 import TopFive from "@/components/TopFive";
 import WeeklyCarousel from "@/components/WeeklyCarousel";
@@ -54,15 +55,18 @@ export default function Home() {
                 muted
                 loop
                 playsInline
+                preload="none"
                 className="absolute inset-0 h-full w-full object-cover"
               />
               {/* Dark overlay */}
               <div className="absolute inset-0 bg-[#070b2f]/50" />
               {/* NORCE logo */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/norce-logo.png"
                 alt="NORCE"
+                width={176}
+                height={80}
+                priority
                 className="absolute inset-0 m-auto h-auto w-32 object-contain opacity-80 drop-shadow-lg md:w-44"
               />
             </div>

@@ -11,6 +11,7 @@ const LOCATIONS = [
   { key: "rystraumen",     name: "Rystraumen" },
   { key: "sandnessundet",  name: "Sandnessundet" },
   { key: "tromsøysundet",  name: "Tromsøysundet" },
+  { key: "karmsundet",     name: "Karmsundet" },
 ];
 
 async function getToken(): Promise<string | null> {

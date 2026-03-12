@@ -104,8 +104,8 @@ export default function WeeklyCarousel() {
           Ukens bilder
         </p>
         <div
-          className="flex gap-3 overflow-x-auto pb-2"
-          style={{ scrollbarWidth: "none" }}
+          className="flex gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
         >
           {items.map((sub) =>
             sub.media_type === "photo" ? (

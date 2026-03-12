@@ -272,10 +272,7 @@ export default function Home() {
       {/* ── Samarbeidspartner ─────────────────────────────────────────────── */}
       <section className="bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-            Datakilder
-          </p>
-          <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
             <a
               href="https://www.barentswatch.no/bolgevarsel/"
               target="_blank"

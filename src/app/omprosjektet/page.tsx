@@ -91,11 +91,11 @@ export default function OmPage() {
               },
               {
                 title: "Visjon",
-                body: "Et kyst-Norge som forstår havet bedre. Når mange bidrar med små observasjoner, øker kunnskapen og varslinger blir enda mer presise.",
+                body: "Et kyst-Norge som forstår havet bedre. Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
               },
               {
                 title: "Mål",
-                body: "Forbedre prediksjonsmodeller og gi et mer robust grunnlag for bedre beslutninger og tryggere aktivitet langs kysten.",
+                body: "Å få observasjoner langs hele kysten, slik at varslingsmodellene blir enda mer presise.",
               },
             ].map((card) => (
               <div

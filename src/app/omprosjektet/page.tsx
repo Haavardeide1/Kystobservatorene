@@ -20,26 +20,17 @@ export default function OmPage() {
           <div className="mt-8 grid max-w-5xl gap-8 md:mt-10 md:grid-cols-2 md:gap-10">
             <div className="space-y-6 text-base leading-relaxed text-white/75">
               <p>
-                Ved å ta bilder eller korte videoer av havflaten kan publikum
-                sende inn observasjoner som brukes til å verifisere og forbedre
-                NORCE sine strømmodeller. Når mange bidrar med små observasjoner,
-                styrkes datagrunnlaget for forskning og varsling – og kunnskapen
-                om hvordan havet beveger seg blir bedre.
+                Kystobservatørene er del av forsknings- og formidlingsprosjektet «Kunnskapsstrømmer i havet», initiert av NORCE Research og Fremje. Prosjektet har mottatt støtte fra Norges Forskningsråd, med mål om å gjøre havforskning mer tilgjengelig og forståelig for folk flest.
               </p>
               <p>
-                <span className="font-semibold text-[#60a5fa]">
-                  Omtrent 80 prosent
-                </span>{" "}
-                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra
-                vær og bølger til hva som driver hvor. Mer presise modeller gir
-                tryggere ferdsel, bedre beslutninger og økt forståelse av
-                kystmiljøet.
+                Ved at du sender inn bilder eller video av havoverflaten, kan du bidra direkte inn til havforskningen. Dataen vi får fra bilder og video gjør at forskerne kan validere og forbedre NORCE sine prediksjonsmodeller, som varsler bølger og strøm langs kysten. Slik kan man få enda mer presise varslinger.
               </p>
               <p>
-                Kystobservatørene kobler folks egne erfaringer med forskernes
-                modeller for strøm og bølger. Ambisjonen er å gjøre havet mer
-                forståelig for flere, og å bidra til tryggere aktivitet og mer
-                robuste beslutninger langs hele kysten.
+                Jo flere observasjoner, desto mer styrkes datagrunnlaget for forskning og varsling – og kunnskapen vår om havet.
+              </p>
+              <p>
+                <span className="font-semibold text-[#60a5fa]">Omtrent 80 prosent</span>{" "}
+                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
               </p>
             </div>
 
@@ -74,20 +65,6 @@ export default function OmPage() {
                   norceresearch.no →
                 </p>
               </a>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="/sendinn"
-                  className="rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:bg-white/90"
-                >
-                  Bidra nå
-                </a>
-                <a
-                  href="/observasjonskart"
-                  className="rounded-full border border-white/30 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Se kartet
-                </a>
-              </div>
             </div>
           </div>
         </div>
@@ -137,25 +114,6 @@ export default function OmPage() {
         </div>
       </section>
 
-      {/* ── Bakgrunn ──────────────────────────────────────────────────────── */}
-      <section className="border-t border-slate-100 bg-white">
-        <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-20">
-          <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-5xl">
-            Bakgrunn
-          </h2>
-          <div className="mt-8 grid max-w-3xl gap-5 text-base leading-relaxed text-slate-600">
-            <p>
-              Kystobservatørene er en del av forsknings- og
-              formidlingsprosjektet «Kunnskapsstrømmer i havet», initiert av
-              NORCE Research og Fremje. Prosjektet er støttet av Norges
-              Forskningsråd gjennom ordningen for kommunikasjon og formidling
-              av klima-, miljø- og havforskning, og skal styrke forståelsen av
-              hvordan kunnskap om havet utvikles og brukes.
-            </p>
-          </div>
-
-        </div>
-      </section>
 
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="bg-[#070b2f] text-white">

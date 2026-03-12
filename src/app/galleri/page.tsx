@@ -259,7 +259,7 @@ export default function GalleriPage() {
             Kystobservatørene
           </p>
           <h1 className="mt-4 text-3xl font-black uppercase tracking-tight sm:text-5xl md:text-7xl">
-            Observasjoner
+            Observasjonsgalleri
           </h1>
           {!loading && (
             <div className="mt-4 flex gap-4 text-sm text-white/50">

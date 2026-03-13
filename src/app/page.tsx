@@ -96,17 +96,40 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-8 md:mt-10">
-            <div className="relative w-full overflow-hidden rounded-3xl shadow-lg md:max-w-sm">
+          <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6">
+            {/* Bilde */}
+            <div className="relative overflow-hidden rounded-3xl shadow-lg">
               <Image
                 src="/bildemobil.jpg"
                 alt="Foto fra kysten"
                 width={600}
                 height={450}
-                sizes="(max-width: 768px) 100vw, 384px"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full object-cover"
                 priority
               />
+            </div>
+
+            {/* Infokort */}
+            <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#070b2f] px-7 py-8 text-white">
+              <div>
+                  <h4 className="font-bold">Bidra til forskning</h4>
+                  <p className="mt-1 text-sm leading-relaxed text-white/65">
+                    Bilder og videoer du sender inn hjelper forskere å validere og forbedre varsling av bølger og strøm langs kysten.
+                  </p>
+              </div>
+              <div>
+                  <h4 className="font-bold">Forstå havet</h4>
+                  <p className="mt-1 text-sm leading-relaxed text-white/65">
+                    Se observasjoner fra hele kysten på kartet og lær mer om hva som skjer i havet der du er.
+                  </p>
+              </div>
+              <div>
+                  <h4 className="font-bold">Oppnå merker</h4>
+                  <p className="mt-1 text-sm leading-relaxed text-white/65">
+                    Jo mer du bidrar, desto flere merker låser du opp. Din innsats for kysten blir mer synlig.
+                  </p>
+              </div>
             </div>
           </div>
         </div>

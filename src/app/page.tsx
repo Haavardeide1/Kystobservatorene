@@ -112,7 +112,7 @@ export default function Home() {
       </section>
 
       {/* ── Slik gjør du det ──────────────────────────────────────────────── */}
-      <section className="border-t border-slate-100 bg-slate-50">
+      <section className="border-t border-slate-100 bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
             Slik gjør du det
@@ -135,12 +135,12 @@ export default function Home() {
                 body: "Observasjonen havner rett i databasen og vises på kartet for alle.",
               },
             ].map((item) => (
-              <div key={item.step} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+              <div key={item.step} className="rounded-2xl bg-[#070b2f] p-6 shadow">
                 <span className="text-3xl font-black leading-none text-[#60a5fa] md:text-4xl">
                   {item.step}
                 </span>
-                <h4 className="mt-3 font-bold text-slate-900">{item.title}</h4>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.body}</p>
+                <h4 className="mt-3 font-bold text-white">{item.title}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">{item.body}</p>
               </div>
             ))}
           </div>

@@ -97,7 +97,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8 md:mt-10">
-            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-72">
+            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-64 md:max-w-lg">
               <Image
                 src="/bildemobil.jpg"
                 alt="Foto fra kysten"

@@ -125,7 +125,7 @@ export default function Home() {
                   </p>
               </div>
               <div>
-                  <h4 className="font-bold">Oppnå merker</h4>
+                  <h4 className="font-bold">Oppnå merker og nå nye nivåer</h4>
                   <p className="mt-1 text-sm leading-relaxed text-white/65">
                     Jo mer du bidrar, desto flere merker låser du opp. Din innsats for kysten blir mer synlig.
                   </p>

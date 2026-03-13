@@ -97,13 +97,13 @@ export default function Home() {
           </div>
 
           <div className="mt-8 md:mt-10">
-            <div className="relative h-44 w-full overflow-hidden rounded-3xl shadow-lg md:h-56 md:max-w-xl">
+            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-64">
               <Image
                 src="/bildemobil.jpg"
                 alt="Foto fra kysten"
                 fill
                 sizes="100vw"
-                className="object-cover object-bottom"
+                className="object-cover"
                 priority
               />
             </div>

@@ -95,30 +95,16 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 md:mt-10 md:grid-cols-[1.1fr_1.3fr] md:gap-6">
-            {/* Real coastal photo */}
-            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-64">
+          <div className="mt-8 md:mt-10">
+            <div className="relative h-48 w-full overflow-hidden rounded-3xl shadow-lg md:h-72">
               <Image
                 src="/bildemobil.jpg"
                 alt="Foto fra kysten"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="100vw"
                 className="object-cover"
                 priority
               />
-            </div>
-
-            <div className="relative hidden md:flex h-48 items-center justify-center overflow-hidden rounded-3xl shadow-lg md:h-64">
-              <Image
-                src="/undervann.jpg"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 55vw"
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(15,23,42,0.75),rgba(11,42,74,0.7),rgba(7,22,44,0.75))]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(125,211,252,0.15),_transparent_60%)]" />
             </div>
           </div>
         </div>
@@ -127,7 +113,7 @@ export default function Home() {
       {/* ── Slik gjør du det ──────────────────────────────────────────────── */}
       <section className="border-t border-slate-100 bg-white">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
             Slik gjør du det
           </p>
           <div className="mt-6 grid gap-8 sm:grid-cols-3 md:mt-8 md:gap-10">
@@ -149,7 +135,7 @@ export default function Home() {
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4 md:gap-5">
-                <span className="mt-0.5 select-none text-4xl font-black leading-none text-slate-100 md:text-5xl">
+                <span className="mt-0.5 select-none text-4xl font-black leading-none text-slate-200 md:text-5xl">
                   {item.step}
                 </span>
                 <div>

@@ -17,7 +17,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Send inn", href: "/sendinn" },
   { label: "Observasjonskart", href: "/observasjonskart" },
   { label: "Galleri", href: "/galleri" },
-  { label: "Logg inn", href: "/login" },
 ];
 
 export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVariant }) {
@@ -139,6 +138,27 @@ export default function SiteHeader({ variant = "dark" }: { variant?: HeaderVaria
                     {item.label}
                   </a>
                 ))}
+                {authLoaded && (
+                  initial ? (
+                    <button
+                      className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition ${classes.menuItem}`}
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      Logg ut
+                    </button>
+                  ) : (
+                    <a
+                      className={`block rounded-xl px-3 py-2 text-sm transition ${classes.menuItem}`}
+                      href={`/login?redirect=${encodeURIComponent(pathname)}`}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Logg inn
+                    </a>
+                  )
+                )}
               </div>
             )}
           </div>

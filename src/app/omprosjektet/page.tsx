@@ -20,7 +20,8 @@ export default function OmPage() {
           <div className="mt-8 grid max-w-5xl gap-8 md:mt-10 md:grid-cols-2 md:gap-10">
             <div className="space-y-6 text-base leading-relaxed text-white/75">
               <p>
-                Kystobservatørene er del av forsknings- og formidlingsprosjektet «Kunnskapsstrømmer i havet», initiert av NORCE Research og Fremje. Prosjektet har mottatt støtte fra Norges Forskningsråd, med mål om å gjøre havforskning mer tilgjengelig og forståelig for folk flest.
+                <span className="font-semibold text-[#60a5fa]">Omtrent 80 prosent</span>{" "}
+                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
               </p>
               <p>
                 Ved at du sender inn bilder eller video av havoverflaten, kan du bidra direkte inn til havforskningen. Dataen vi får fra bilder og video gjør at forskerne kan validere og forbedre NORCE sine prediksjonsmodeller, som varsler bølger og strøm langs kysten. Slik kan man få enda mer presise varslinger.
@@ -28,10 +29,14 @@ export default function OmPage() {
               <p>
                 Jo flere observasjoner, desto mer styrkes datagrunnlaget for forskning og varsling – og kunnskapen vår om havet.
               </p>
-              <p>
-                <span className="font-semibold text-[#60a5fa]">Omtrent 80 prosent</span>{" "}
-                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
-              </p>
+              <div className="border-t border-white/10 pt-5">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+                  Bakgrunn
+                </p>
+                <p>
+                  Kystobservatørene er del av forsknings- og formidlingsprosjektet «Kunnskapsstrømmer i havet», initiert av NORCE Research og Fremje. Prosjektet har mottatt støtte fra Norges Forskningsråd, med mål om å gjøre havforskning mer tilgjengelig og forståelig for folk flest.
+                </p>
+              </div>
             </div>
 
             {/* NORCE card */}

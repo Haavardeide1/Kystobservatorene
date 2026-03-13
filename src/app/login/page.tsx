@@ -15,6 +15,7 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
 
@@ -39,10 +40,12 @@ function LoginForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
+    setIsError(false);
     setLoading(true);
     try {
       if (mode === "signup") {
         if (!passwordValid) {
+          setIsError(true);
           setMessage("Passordet oppfyller ikke kravene.");
           setLoading(false);
           return;
@@ -56,7 +59,10 @@ function LoginForm() {
         router.push(redirectTo);
       }
     } catch (err: unknown) {
-      if (err instanceof Error) {
+      setIsError(true);
+      if (err instanceof Error && err.message.toLowerCase().includes("invalid login")) {
+        setMessage("Feil brukernavn eller passord.");
+      } else if (err instanceof Error) {
         setMessage(err.message);
       } else {
         setMessage("Noe gikk galt.");
@@ -151,7 +157,11 @@ function LoginForm() {
           </form>
 
           {message && (
-            <p className="mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80">
+            <p className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
+              isError
+                ? "border-red-500/30 bg-red-500/10 text-red-400"
+                : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+            }`}>
               {message}
             </p>
           )}

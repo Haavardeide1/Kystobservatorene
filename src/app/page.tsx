@@ -90,8 +90,9 @@ export default function Home() {
             <h2 className="text-3xl font-black uppercase tracking-tight text-[#070b2f] md:text-4xl">
               Bidra med observasjoner
             </h2>
-            <p className="mt-4 text-base text-slate-600 md:whitespace-nowrap">
-              Innsendte observasjoner gir verdifull data som forbedrer modeller for prediksjon av bølger og forståelsen av havstrømmer. Dette er viktig for sikkerheten til alle som ferdes langs kysten.
+            <p className="mt-4 text-base text-slate-600">
+              Innsendte observasjoner gir verdifull data som forbedrer modeller for prediksjon av bølger og forståelsen av havstrømmer —{" "}
+              viktig for sikkerheten til alle som ferdes langs kysten.
             </p>
           </div>
 
@@ -102,7 +103,7 @@ export default function Home() {
                 alt="Foto fra kysten"
                 fill
                 sizes="100vw"
-                className="object-cover"
+                className="object-cover object-bottom"
                 priority
               />
             </div>
@@ -111,12 +112,12 @@ export default function Home() {
       </section>
 
       {/* ── Slik gjør du det ──────────────────────────────────────────────── */}
-      <section className="border-t border-slate-100 bg-white">
+      <section className="border-t border-slate-100 bg-slate-50">
         <div className="mx-auto w-full max-w-6xl px-6 py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-600">
             Slik gjør du det
           </p>
-          <div className="mt-6 grid gap-8 sm:grid-cols-3 md:mt-8 md:gap-10">
+          <div className="mt-6 grid gap-4 sm:grid-cols-3 md:mt-8 md:gap-6">
             {[
               {
                 step: "01",
@@ -134,14 +135,12 @@ export default function Home() {
                 body: "Observasjonen havner rett i databasen og vises på kartet for alle.",
               },
             ].map((item) => (
-              <div key={item.step} className="flex gap-4 md:gap-5">
-                <span className="mt-0.5 select-none text-4xl font-black leading-none text-slate-200 md:text-5xl">
+              <div key={item.step} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+                <span className="text-3xl font-black leading-none text-[#60a5fa] md:text-4xl">
                   {item.step}
                 </span>
-                <div>
-                  <h4 className="font-semibold text-slate-900">{item.title}</h4>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.body}</p>
-                </div>
+                <h4 className="mt-3 font-bold text-slate-900">{item.title}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.body}</p>
               </div>
             ))}
           </div>

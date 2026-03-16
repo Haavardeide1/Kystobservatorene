@@ -91,7 +91,7 @@ export default function Home() {
               Bidra med observasjoner
             </h2>
             <p className="mt-4 text-base text-slate-600">
-              Innsendte observasjoner gir verdifull data som forbedrer modeller for prediksjon av bølger og forståelsen av havstrømmer —{" "}
+              Innsendte observasjoner gir verdifull data som forbedrer varsling av bølger og forståelsen av havstrømmer —{" "}
               viktig for sikkerheten til alle som ferdes langs kysten.
             </p>
           </div>
@@ -111,7 +111,7 @@ export default function Home() {
             </div>
 
             {/* Infokort */}
-            <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#070b2f] px-7 py-8 text-white">
+            <div className="hidden md:flex flex-col justify-center gap-5 rounded-3xl bg-[#070b2f] px-7 py-8 text-white">
               <div>
                   <h4 className="font-bold">Bidra til forskning</h4>
                   <p className="mt-1 text-sm leading-relaxed text-white/65">

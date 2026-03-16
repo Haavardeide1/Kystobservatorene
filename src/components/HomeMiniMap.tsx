@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import type L from "leaflet";
+import { getLevelInfo, XP_PER_SUBMISSION } from "@/lib/levels";
 
 type Submission = {
   id: string;
+  user_id: string | null;
   media_type: "photo" | "video";
   media_url: string | null;
   lat_public: number | null;
@@ -24,7 +26,7 @@ function makeMarkerIcon(LLib: typeof L, type: "photo" | "video") {
   });
 }
 
-function buildPopupHtml(sub: Submission): string {
+function buildPopupHtml(sub: Submission, levelTitle?: string, levelColor?: string): string {
   const date = new Date(sub.created_at).toLocaleDateString("nb-NO", {
     day: "numeric", month: "short", year: "numeric",
   });
@@ -40,7 +42,7 @@ function buildPopupHtml(sub: Submission): string {
   return `
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-width:220px;max-width:260px;">
       ${mediaHtml}
-      <div style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:2px;">${name}</div>
+      <div style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:2px;">${name}${levelTitle ? ` <span style="font-size:11px;font-weight:600;color:${levelColor ?? "#64748b"};">${levelTitle}</span>` : ""}</div>
       <div style="font-size:12px;color:#94a3b8;">${date} · ${typeLabel}</div>
       <button data-lightbox-id="${sub.id}" style="margin-top:10px;width:100%;padding:7px 0;background:#0b1b36;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🔍 Vis stort</button>
     </div>
@@ -183,13 +185,28 @@ export default function HomeMiniMap() {
     const LLib = LRef.current;
     const clusterGroup = clusterRef.current;
 
+    // Build total submission count per user for level calculation
+    const totalCounts = new Map<string, number>();
+    submissions.forEach((s) => {
+      if (s.user_id) totalCounts.set(s.user_id, (totalCounts.get(s.user_id) ?? 0) + 1);
+    });
+
     submissions.forEach((sub) => {
       if (!sub.lat_public || !sub.lng_public) return;
       if (markersRef.current.has(sub.id)) return;
 
+      let levelTitle: string | undefined;
+      let levelColor: string | undefined;
+      if (sub.user_id) {
+        const xp = (totalCounts.get(sub.user_id) ?? 0) * XP_PER_SUBMISSION;
+        const { current } = getLevelInfo(xp);
+        levelTitle = `· Nivå ${current.level} ${current.title}`;
+        levelColor = current.color;
+      }
+
       const icon = makeMarkerIcon(LLib, sub.media_type);
       const marker = LLib.marker([sub.lat_public, sub.lng_public], { icon });
-      marker.bindPopup(buildPopupHtml(sub), { maxWidth: 280 });
+      marker.bindPopup(buildPopupHtml(sub, levelTitle, levelColor), { maxWidth: 280 });
       clusterGroup.addLayer(marker);
       markersRef.current.set(sub.id, marker);
     });

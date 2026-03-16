@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getLevelInfo, XP_PER_SUBMISSION, type LevelDef } from "@/lib/levels";
 
 type Submission = {
   id: string;
@@ -13,6 +14,7 @@ type LeaderboardEntry = {
   user_id: string;
   display_name: string;
   count: number;
+  level: LevelDef;
 };
 
 function getWeekStart(): Date {
@@ -44,16 +46,26 @@ function buildLeaderboard(submissions: Submission[]): LeaderboardEntry[] {
   const thisWeek = submissions.filter(
     (s) => s.user_id && new Date(s.created_at) >= weekStart
   );
+
+  // Total all-time count per user for level calculation
+  const totalCounts = new Map<string, number>();
+  for (const s of submissions) {
+    if (s.user_id) totalCounts.set(s.user_id, (totalCounts.get(s.user_id) ?? 0) + 1);
+  }
+
   const map = new Map<string, LeaderboardEntry>();
   for (const s of thisWeek) {
     const uid = s.user_id!;
     if (map.has(uid)) {
       map.get(uid)!.count++;
     } else {
+      const xp = (totalCounts.get(uid) ?? 0) * XP_PER_SUBMISSION;
+      const { current } = getLevelInfo(xp);
       map.set(uid, {
         user_id: uid,
         display_name: s.display_name || "Ukjent bruker",
         count: 1,
+        level: current,
       });
     }
   }
@@ -180,9 +192,11 @@ export default function TopFive() {
                   {entry.display_name}
                 </p>
                 <p className={`text-xs ${isDark ? "text-white/40" : "text-slate-400"}`}>
-                  {entry.count === 1
-                    ? "1 observasjon"
-                    : `${entry.count} observasjoner`}
+                  {entry.count === 1 ? "1 observasjon" : `${entry.count} observasjoner`}
+                  {" · "}
+                  <span style={{ color: entry.level.color }}>
+                    Nivå {entry.level.level} {entry.level.title}
+                  </span>
                 </p>
               </div>
 

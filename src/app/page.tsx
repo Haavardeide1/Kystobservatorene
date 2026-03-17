@@ -100,9 +100,9 @@ export default function Home() {
             <Image
               src="/bildemobil.jpg"
               alt="Foto fra kysten"
-              width={1200}
-              height={500}
-              sizes="100vw"
+              width={600}
+              height={450}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="h-[300px] w-full object-cover md:h-[420px]"
               priority
             />

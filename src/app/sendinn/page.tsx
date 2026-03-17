@@ -814,9 +814,7 @@ export default function ObservasjonerPage() {
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">🧭</span>
-                        <span>
-                          <strong className="text-white/90">Kompassfunksjonen:</strong> Trykk på «Kompass»-knappen under Retninger, så leser appen automatisk vind- og bølgeretning fra enhetens kompass. Pek telefonen i den retningen vinden kommer <em>fra</em>. Du kan også velge retning manuelt fra listen.
-                        </span>
+                        <span>Pek kompasset på telefonen i retningen hvor vinden og bølgene kommer fra. Det er også mulig å velge retningene manuelt.</span>
                       </li>
                     </ul>
                   )}
@@ -1144,7 +1142,7 @@ export default function ObservasjonerPage() {
                     Retninger (valgfritt)
                   </p>
                   <p className="mb-4 text-xs text-white/40">
-                    Pek telefonen mot den retningen vinden og bølgene kommer fra.
+                    Pek kompasset på telefonen i retningen hvor vinden og bølgene kommer fra. Det er også mulig å velge retningene manuelt.
                   </p>
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     {(

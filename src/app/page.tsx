@@ -113,7 +113,7 @@ export default function Home() {
             {/* Infokort */}
             <div className="hidden md:flex flex-col justify-center gap-5 rounded-3xl bg-[#070b2f] px-7 py-8 text-white">
               <div>
-                  <h4 className="font-bold">Bidra til forskning</h4>
+                  <h4 className="font-bold">Bidra til våre forskere</h4>
                   <p className="mt-1 text-sm leading-relaxed text-white/65">
                     Bilder og videoer du sender inn hjelper forskere å validere og forbedre varsling av bølger og strøm langs kysten.
                   </p>
@@ -121,7 +121,7 @@ export default function Home() {
               <div>
                   <h4 className="font-bold">Forstå havet</h4>
                   <p className="mt-1 text-sm leading-relaxed text-white/65">
-                    Se observasjoner fra hele kysten på kartet og lær mer om hva som skjer i havet der du er.
+                    Se observasjoner fra hele kysten på kartet og bli mer bevisst på hva som skjer i havet der du er.
                   </p>
               </div>
               <div>

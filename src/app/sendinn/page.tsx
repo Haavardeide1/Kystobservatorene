@@ -390,7 +390,7 @@ export default function ObservasjonerPage() {
     const msg =
       target === "wind"
         ? "Pek telefonen mot den retningen vinden kommer fra."
-        : "Pek telefonen mot bølgene.";
+        : "Pek telefonen mot den retningen bølgene kommer fra.";
     setCompassStatusText(msg);
     setCompassReady(true);
 
@@ -1096,7 +1096,7 @@ export default function ObservasjonerPage() {
                 {/* Sea state */}
                 <div className={sectionCls}>
                   <label className={labelCls} htmlFor="ko-sea-state">
-                    Havflate
+                    Havoverflate
                   </label>
                   <select
                     id="ko-sea-state"
@@ -1115,8 +1115,11 @@ export default function ObservasjonerPage() {
 
                 {/* Wind + Wave direction */}
                 <div className={sectionCls}>
-                  <p className="mb-4 text-sm font-semibold text-white/60">
+                  <p className="mb-1 text-sm font-semibold text-white/60">
                     Retninger (valgfritt)
+                  </p>
+                  <p className="mb-4 text-xs text-white/40">
+                    Pek telefonen mot den retningen vinden og bølgene kommer fra.
                   </p>
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     {(

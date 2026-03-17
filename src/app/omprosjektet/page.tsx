@@ -21,7 +21,7 @@ export default function OmPage() {
             <div className="space-y-6 text-base leading-relaxed text-white/75">
               <p>
                 <span className="font-semibold text-[#60a5fa]">Omtrent 80 prosent</span>{" "}
-                av oss bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
+                av Norges befolkning bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
               </p>
               <p>
                 Ved at du sender inn bilder eller video av havoverflaten, kan du bidra direkte inn til havforskningen. Dataen vi får fra bilder og video gjør at forskerne kan validere og forbedre NORCE sine prediksjonsmodeller, som varsler bølger og strøm langs kysten. Slik kan man få enda mer presise varslinger.

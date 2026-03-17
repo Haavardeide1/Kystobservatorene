@@ -631,7 +631,7 @@ export default function MapView() {
               >
                 N
               </span>
-              Klynge
+              Populære steder
             </div>
           </div>
         </div>

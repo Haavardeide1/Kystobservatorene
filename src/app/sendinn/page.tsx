@@ -32,7 +32,7 @@ const MAX_RECORD_S = 10;
 
 const COMPASS_DIRS = ["N", "NØ", "Ø", "SØ", "S", "SV", "V", "NV"];
 const SEA_STATES = [
-  { value: "rolig", label: "Rolig havflate" },
+  { value: "rolig", label: "Rolig havoverflate" },
   { value: "smaa", label: "Små bølger" },
   { value: "store", label: "Større bølger" },
   { value: "vanskelig", label: "Vanskelig å se" },

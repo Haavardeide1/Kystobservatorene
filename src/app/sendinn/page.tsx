@@ -740,10 +740,10 @@ export default function ObservasjonerPage() {
                 <button
                   type="button"
                   onClick={() => setShowTip(true)}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-blue-400/50 bg-blue-500/20 text-xs font-bold text-blue-300 shadow-[0_0_8px_rgba(59,130,246,0.3)] transition hover:border-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+                  className="flex h-7 items-center justify-center rounded-full border border-blue-400/50 bg-blue-500/20 px-2.5 text-xs font-bold text-blue-300 shadow-[0_0_8px_rgba(59,130,246,0.3)] transition hover:border-blue-400 hover:bg-blue-500/30 hover:shadow-[0_0_12px_rgba(59,130,246,0.5)]"
                   title="Forklaring og tips"
                 >
-                  ?
+                  Tips
                 </button>
               </div>
               <button
@@ -802,7 +802,7 @@ export default function ObservasjonerPage() {
                     <ul className="space-y-3 text-sm text-white/70">
                       <li className="flex gap-3">
                         <span className="shrink-0">⏱️</span>
-                        <span>Film i <strong className="text-white/90">5–10 sekunder</strong>. For kort avvises opplastingen, og for lang video lastes ikke opp.</span>
+                        <span>Film i <strong className="text-white/90">5–10 sekunder</strong>. Kortere enn 5 sekunder godtas ikke, og lengre enn 10 sekunder kan ikke lastes opp.</span>
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">🌊</span>

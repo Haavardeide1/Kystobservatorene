@@ -19,6 +19,7 @@ const LocationPicker = dynamic(() => import("@/components/LocationPicker"), {
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 type Mode = "photo" | "video" | null;
+type PhotoInputState = "options" | "selected";
 type VideoInputState = "options" | "camera" | "selected";
 type LocationState = "options" | "gps" | "map";
 type LocationData = { lat: number; lng: number; method: "gps" | "manual" };
@@ -99,6 +100,7 @@ export default function ObservasjonerPage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null = loading
 
   // Photo
+  const [photoInputState, setPhotoInputState] = useState<PhotoInputState>("options");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
 
@@ -146,6 +148,8 @@ export default function ObservasjonerPage() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const recordingStartRef = useRef(0);
+  const photoCameraInputRef = useRef<HTMLInputElement>(null);
+  const photoGalleryInputRef = useRef<HTMLInputElement>(null);
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const compassHandlerRef = useRef<EventListener | null>(null);
 
@@ -324,12 +328,16 @@ export default function ObservasjonerPage() {
     if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
     setPhotoFile(file);
     setPhotoPreviewUrl(URL.createObjectURL(file));
+    setPhotoInputState("selected");
   }
 
   function clearPhoto() {
     if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
     setPhotoFile(null);
     setPhotoPreviewUrl(null);
+    setPhotoInputState("options");
+    if (photoCameraInputRef.current) photoCameraInputRef.current.value = "";
+    if (photoGalleryInputRef.current) photoGalleryInputRef.current.value = "";
   }
 
   // ─── GPS ────────────────────────────────────────────────────────────────
@@ -821,25 +829,43 @@ export default function ObservasjonerPage() {
               <div className={sectionCls}>
                 <p className="mb-3 text-sm font-semibold text-white/60">Bilde</p>
 
-                {!photoFile ? (
-                  <label className="flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/[0.03] transition hover:border-blue-500/40 hover:bg-blue-500/[0.05]">
-                    <span className="text-3xl">📷</span>
-                    <div className="text-center">
-                      <p className="text-sm font-semibold text-white/70">
-                        Trykk for å velge bilde
-                      </p>
-                      <p className="mt-1 text-xs text-white/30">
-                        Maks 10 MB · JPG, PNG, HEIC · Mobil kan bruke kamera direkte
-                      </p>
-                    </div>
+                {photoInputState === "options" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => photoCameraInputRef.current?.click()}
+                      className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-5 text-sm font-semibold transition hover:border-blue-500/40 hover:bg-blue-500/[0.07]"
+                    >
+                      <span className="text-3xl">📷</span>
+                      Ta bilde nå
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => photoGalleryInputRef.current?.click()}
+                      className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-5 text-sm font-semibold transition hover:border-blue-500/40 hover:bg-blue-500/[0.07]"
+                    >
+                      <span className="text-3xl">🖼️</span>
+                      Fra galleri
+                    </button>
                     <input
+                      ref={photoCameraInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                    <input
+                      ref={photoGalleryInputRef}
                       type="file"
                       accept="image/*"
                       className="hidden"
                       onChange={handlePhotoChange}
                     />
-                  </label>
-                ) : (
+                  </div>
+                )}
+
+                {photoInputState === "selected" && photoFile && (
                   <div className="space-y-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img

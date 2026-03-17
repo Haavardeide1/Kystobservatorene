@@ -21,7 +21,7 @@ export default function PersonvernPage() {
         <p className="mt-6 text-base leading-relaxed text-slate-600">
           Denne personvernerklæringen forklarer hvordan Kystobservatørene behandler
           personopplysninger når du deltar i prosjektet ved å sende inn observasjoner
-          av havflaten.
+          av havoverflaten.
         </p>
 
         <div className="mt-10 space-y-10 text-sm leading-relaxed text-slate-600">

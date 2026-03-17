@@ -647,8 +647,7 @@ export default function ObservasjonerPage() {
             Send inn
           </h1>
           <p className="mt-3 text-base text-white/50">
-            Del observasjoner av havflaten. Du trenger ikke konto, men
-            registrerte brukere tjener badges og kan følge bidragene sine.
+            Del observasjoner av havoverflaten. Ved å opprette en brukerkonto kan man opptjene merker og følge observasjonene sine.
           </p>
         </div>
 
@@ -696,7 +695,7 @@ export default function ObservasjonerPage() {
             <div className="grid grid-cols-2 gap-4">
               {(
                 [
-                  { type: "photo", icon: "📸", label: "Bilde", sub: "Stillbilde av havflaten" },
+                  { type: "photo", icon: "📸", label: "Bilde", sub: "Stillbilde av havoverflaten" },
                   { type: "video", icon: "🎥", label: "Video", sub: "5–10 sekunders klipp" },
                 ] as const
               ).map(({ type, icon, label, sub }) => (
@@ -776,7 +775,7 @@ export default function ObservasjonerPage() {
                     <ul className="space-y-3 text-sm text-white/70">
                       <li className="flex gap-3">
                         <span className="shrink-0">🌊</span>
-                        <span>Ha horisonten midt i bildet slik at havflaten er godt synlig.</span>
+                        <span>Ha horisonten midt i bildet slik at havoverflaten er godt synlig.</span>
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">☀️</span>
@@ -784,11 +783,11 @@ export default function ObservasjonerPage() {
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">📱</span>
-                        <span>Hold telefonen stødig. Horisontal (liggende) orientering gir best bilde av havflaten.</span>
+                        <span>Hold telefonen stødig. Horisontal (liggende) orientering gir best bilde av havoverflaten.</span>
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">📏</span>
-                        <span>Jo mer havflate som er synlig, jo bedre datagrunnlag for forskerne.</span>
+                        <span>Jo mer havoverflate som er synlig, jo bedre datagrunnlag for forskerne.</span>
                       </li>
                     </ul>
                   ) : (
@@ -799,7 +798,7 @@ export default function ObservasjonerPage() {
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">🌊</span>
-                        <span>Ha horisonten midt i bildet og pass på at havflaten er tydelig synlig gjennom hele videoen.</span>
+                        <span>Ha horisonten midt i bildet og pass på at havoverflaten er tydelig synlig gjennom hele videoen.</span>
                       </li>
                       <li className="flex gap-3">
                         <span className="shrink-0">📱</span>

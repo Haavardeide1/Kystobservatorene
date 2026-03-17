@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getLevelInfo, XP_PER_SUBMISSION, type LevelDef } from "@/lib/levels";
+import { supabase } from "@/lib/supabase";
 
 type Submission = {
   id: string;
@@ -96,9 +97,13 @@ const MEDAL_LABEL = [
 export default function TopFive() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const weekLabel = getWeekLabel();
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setLoggedIn(!!data.session);
+    });
     fetch("/api/submissions/list")
       .then((r) => r.json())
       .then(({ data }) => {
@@ -126,15 +131,19 @@ export default function TopFive() {
           Ingen konkurranseregistreringer denne uken ennå
         </p>
         <p className="mt-2 text-sm text-white/60">
-          Logg inn og send inn observasjoner for å komme på listen!
+          {loggedIn
+            ? "Send inn observasjoner for å komme på listen!"
+            : "Logg inn og send inn observasjoner for å komme på listen!"}
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <a
-            href="/login?redirect=/sendinn"
-            className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
-          >
-            Logg inn
-          </a>
+          {!loggedIn && (
+            <a
+              href="/login?redirect=/sendinn"
+              className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              Logg inn
+            </a>
+          )}
           <a
             href="/sendinn"
             className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#070b2f] transition hover:bg-white/90"

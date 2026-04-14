@@ -129,7 +129,7 @@ export default function ObservasjonerPage() {
   const [submitting, setSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [submitPhase, setSubmitPhase] = useState("");
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string; link?: { href: string; label: string } } | null>(null);
   const [levelUpInfo, setLevelUpInfo] = useState<LevelDef | null>(null);
 
   // Tip panel
@@ -1245,6 +1245,11 @@ export default function ObservasjonerPage() {
                 }`}
               >
                 {message.text}
+                {message.link && (
+                  <a href={message.link.href} className="ml-1 font-semibold underline">
+                    {message.link.label}
+                  </a>
+                )}
               </div>
             )}
 

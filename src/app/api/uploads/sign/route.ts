@@ -8,17 +8,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Server not configured' }, { status: 500 });
     }
 
-    // Krev innlogging
-    const authHeader = req.headers.get('authorization');
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const body = await req.json();
     const path = body?.path;
     const contentType = body?.contentType;

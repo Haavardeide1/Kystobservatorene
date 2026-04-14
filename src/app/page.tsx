@@ -25,7 +25,7 @@ export default function Home() {
               Kystobservatørene
             </h1>
             <p className="mt-3 max-w-xl text-base text-white/70 md:mt-4 md:text-lg">
-              Send inn et bilde eller en video av havoverflaten og bidra til forskning om bølger og strømmer langs kysten.
+              Send inn bilde eller video av havoverflaten og bidra til forskning om bølger og strømmer langs kysten.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4 md:mt-8">
               <a

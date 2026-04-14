@@ -37,6 +37,17 @@ export default function OmPage() {
                   Kystobservatørene er del av forsknings- og formidlingsprosjektet «Kunnskapsstrømmer i havet», initiert av NORCE Research og Fremje. Prosjektet har mottatt støtte fra Norges Forskningsråd, med mål om å gjøre havforskning mer tilgjengelig og forståelig for folk flest.
                 </p>
               </div>
+              <div className="border-t border-white/10 pt-5">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+                  Kontakt
+                </p>
+                <p>
+                  Prosjektleder Sara Alvsaker:{" "}
+                  <a href="mailto:sara.alvsaker@fremjeconsulting.no" className="text-[#60a5fa] hover:underline">
+                    sara.alvsaker@fremjeconsulting.no
+                  </a>
+                </p>
+              </div>
             </div>
 
             {/* NORCE card */}

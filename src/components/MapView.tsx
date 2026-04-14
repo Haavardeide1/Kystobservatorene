@@ -215,6 +215,9 @@ export default function MapView() {
       satelliteLayerRef.current.addTo(map);
       setShowSatellite(true);
     }
+    if (waveLayerRef.current) {
+      waveLayerRef.current.bringToFront();
+    }
   }
 
   // ── Init map ──────────────────────────────────────────────────────────────

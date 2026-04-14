@@ -288,7 +288,7 @@ export default function HomeMiniMap() {
             Kystobservasjoner
           </p>
           <h3 className="mt-2 text-2xl font-semibold text-white">
-            Kart og statistikk
+            Observasjonskart
           </h3>
         </div>
         <div className="flex gap-2 md:gap-3">

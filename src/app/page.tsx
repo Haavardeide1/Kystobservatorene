@@ -91,8 +91,7 @@ export default function Home() {
               Bidra med observasjoner
             </h2>
             <p className="mt-4 text-base text-slate-600">
-              Innsendte observasjoner gir verdifull data som forbedrer varsling av bølger og forståelsen av havstrømmer —{" "}
-              viktig for sikkerheten til alle som ferdes langs kysten.
+              Innsendte observasjoner gir verdifull data som validerer og forbedrer varslingsmodeller for bølger og strøm – viktig for sikkerheten til alle som ferdes langs kysten.
             </p>
           </div>
 
@@ -131,7 +130,7 @@ export default function Home() {
               {
                 step: "03",
                 title: "Send inn",
-                body: "Observasjonen havner rett i databasen og vises på kartet for alle.",
+                body: "Observasjonen havner rett i databasen og vises på observasjonskartet.",
               },
             ].map((item) => (
               <div key={item.step} className="rounded-2xl bg-[#070b2f] p-6 shadow">

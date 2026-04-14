@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-type AuthMode = "signin" | "signup";
+type AuthMode = "signin" | "signup" | "forgot";
 
 function LoginForm() {
   const router = useRouter();
@@ -43,7 +43,13 @@ function LoginForm() {
     setIsError(false);
     setLoading(true);
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setMessage("Sjekk e-posten din for en lenke til å tilbakestille passordet.");
+      } else if (mode === "signup") {
         if (!passwordValid) {
           setIsError(true);
           setMessage("Passordet oppfyller ikke kravene.");
@@ -88,30 +94,38 @@ function LoginForm() {
             <h1 className="text-3xl font-semibold tracking-tight">Logg inn</h1>
           </div>
 
-          <div className="mb-6 flex gap-2">
-            <button
-              type="button"
-              onClick={() => setMode("signin")}
-              className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                mode === "signin"
-                  ? "bg-white text-slate-950"
-                  : "bg-white/10 text-white hover:bg-white/20"
-              }`}
-            >
-              Logg inn
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("signup")}
-              className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                mode === "signup"
-                  ? "bg-white text-slate-950"
-                  : "bg-white/10 text-white hover:bg-white/20"
-              }`}
-            >
-              Opprett konto
-            </button>
-          </div>
+          {mode !== "forgot" && (
+            <div className="mb-6 flex gap-2">
+              <button
+                type="button"
+                onClick={() => { setMode("signin"); setMessage(null); }}
+                className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${
+                  mode === "signin"
+                    ? "bg-white text-slate-950"
+                    : "bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                Logg inn
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode("signup"); setMessage(null); }}
+                className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${
+                  mode === "signup"
+                    ? "bg-white text-slate-950"
+                    : "bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                Opprett konto
+              </button>
+            </div>
+          )}
+
+          {mode === "forgot" && (
+            <p className="mb-6 text-sm text-white/60">
+              Skriv inn e-postadressen din så sender vi deg en lenke for å tilbakestille passordet.
+            </p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -125,35 +139,56 @@ function LoginForm() {
                 placeholder="deg@eksempel.no"
               />
             </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-white/80">Passord</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-white/40 focus:border-white/30"
-                placeholder="Passord"
-              />
-              {mode === "signup" && password.length > 0 && (
-                <ul className="mt-2 space-y-1">
-                  {passwordRules.map((r) => (
-                    <li key={r.label} className={`flex items-center gap-2 text-xs ${r.ok ? "text-emerald-400" : "text-white/40"}`}>
-                      <span>{r.ok ? "✓" : "○"}</span>
-                      {r.label}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            {mode !== "forgot" && (
+              <div>
+                <label className="mb-2 block text-sm font-medium text-white/80">Passord</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-white/40 focus:border-white/30"
+                  placeholder="Passord"
+                />
+                {mode === "signup" && password.length > 0 && (
+                  <ul className="mt-2 space-y-1">
+                    {passwordRules.map((r) => (
+                      <li key={r.label} className={`flex items-center gap-2 text-xs ${r.ok ? "text-emerald-400" : "text-white/40"}`}>
+                        <span>{r.ok ? "✓" : "○"}</span>
+                        {r.label}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {mode === "signin" && (
+                  <button
+                    type="button"
+                    onClick={() => { setMode("forgot"); setMessage(null); }}
+                    className="mt-2 text-xs text-white/40 hover:text-white/70 transition"
+                  >
+                    Glemt passord?
+                  </button>
+                )}
+              </div>
+            )}
 
             <button
               type="submit"
               disabled={loading}
               className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/90 disabled:opacity-50"
             >
-              {loading ? "Jobber..." : mode === "signup" ? "Opprett konto" : "Logg inn"}
+              {loading ? "Jobber..." : mode === "signup" ? "Opprett konto" : mode === "forgot" ? "Send tilbakestillingslenke" : "Logg inn"}
             </button>
+
+            {mode === "forgot" && (
+              <button
+                type="button"
+                onClick={() => { setMode("signin"); setMessage(null); }}
+                className="w-full text-center text-sm text-white/40 hover:text-white/70 transition"
+              >
+                Tilbake til innlogging
+              </button>
+            )}
           </form>
 
           {message && (

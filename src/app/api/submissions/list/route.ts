@@ -13,6 +13,7 @@ type SubmissionRow = {
   level: number;
   media_type: "photo" | "video";
   media_path_original: string;
+  media_path_preview: string | null;
   created_at: string;
   lat_public: number | null;
   lng_public: number | null;
@@ -40,6 +41,7 @@ export async function GET() {
           "level",
           "media_type",
           "media_path_original",
+          "media_path_preview",
           "created_at",
           "lat_public",
           "lng_public",
@@ -62,10 +64,13 @@ export async function GET() {
 
     const rows = (data ?? []) as unknown as SubmissionRow[];
 
-    const paths = rows.map((r) => r.media_path_original);
+    const allPaths = [
+      ...rows.map((r) => r.media_path_original),
+      ...rows.filter((r) => r.media_path_preview).map((r) => r.media_path_preview!),
+    ];
     const { data: signedList } = await supabaseAdmin.storage
       .from(MEDIA_BUCKET)
-      .createSignedUrls(paths, SIGNED_URL_TTL_SECONDS);
+      .createSignedUrls(allPaths, SIGNED_URL_TTL_SECONDS);
 
     const urlMap = new Map(
       (signedList ?? []).map((s) => [s.path, s.signedUrl])
@@ -74,6 +79,7 @@ export async function GET() {
     const results = rows.map((row) => ({
       ...row,
       media_url: urlMap.get(row.media_path_original) ?? null,
+      preview_url: row.media_path_preview ? (urlMap.get(row.media_path_preview) ?? null) : null,
     }));
 
     return NextResponse.json({ data: results }, {

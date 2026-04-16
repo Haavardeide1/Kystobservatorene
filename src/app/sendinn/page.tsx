@@ -72,6 +72,37 @@ function uploadWithProgress(
   });
 }
 
+async function captureVideoThumbnail(file: File): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    const url = URL.createObjectURL(file);
+    const cleanup = () => URL.revokeObjectURL(url);
+    const timer = setTimeout(() => { cleanup(); resolve(null); }, 10000);
+
+    video.onloadedmetadata = () => {
+      video.currentTime = Math.min(0.5, (video.duration || 1) * 0.1);
+    };
+    video.onseeked = () => {
+      try {
+        const w = video.videoWidth || 640;
+        const h = video.videoHeight || 360;
+        const scale = Math.min(1, 640 / w);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(w * scale);
+        canvas.height = Math.round(h * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { clearTimeout(timer); cleanup(); resolve(null); return; }
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => { clearTimeout(timer); cleanup(); resolve(blob); }, "image/jpeg", 0.82);
+      } catch { clearTimeout(timer); cleanup(); resolve(null); }
+    };
+    video.onerror = () => { clearTimeout(timer); cleanup(); resolve(null); };
+    video.muted = true;
+    video.preload = "metadata";
+    video.src = url;
+  });
+}
+
 function getVideoDuration(file: File): Promise<number> {
   return new Promise((resolve) => {
     const v = document.createElement("video");
@@ -567,6 +598,37 @@ export default function ObservasjonerPage() {
       setSubmitPhase(isVideo ? "Laster opp video…" : "Laster opp bilde…");
       await uploadWithProgress(uploadUrl, file, setUploadProgress);
 
+      // For videoer: forsøk å lage thumbnail og last den opp
+      let previewPath: string | null = null;
+      if (isVideo) {
+        try {
+          const thumbBlob = await captureVideoThumbnail(file);
+          if (thumbBlob) {
+            const thumbPath = `submissions/${id}/thumb.jpg`;
+            const thumbSignRes = await fetch("/api/uploads/sign", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({ path: thumbPath, contentType: "image/jpeg" }),
+            });
+            if (thumbSignRes.ok) {
+              const { uploadUrl: thumbUrl } = await thumbSignRes.json();
+              const xhr = new XMLHttpRequest();
+              await new Promise<void>((res, rej) => {
+                xhr.addEventListener("load", () => xhr.status < 300 ? res() : rej());
+                xhr.addEventListener("error", rej);
+                xhr.open("PUT", thumbUrl);
+                xhr.setRequestHeader("Content-Type", "image/jpeg");
+                xhr.send(thumbBlob);
+              });
+              previewPath = thumbPath;
+            }
+          }
+        } catch { /* thumbnail er ikke kritisk */ }
+      }
+
       const submitRes = await fetch("/api/submissions", {
         method: "POST",
         headers: {
@@ -577,6 +639,7 @@ export default function ObservasjonerPage() {
           level: isVideo ? 2 : 1,
           media_type: mode,
           media_path_original: path,
+          media_path_preview: previewPath,
           display_name: userName || displayName || null,
           comment: comment || null,
           valg: seaState || null,

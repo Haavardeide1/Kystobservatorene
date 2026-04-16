@@ -7,6 +7,7 @@ type Submission = {
   id: string;
   media_type: "photo" | "video";
   media_url: string | null;
+  preview_url: string | null;
   display_name: string | null;
   created_at: string;
 };
@@ -128,15 +129,25 @@ export default function WeeklyCarousel() {
                 className="relative h-28 w-28 shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-slate-800 shadow-md transition hover:opacity-90 hover:scale-105"
                 onClick={() => setSelected(sub)}
               >
-                <video
-                  className="h-full w-full object-cover"
-                  src={`${sub.media_url!}#t=0.001`}
-                  preload="metadata"
-                  muted
-                  playsInline
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <span className="text-lg text-white">▶</span>
+                {sub.preview_url ? (
+                  <Image
+                    src={sub.preview_url}
+                    alt={sub.display_name || "Video"}
+                    fill
+                    sizes="112px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <video
+                    className="h-full w-full object-cover"
+                    src={`${sub.media_url!}#t=0.001`}
+                    preload="metadata"
+                    muted
+                    playsInline
+                  />
+                )}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <span className="text-lg text-white drop-shadow">▶</span>
                 </div>
               </div>
             )

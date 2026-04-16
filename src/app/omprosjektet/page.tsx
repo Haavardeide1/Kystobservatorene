@@ -24,7 +24,7 @@ export default function OmPage() {
                 av Norges befolkning bor i nærheten av kysten. Havstrømmene påvirker alt fra vær og bølger til hva som driver hvor. Mer presise modeller gir tryggere ferdsel, bedre beslutninger og økt forståelse av kystmiljøet.
               </p>
               <p>
-                Ved å sende inn bilder eller video av havoverflaten, kan du bidra direkte inn til havforskning. Dataen vi får fra bilder og video gjør at forskerne kan validere og forbedre NORCE sine varslingsmodeller for bølger og strøm langs hele kysten. Slik kan man få enda mer presise varslinger.
+                Ved å sende inn bilder eller video av havoverflaten, kan du bidra direkte inn til havforskning. Dataen vi får fra bilder og video gjør at forskerne kan validere og forbedre NORCE sine modeller for bølger og strøm langs hele kysten. Slik kan man få enda mer presise varslinger.
               </p>
               <p>
                 Jo flere observasjoner, desto mer styrkes datagrunnlaget for forskning og varsling – og kunnskapen vår om havet.
@@ -111,7 +111,7 @@ export default function OmPage() {
               },
               {
                 title: "Mål",
-                body: "Samle observasjoner som kan validere og forbedre varslingsmodeller for bølger og strøm langs kysten.",
+                body: "Samle observasjoner som kan validere og forbedre modeller for bølger og strøm langs kysten.",
               },
             ].map((card) => (
               <div

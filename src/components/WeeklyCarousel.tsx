@@ -101,7 +101,7 @@ export default function WeeklyCarousel() {
     <>
       <div className="mt-6">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-          Ukens bilder
+          Ukens Observasjoner
         </p>
         <div
           className="flex gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden"
@@ -130,13 +130,11 @@ export default function WeeklyCarousel() {
               >
                 <video
                   className="h-full w-full object-cover"
+                  src={`${sub.media_url!}#t=0.001`}
                   preload="metadata"
                   muted
                   playsInline
-                >
-                  <source src={sub.media_url!} type="video/mp4" />
-                  <source src={sub.media_url!} type="video/quicktime" />
-                </video>
+                />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                   <span className="text-lg text-white">▶</span>
                 </div>

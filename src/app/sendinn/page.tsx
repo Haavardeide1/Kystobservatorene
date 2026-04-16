@@ -1442,7 +1442,7 @@ export default function ObservasjonerPage() {
                 <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-3 text-sm text-amber-300">
                   <p className="mb-2 font-semibold">Kompasset ble avslått</p>
                   <p className="text-amber-200/70">
-                    For å gi tilgang igjen: trykk på <strong className="text-amber-200">«aA»</strong> i adressefeltet i Safari → <strong className="text-amber-200">Nettstedinnstillinger</strong> → <strong className="text-amber-200">Bevegelse og orientering</strong> → Tillat.
+                    Trykk «Prøv igjen» for å få opp forespørselen på nytt.
                   </p>
                 </div>
                 <button

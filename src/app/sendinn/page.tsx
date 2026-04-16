@@ -73,11 +73,24 @@ function uploadWithProgress(
 }
 
 function getVideoDuration(file: File): Promise<number> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const v = document.createElement("video");
     v.preload = "metadata";
-    v.onloadedmetadata = () => { URL.revokeObjectURL(v.src); resolve(v.duration); };
-    v.onerror = () => { URL.revokeObjectURL(v.src); reject(new Error("Kunne ikke lese video")); };
+    // Tidsavbrudd: noen mobilnettlesere fyrer aldri loadedmetadata/onerror
+    const timer = setTimeout(() => {
+      URL.revokeObjectURL(v.src);
+      resolve(Infinity);
+    }, 8000);
+    v.onloadedmetadata = () => {
+      clearTimeout(timer);
+      URL.revokeObjectURL(v.src);
+      resolve(v.duration);
+    };
+    v.onerror = () => {
+      clearTimeout(timer);
+      URL.revokeObjectURL(v.src);
+      resolve(Infinity); // hopp over durasjonssjekk
+    };
     v.src = URL.createObjectURL(file);
   });
 }

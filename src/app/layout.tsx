@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kystobservatørene",
     description: "Du ser havet. Vi analyserer det. Send inn bilder og videoer fra kysten og bli en del av norsk havforskning.",
+    images: [{ url: "/bildemobil.jpg" }],
   },
 };
 

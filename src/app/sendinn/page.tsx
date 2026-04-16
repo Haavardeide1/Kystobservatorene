@@ -184,6 +184,7 @@ export default function ObservasjonerPage() {
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassReady, setCompassReady] = useState(false);
   const [compassStatusText, setCompassStatusText] = useState("Initialiserer kompass…");
+  const [compassDenied, setCompassDenied] = useState(false);
 
   // Refs
   const cameraPreviewRef = useRef<HTMLVideoElement>(null);
@@ -414,6 +415,7 @@ export default function ObservasjonerPage() {
     setCompassTarget(target);
     setCompassHeading(0);
     setCompassReady(false);
+    setCompassDenied(false);
     setCompassStatusText("Initialiserer kompass…");
 
     if (!window.DeviceOrientationEvent) {
@@ -429,8 +431,12 @@ export default function ObservasjonerPage() {
       setCompassStatusText("Trykk «Tillat» for å aktivere kompasset.");
       DOE.requestPermission()
         .then((state) => {
-          if (state === "granted") activateCompass(target);
-          else setCompassStatusText("⚠️ Tillatelse avslått.");
+          if (state === "granted") {
+            setCompassDenied(false);
+            activateCompass(target);
+          } else {
+            setCompassDenied(true);
+          }
         })
         .catch(() => setCompassStatusText("⚠️ Kunne ikke aktivere kompass."));
     } else {
@@ -1430,25 +1436,46 @@ export default function ObservasjonerPage() {
               <div className="mt-1 text-lg text-white/40">{compassHeading}°</div>
             </div>
 
-            {/* Status */}
-            <p
-              className={`mb-4 rounded-xl px-4 py-2.5 text-center text-sm ${
-                compassReady
-                  ? "border border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300"
-                  : "border border-white/[0.07] bg-white/[0.03] text-white/40"
-              }`}
-            >
-              {compassStatusText}
-            </p>
+            {/* Tillatelse avslått */}
+            {compassDenied ? (
+              <div className="space-y-4">
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-4 py-3 text-sm text-amber-300">
+                  <p className="mb-2 font-semibold">Kompasset ble avslått</p>
+                  <p className="text-amber-200/70">
+                    For å gi tilgang igjen: trykk på <strong className="text-amber-200">«aA»</strong> i adressefeltet i Safari → <strong className="text-amber-200">Nettstedinnstillinger</strong> → <strong className="text-amber-200">Bevegelse og orientering</strong> → Tillat.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => openCompass(compassTarget!)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.06] py-3 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  Prøv igjen
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Status */}
+                <p
+                  className={`mb-4 rounded-xl px-4 py-2.5 text-center text-sm ${
+                    compassReady
+                      ? "border border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-300"
+                      : "border border-white/[0.07] bg-white/[0.03] text-white/40"
+                  }`}
+                >
+                  {compassStatusText}
+                </p>
 
-            {compassReady && (
-              <button
-                type="button"
-                onClick={confirmCompass}
-                className="w-full rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-500"
-              >
-                Bekreft {compassDir} ({compassHeading}°)
-              </button>
+                {compassReady && (
+                  <button
+                    type="button"
+                    onClick={confirmCompass}
+                    className="w-full rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-500"
+                  >
+                    Bekreft {compassDir} ({compassHeading}°)
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>

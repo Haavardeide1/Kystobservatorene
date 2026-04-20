@@ -72,7 +72,7 @@ export async function GET() {
     }));
 
     return NextResponse.json({ data: results }, {
-      headers: { 'Cache-Control': 'no-store' },
+      headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' },
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';

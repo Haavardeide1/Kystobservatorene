@@ -40,7 +40,7 @@ export async function GET(req: Request) {
       media_url: urlMap.get(row.media_path_original) ?? null,
     }));
 
-    return NextResponse.json({ data: results }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ data: results }, { headers: { "Cache-Control": "private, max-age=60" } });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

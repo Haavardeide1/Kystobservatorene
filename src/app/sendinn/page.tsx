@@ -1201,7 +1201,7 @@ export default function ObservasjonerPage() {
                 {/* Sea state */}
                 <div className={sectionCls}>
                   <label className={labelCls} htmlFor="ko-sea-state">
-                    Havoverflate
+                    Havoverflate <span className="font-normal text-white/50">(valgfritt)</span>
                   </label>
                   <select
                     id="ko-sea-state"

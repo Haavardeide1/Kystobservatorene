@@ -9,6 +9,7 @@ type Submission = {
   media_type: "photo" | "video";
   media_url: string | null;
   display_name: string | null;
+  place_name: string | null;
   lat_public: number | null;
   lng_public: number | null;
   created_at: string;
@@ -18,52 +19,6 @@ type Submission = {
   wave_dir: string | null;
 };
 
-// Module-level cache so repeated renders don't re-fetch the same coordinates
-const geocodeCache = new Map<string, string>();
-
-// Kø for å holde seg innenfor Nominatims grense på 1 request/sekund
-const geocodeQueue: Array<() => void> = [];
-let queueRunning = false;
-
-function runQueue() {
-  if (queueRunning || geocodeQueue.length === 0) return;
-  queueRunning = true;
-  const next = geocodeQueue.shift()!;
-  next();
-  setTimeout(() => {
-    queueRunning = false;
-    runQueue();
-  }, 1100);
-}
-
-async function reverseGeocode(lat: number, lng: number): Promise<string> {
-  const key = `${lat.toFixed(2)},${lng.toFixed(2)}`;
-  if (geocodeCache.has(key)) return geocodeCache.get(key)!;
-
-  return new Promise((resolve) => {
-    geocodeQueue.push(async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
-          { headers: { "Accept-Language": "nb" } }
-        );
-        const data = await res.json();
-        const a = data.address ?? {};
-        const place =
-          a.city || a.town || a.village || a.hamlet || a.suburb ||
-          a.municipality || a.county || a.state ||
-          a.body_of_water || a.sea || a.bay ||
-          (data.display_name ? data.display_name.split(",")[0].trim() : null) ||
-          "Ukjent sted";
-        geocodeCache.set(key, place);
-        resolve(place);
-      } catch {
-        resolve("Ukjent sted");
-      }
-    });
-    runQueue();
-  });
-}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("nb-NO", {
@@ -74,14 +29,6 @@ function formatDate(iso: string) {
 }
 
 function GalleryCard({ sub, onOpen }: { sub: Submission; onOpen: () => void }) {
-  const [place, setPlace] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (sub.lat_public && sub.lng_public) {
-      reverseGeocode(sub.lat_public, sub.lng_public).then(setPlace);
-    }
-  }, [sub.lat_public, sub.lng_public]);
-
   if (!sub.media_url) return null;
 
   return (
@@ -131,14 +78,12 @@ function GalleryCard({ sub, onOpen }: { sub: Submission; onOpen: () => void }) {
           {sub.display_name || "Anonym"}
         </p>
         <div className="mt-0.5 flex items-center gap-1.5 text-xs text-white/70">
-          {place ? (
+          {sub.place_name && (
             <>
               <span>📍</span>
-              <span className="truncate">{place}</span>
+              <span className="truncate">{sub.place_name}</span>
             </>
-          ) : sub.lat_public ? (
-            <span className="animate-pulse">Henter sted…</span>
-          ) : null}
+          )}
         </div>
         <p className="mt-1 text-left text-[10px] text-white/40">{formatDate(sub.created_at)}</p>
       </div>

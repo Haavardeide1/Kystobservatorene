@@ -52,6 +52,7 @@ export async function GET() {
           "wave_dir",
           "video_duration",
           "video_analysis",
+          "place_name",
         ].join(",")
       )
       .eq("is_public", true)

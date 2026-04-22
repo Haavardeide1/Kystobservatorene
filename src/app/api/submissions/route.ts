@@ -9,6 +9,32 @@ function roundCoord(value: number, decimals = 4) {
   return Math.round(value * factor) / factor;
 }
 
+async function reverseGeocodeServer(lat: number, lng: number): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+      {
+        headers: {
+          'Accept-Language': 'nb',
+          'User-Agent': 'Kystobservatorene/1.0 (kystobservatorene.no)',
+        },
+      }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const a = data.address ?? {};
+    return (
+      a.city || a.town || a.village || a.hamlet || a.suburb ||
+      a.municipality || a.county || a.state ||
+      a.body_of_water || a.sea || a.bay ||
+      (data.display_name ? data.display_name.split(',')[0].trim() : null) ||
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
 async function getUserIdFromAuthHeader(authHeader: string | null) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
   const token = authHeader.replace('Bearer ', '').trim();
@@ -116,6 +142,7 @@ export async function POST(req: Request) {
       lng,
       lat_public: roundCoord(lat, 4),
       lng_public: roundCoord(lng, 4),
+      place_name: await reverseGeocodeServer(lat, lng),
       location_method: body.location_method || null,
       accuracy: body.accuracy || null,
       media_type: mediaType,

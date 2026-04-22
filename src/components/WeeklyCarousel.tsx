@@ -101,9 +101,6 @@ export default function WeeklyCarousel() {
   return (
     <>
       <div className="mt-6">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-          Ukens Observasjoner
-        </p>
         <div
           className="flex gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}

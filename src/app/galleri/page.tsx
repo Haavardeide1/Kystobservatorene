@@ -50,7 +50,11 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
         const data = await res.json();
         const a = data.address ?? {};
         const place =
-          a.city || a.town || a.village || a.municipality || a.county || "Ukjent sted";
+          a.city || a.town || a.village || a.hamlet || a.suburb ||
+          a.municipality || a.county || a.state ||
+          a.body_of_water || a.sea || a.bay ||
+          (data.display_name ? data.display_name.split(",")[0].trim() : null) ||
+          "Ukjent sted";
         geocodeCache.set(key, place);
         resolve(place);
       } catch {

@@ -8,6 +8,7 @@ type Submission = {
   id: string;
   media_type: "photo" | "video";
   media_url: string | null;
+  thumbnail_url: string | null;
   display_name: string | null;
   place_name: string | null;
   lat_public: number | null;
@@ -39,10 +40,11 @@ function GalleryCard({ sub, onOpen }: { sub: Submission; onOpen: () => void }) {
     >
       {sub.media_type === "photo" ? (
         <Image
-          src={sub.media_url!}
+          src={sub.thumbnail_url ?? sub.media_url!}
           alt={sub.display_name || "Observasjon"}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          loading="lazy"
           className="object-cover transition duration-300 group-hover:scale-105"
         />
       ) : (

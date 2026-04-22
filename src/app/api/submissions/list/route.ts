@@ -65,6 +65,7 @@ export async function GET() {
 
     const rows = (data ?? []) as unknown as SubmissionRow[];
 
+    // Originale URLs (batch)
     const allPaths = [
       ...rows.map((r) => r.media_path_original),
       ...rows.filter((r) => r.media_path_preview).map((r) => r.media_path_preview!),
@@ -77,9 +78,28 @@ export async function GET() {
       (signedList ?? []).map((s) => [s.path, s.signedUrl])
     );
 
+    // Thumbnail URLs for bilder (400px, kvalitet 70) — vises i galleri-kort
+    const photoRows = rows.filter((r) => r.media_type === "photo");
+    const thumbnailResults = await Promise.all(
+      photoRows.map((r) =>
+        supabaseAdmin.storage.from(MEDIA_BUCKET).createSignedUrl(
+          r.media_path_original,
+          SIGNED_URL_TTL_SECONDS,
+          { transform: { width: 400, height: 400, quality: 70, resize: "cover" } }
+        )
+      )
+    );
+    const thumbnailMap = new Map(
+      photoRows.map((r, i) => [r.id, thumbnailResults[i].data?.signedUrl ?? null])
+    );
+
     const results = rows.map((row) => ({
       ...row,
       media_url: urlMap.get(row.media_path_original) ?? null,
+      thumbnail_url:
+        row.media_type === "photo"
+          ? (thumbnailMap.get(row.id) ?? urlMap.get(row.media_path_original) ?? null)
+          : (urlMap.get(row.media_path_original) ?? null),
       preview_url: row.media_path_preview ? (urlMap.get(row.media_path_preview) ?? null) : null,
     }));
 

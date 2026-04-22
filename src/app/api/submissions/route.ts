@@ -11,6 +11,8 @@ function roundCoord(value: number, decimals = 4) {
 
 async function reverseGeocodeServer(lat: number, lng: number): Promise<string | null> {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
       {
@@ -18,8 +20,10 @@ async function reverseGeocodeServer(lat: number, lng: number): Promise<string | 
           'Accept-Language': 'nb',
           'User-Agent': 'Kystobservatorene/1.0 (kystobservatorene.no)',
         },
+        signal: controller.signal,
       }
     );
+    clearTimeout(timeout);
     if (!res.ok) return null;
     const data = await res.json();
     const a = data.address ?? {};

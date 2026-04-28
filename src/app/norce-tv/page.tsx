@@ -4,8 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-// PIN for tilgang — del denne med NORCE
-const TV_PIN = "norce2026";
 const GALLERY_COUNT = 10;
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutter
 
@@ -36,63 +34,6 @@ function formatDate(iso: string) {
     month: "short",
     year: "numeric",
   });
-}
-
-// ── PIN-gate ──────────────────────────────────────────────────────────────────
-
-function PinGate({ onUnlock }: { onUnlock: () => void }) {
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState(false);
-
-  function handleSubmit() {
-    if (pin.toLowerCase() === TV_PIN) {
-      localStorage.setItem("norce_tv_unlocked", "true");
-      onUnlock();
-    } else {
-      setError(true);
-      setPin("");
-    }
-  }
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-[#070b2f]">
-      <div className="w-full max-w-xs rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-        <div className="mb-8 text-center">
-          <Image
-            src="/norce-logo.png"
-            alt="NORCE"
-            width={100}
-            height={40}
-            className="mx-auto mb-5 h-10 w-auto object-contain"
-            style={{ filter: "brightness(0) invert(1)" }}
-          />
-          <h1 className="text-lg font-bold text-white">Kystobservatørene</h1>
-          <p className="mt-1 text-sm text-white/40">TV-dashboard · Kun for NORCE</p>
-        </div>
-
-        <input
-          type="password"
-          value={pin}
-          autoFocus
-          onChange={(e) => { setPin(e.target.value); setError(false); }}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="PIN-kode"
-          className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-center text-lg tracking-[0.3em] text-white placeholder-white/20 outline-none focus:border-white/40"
-        />
-
-        {error && (
-          <p className="mt-2 text-center text-sm text-red-400">Feil PIN-kode</p>
-        )}
-
-        <button
-          onClick={handleSubmit}
-          className="mt-4 w-full rounded-xl bg-white py-3 text-sm font-bold text-[#070b2f] transition hover:bg-white/90 active:scale-95"
-        >
-          Lås opp
-        </button>
-      </div>
-    </div>
-  );
 }
 
 // ── Galleri-stripe ────────────────────────────────────────────────────────────
@@ -163,21 +104,13 @@ function GalleryStrip({ submissions, loading }: { submissions: Submission[]; loa
 // ── Hovedside ─────────────────────────────────────────────────────────────────
 
 export default function NorceTvPage() {
-  const [unlocked, setUnlocked] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState<Date | null>(null);
 
-  // Sjekk localStorage på mount
-  useEffect(() => {
-    if (localStorage.getItem("norce_tv_unlocked") === "true") {
-      setUnlocked(true);
-    }
-    setNow(new Date());
-  }, []);
-
   // Klokke
   useEffect(() => {
+    setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
@@ -195,15 +128,10 @@ export default function NorceTvPage() {
   }, []);
 
   useEffect(() => {
-    if (!unlocked) return;
     fetchGallery();
     const interval = setInterval(fetchGallery, REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [unlocked, fetchGallery]);
-
-  if (!unlocked) {
-    return <PinGate onUnlock={() => setUnlocked(true)} />;
-  }
+  }, [fetchGallery]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#070b2f]">

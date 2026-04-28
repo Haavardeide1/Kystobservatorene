@@ -140,7 +140,10 @@ function GalleryStrip({ submissions, loading }: { submissions: Submission[]; loa
                 <p className="truncate text-xs font-semibold text-white">
                   {sub.display_name || "Anonym"}
                 </p>
-                <p className="text-[10px] text-white/50">{formatDate(sub.created_at)}</p>
+                {sub.place_name && (
+                  <p className="truncate text-[10px] text-white/70">📍 {sub.place_name}</p>
+                )}
+                <p className="text-[10px] text-white/40">{formatDate(sub.created_at)}</p>
               </div>
 
               {/* Nyeste-badge */}
